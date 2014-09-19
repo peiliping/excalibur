@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+
+
+	<bean id="seqService" class="jakiro.SequenceService" destroy-method="close">
+		<property name="sequenceName" value="testSeq" />
+		<property name="dsNameSeries" value="seq" />
+		<property name="sequenceNum" value="2" />
+		<property name="step" value="100" />
+		<property name="sequenceDaoClazzName" value="jakiro.sequence.dao.GroupSequenceDao" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="dataSource" class="jakiro.DynamicDataSource" destroy-method="close">
+		<property name="dynamicDataSourceName" value="seqds" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="defaultTargetDataSource" ref="DataSource0" />
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry key="seq_0" value-ref="DataSource0" />
+				<entry key="seq_1" value-ref="DataSource1" />
+				<entry key="seq_2" value-ref="DataSource2" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="DataSource0" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="url" value="${DataSource1.url}" />
+		<property name="username" value="${DataSource1.username}" />
+		<property name="password" value="${DataSource1.password}" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="5" />
+		<property name="maxActive" value="50" />
+		<property name="filters" value="stat,slf4j" />
+		<property name="connectionProperties" value="druid.stat.slowSqlMillis=50;druid.stat.logSlowSql=true" />
+		<property name="maxWait" value="5000" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="300000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x' FROM DUAL" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1200" />
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="DataSource1" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="url" value="${DataSource2.url}" />
+		<property name="username" value="${DataSource2.username}" />
+		<property name="password" value="${DataSource2.password}" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="5" />
+		<property name="maxActive" value="50" />
+		<property name="filters" value="stat,slf4j" />
+		<property name="connectionProperties" value="druid.stat.slowSqlMillis=50;druid.stat.logSlowSql=true" />
+		<property name="maxWait" value="5000" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="300000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x' FROM DUAL" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1200" />
+		<property name="logAbandoned" value="true" />
+	</bean>
+	<bean id="DataSource2" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<property name="url" value="${DataSource3.url}" />
+		<property name="username" value="${DataSource3.username}" />
+		<property name="password" value="${DataSource3.password}" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="5" />
+		<property name="maxActive" value="50" />
+		<property name="filters" value="stat,slf4j" />
+		<property name="connectionProperties" value="druid.stat.slowSqlMillis=50;druid.stat.logSlowSql=true" />
+		<property name="maxWait" value="5000" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="300000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x' FROM DUAL" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1200" />
+		<property name="logAbandoned" value="true" />
+	</bean>
+</beans>

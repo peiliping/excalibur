@@ -34,6 +34,10 @@ public class Topic {
         this.topicType = topicType;
     }
 
+    public void setType(int t) {
+        this.topicType = TopicType.getTopic(t);
+    }
+
     public String getDesc() {
         return desc;
     }

@@ -35,23 +35,18 @@ public class HttpUtil {
         return count;
     }
 
-    public static HttpResult httpGet(String url) {
-        return httpGet(url, "utf-8", null);
+    public static HttpResult httpGet(String url, int trytimes, int timeout) {
+        return httpGet(url, "utf-8", null, trytimes, timeout);
     }
 
-    public static HttpResult httpGet(String url, String cookies) {
-        return httpGet(url, "utf-8", cookies);
-    }
-
-    public static HttpResult httpGet(String url, String encoding, String cookies) {
-        int trytimes = 3;
+    public static HttpResult httpGet(String url, String encoding, String cookies, int trytimes, int timeout) {
         while (trytimes > 0) {
             HttpURLConnection connection = null;
             try {
                 URL u = new URL(url);
                 connection = (HttpURLConnection) u.openConnection();
                 connection.setRequestMethod("GET");
-                connection.setConnectTimeout(100);
+                connection.setConnectTimeout(timeout);
                 if (cookies != null && cookies.length() > 0) {
                     connection.setRequestProperty("Cookie", cookies);
                 }

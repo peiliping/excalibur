@@ -7,9 +7,9 @@ public class ClientConfig {
 
     private long   initDelay     = 0;
 
-    private long   excuteTimeOut = 1000 * 10;
-
     private int    retryTimes    = 3;
+
+    private int    excuteTimeOut = 1000 * 10;
 
     private int    serverPort    = 80;
 
@@ -25,20 +25,16 @@ public class ClientConfig {
         this.interval = interval;
     }
 
-    public long getExcuteTimeOut() {
+    public int getExcuteTimeOut() {
         return excuteTimeOut;
     }
 
-    public void setExcuteTimeOut(long excuteTimeOut) {
+    public void setExcuteTimeOut(int excuteTimeOut) {
         this.excuteTimeOut = excuteTimeOut;
     }
 
     public int getRetryTimes() {
         return retryTimes;
-    }
-
-    public void setRetryTimes(int retryTimes) {
-        this.retryTimes = retryTimes;
     }
 
     public int getServerPort() {

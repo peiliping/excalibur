@@ -56,7 +56,7 @@ public class Config {
     private int                  readersNum = 1;
     @Setter
     @Getter
-    private int                  writersNum = 1;
+    private int                  writersNum = 6;
 
     public Config(Properties ps) {
         this.sourceTableName = ps.getProperty("sourcetablename");

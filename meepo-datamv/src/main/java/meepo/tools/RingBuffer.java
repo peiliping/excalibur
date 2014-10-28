@@ -49,7 +49,6 @@ public class RingBuffer<E> {
                     return;
                 }
                 if (mode == Mode.MODE_BLOCKING) {
-                    LOG.debug("ringbuffer block");
                     block();
                 }
             } else {
@@ -77,10 +76,11 @@ public class RingBuffer<E> {
                 }
             } else {
                 Object o = RING[cur];
-                while (o == null) {
-                    Thread.yield();
-                }
                 if (RP.compareAndSet(cur, mod(cur))) {
+                    while (o == null) {
+                        Thread.yield();
+                        o = RING[cur];
+                    }
                     RING[cur] = null;
                     return (E) o;
                 }

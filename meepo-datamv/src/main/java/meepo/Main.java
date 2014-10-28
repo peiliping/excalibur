@@ -1,5 +1,6 @@
 package meepo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,6 +17,8 @@ import meepo.writer.DefaultMysqlWriter;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.alibaba.fastjson.JSON;
+
 public class Main {
 
     public static volatile boolean FINISHED = false;
@@ -26,11 +29,11 @@ public class Main {
         args[0] = "/home/peiliping/dev/logs/meepo-source.conf";
         args[1] = "/home/peiliping/dev/logs/meepo-target.conf";
         args[2] = "/home/peiliping/dev/logs/meepo.conf";
-        //
+        // Init DataSource
         checkParams(args);
         DataSource source = PropertiesTool.createDataSource(args[0]);
         DataSource target = PropertiesTool.createDataSource(args[1]);
-
+        // Init Config
         Config config = new Config(PropertiesTool.loadFile(args[2]));
         if (config.needAutoInitStartEnd()) {
             config.initStartEnd(BasicDao.autoGetPoint(source, config.getSourceTableName(), config.getPrimaryKeyName()));
@@ -41,16 +44,20 @@ public class Main {
         Pair<List<String>, Map<String, Integer>> ptarget = BasicDao.parserSchema(target, config.getTargetTableName(), config.getTargetColumsNames());
         config.setTargetColumsArray(ptarget.getLeft());
         config.setTargetSchema(ptarget.getRight());
-
+        System.out.println(JSON.toJSONString(config));
+        
+        // Product & Custom
         final RingBuffer<Object[]> BUFFER = new RingBuffer<Object[]>(config.getBufferSize());
         final ThreadPoolExecutor readerPool = new ThreadPoolExecutor(5, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         for (int i = 0; i < config.getReadersNum(); i++) {
-            readerPool.submit(new DefaultMysqlReader(BUFFER, config));
+            readerPool.submit(new DefaultMysqlReader(BUFFER, config, source, i));
         }
-        final ThreadPoolExecutor writerPool = new ThreadPoolExecutor(5, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+        final ThreadPoolExecutor writerPool = new ThreadPoolExecutor(10, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         for (int i = 0; i < config.getWritersNum(); i++) {
-            writerPool.submit(new DefaultMysqlWriter(BUFFER, config));
+            writerPool.submit(new DefaultMysqlWriter(BUFFER, config, target, i));
         }
+        System.out.println("==start===" + new Date());
+        // END
         checkAlive();
     }
 

@@ -53,10 +53,10 @@ public class Config {
     private int                  bufferSize;
     @Setter
     @Getter
-    private int                  readersNum = 1;
+    private int                  readersNum;
     @Setter
     @Getter
-    private int                  writersNum = 6;
+    private int                  writersNum;
 
     public Config(Properties ps) {
         this.sourceTableName = ps.getProperty("sourcetablename");
@@ -68,6 +68,8 @@ public class Config {
         this.start = new AtomicLong(Long.valueOf(ps.getProperty("start", "-1")));
         this.end = new AtomicLong(Long.valueOf(ps.getProperty("end", "-1")));
         this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
+        this.readersNum = Integer.valueOf(ps.getProperty("readersnum", "1"));
+        this.writersNum = Integer.valueOf(ps.getProperty("writersnum", "1"));
     }
 
     public void initStartEnd(Pair<Long, Long> ps) {

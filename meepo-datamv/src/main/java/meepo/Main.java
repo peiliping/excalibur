@@ -25,10 +25,10 @@ public class Main {
 
     public static void main(String[] args) {
         // TEST
-        args = new String[3];
-        args[0] = "/home/peiliping/dev/logs/meepo-source.conf";
-        args[1] = "/home/peiliping/dev/logs/meepo-target.conf";
-        args[2] = "/home/peiliping/dev/logs/meepo.conf";
+//        args = new String[3];
+//        args[0] = "/home/peiliping/dev/logs/meepo-source.conf";
+//        args[1] = "/home/peiliping/dev/logs/meepo-source.conf";
+//        args[2] = "/home/peiliping/dev/logs/meepo.conf";
         // Init DataSource
         checkParams(args);
         DataSource source = PropertiesTool.createDataSource(args[0]);

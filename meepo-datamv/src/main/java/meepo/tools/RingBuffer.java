@@ -45,6 +45,7 @@ public class RingBuffer<E> {
         for (;;) {
             Integer cur = WP.get();
             if (checkFull(cur)) {
+                LOG.debug("full");
                 if (mode == Mode.MODE_SKIP) {
                     return;
                 }
@@ -68,6 +69,7 @@ public class RingBuffer<E> {
         for (;;) {
             Integer cur = RP.get();
             if (checkEmpty(cur)) {
+                LOG.debug("empty");
                 if (mode == Mode.MODE_SKIP) {
                     return null;
                 }

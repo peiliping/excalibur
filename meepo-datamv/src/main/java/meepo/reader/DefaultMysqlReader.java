@@ -17,18 +17,15 @@ public class DefaultMysqlReader implements Runnable {
 
     private final Config               config;
 
-    private final Integer              index;
-
     private final DataSource           source;
 
     private volatile long              currentPos = 0;
 
     private String                     Q_SQL;
 
-    public DefaultMysqlReader(RingBuffer<Object[]> buffer, Config config, DataSource source, int index) {
+    public DefaultMysqlReader(RingBuffer<Object[]> buffer, Config config, DataSource source) {
         this.buffer = buffer;
         this.config = config;
-        this.index = index;
         this.source = source;
         Q_SQL = buildSQL();
     }
@@ -45,7 +42,7 @@ public class DefaultMysqlReader implements Runnable {
 
     private void updateCurrentPos() {
         long l = Math.max(config.getStart().get(), currentPos);
-        currentPos = l + index * config.getStepSize() + config.getStepSize();
+        currentPos = l + config.getStepSize();
     }
 
     private String buildSQL() {

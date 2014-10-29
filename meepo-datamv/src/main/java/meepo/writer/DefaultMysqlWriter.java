@@ -3,7 +3,6 @@ package meepo.writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -18,8 +17,6 @@ public class DefaultMysqlWriter implements Runnable {
 
     private final Config               config;
 
-    private final Integer              index;
-
     private final DataSource           target;
 
     private String                     SQL;
@@ -27,7 +24,6 @@ public class DefaultMysqlWriter implements Runnable {
     public DefaultMysqlWriter(RingBuffer<Object[]> buffer, Config config, DataSource target, Integer index) {
         this.buffer = buffer;
         this.config = config;
-        this.index = index;
         this.target = target;
         this.SQL = buildSQL();
     }

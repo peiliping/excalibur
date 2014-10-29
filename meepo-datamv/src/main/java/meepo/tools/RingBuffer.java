@@ -33,19 +33,22 @@ public class RingBuffer<E> {
         this(size, 10);
     }
 
-    public boolean checkFull(Integer w) {
+    private boolean checkFull(Integer w) {
         return mod(w) == RP.get();
     }
 
-    public boolean checkEmpty(Integer r) {
+    private boolean checkEmpty(Integer r) {
         return WP.get().equals(r);
+    }
+
+    public int curSize() {
+        return (WP.get() + size - RP.get()) % size;
     }
 
     public void add(E e, int mode) {
         for (;;) {
             Integer cur = WP.get();
             if (checkFull(cur)) {
-                LOG.debug("full");
                 if (mode == Mode.MODE_SKIP) {
                     return;
                 }
@@ -69,7 +72,6 @@ public class RingBuffer<E> {
         for (;;) {
             Integer cur = RP.get();
             if (checkEmpty(cur)) {
-                LOG.debug("empty");
                 if (mode == Mode.MODE_SKIP) {
                     return null;
                 }
@@ -117,6 +119,7 @@ public class RingBuffer<E> {
         try {
             Thread.sleep(blocktime);
         } catch (InterruptedException e) {
+            LOG.error("RingBuffer Block:", e);
         }
     }
 

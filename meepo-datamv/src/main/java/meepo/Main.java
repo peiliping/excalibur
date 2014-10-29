@@ -24,11 +24,6 @@ public class Main {
     public static volatile boolean FINISHED = false;
 
     public static void main(String[] args) {
-        // TEST
-//        args = new String[3];
-//        args[0] = "/home/peiliping/dev/logs/meepo-source.conf";
-//        args[1] = "/home/peiliping/dev/logs/meepo-source.conf";
-//        args[2] = "/home/peiliping/dev/logs/meepo.conf";
         // Init DataSource
         checkParams(args);
         DataSource source = PropertiesTool.createDataSource(args[0]);
@@ -45,13 +40,11 @@ public class Main {
         config.setTargetColumsArray(ptarget.getLeft());
         config.setTargetSchema(ptarget.getRight());
         System.out.println(JSON.toJSONString(config));
-        
+
         // Product & Custom
         final RingBuffer<Object[]> BUFFER = new RingBuffer<Object[]>(config.getBufferSize());
         final ThreadPoolExecutor readerPool = new ThreadPoolExecutor(5, 10, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-        for (int i = 0; i < config.getReadersNum(); i++) {
-            readerPool.submit(new DefaultMysqlReader(BUFFER, config, source, i));
-        }
+        readerPool.submit(new DefaultMysqlReader(BUFFER, config, source));
         final ThreadPoolExecutor writerPool = new ThreadPoolExecutor(10, 50, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         for (int i = 0; i < config.getWritersNum(); i++) {
             writerPool.submit(new DefaultMysqlWriter(BUFFER, config, target, i));
@@ -70,6 +63,7 @@ public class Main {
                 // TODO LOG
             }
         }
+        System.exit(0);
     }
 
     private static void checkParams(String[] args) {

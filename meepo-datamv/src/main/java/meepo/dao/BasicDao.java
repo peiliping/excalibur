@@ -54,6 +54,31 @@ public class BasicDao {
         });
     }
 
+    public static <E> void excuteBatchAdd(DataSource ds, String sql, ICallable<E> cal) {
+        Connection c = null;
+        PreparedStatement p = null;
+        try {
+            c = ds.getConnection();
+            c.setAutoCommit(false);
+            p = c.prepareStatement(sql);
+            cal.handleParams(p);
+            p.executeBatch();
+            c.commit();
+        } catch (Exception e) {
+            LOG.error("basicdao.excuteBatchAdd", e);
+            System.out.println(e);
+        } finally {
+            try {
+                if (p != null)
+                    p.close();
+                if (c != null)
+                    c.close();
+            } catch (SQLException e) {
+                LOG.error("basicdao.excuteBatchAdd", e);
+            }
+        }
+    }
+
     public static <E> E excuteQuery(DataSource ds, String sql, ICallable<E> cal) {
         Connection c = null;
         PreparedStatement p = null;

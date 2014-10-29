@@ -1,16 +1,17 @@
 package meepo.reader;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
 import meepo.Config;
+import meepo.dao.BasicDao;
+import meepo.dao.ICallable;
 import meepo.storage.IStorage;
+import meepo.tools.IWorker;
 
-public class DefaultMysqlReader implements Runnable {
+public class DefaultMysqlReader extends IWorker {
 
     private final IStorage<Object[]> buffer;
 
@@ -26,17 +27,17 @@ public class DefaultMysqlReader implements Runnable {
         this.buffer = buffer;
         this.config = config;
         this.source = source;
-        Q_SQL = buildSQL();
+        this.Q_SQL = buildSQL();
     }
 
     @Override
-    public void run() {
-        while (true) {
-            if (currentPos >= config.getEnd().get())
-                break;
-            executeQuery();
-            updateCurrentPos();
+    public void work() {
+        if (currentPos >= config.getEnd().get()) {
+            run = false;
+            return;
         }
+        executeQuery();
+        updateCurrentPos();
     }
 
     private void updateCurrentPos() {
@@ -50,33 +51,24 @@ public class DefaultMysqlReader implements Runnable {
     }
 
     private void executeQuery() {
-        Connection c = null;
-        PreparedStatement p = null;
-        try {
-            c = source.getConnection();
-            p = c.prepareStatement(Q_SQL);
-            p.setLong(1, currentPos);
-            p.setLong(2, Math.min(currentPos + config.getReaderStepSize(), config.getEnd().get()));
-            ResultSet r = p.executeQuery();
-            while (r.next()) {
-                Object[] item = new Object[config.getSourceColumsArray().size()];
-                for (int i = 1; i <= config.getSourceColumsArray().size(); i++) {
-                    item[i - 1] = r.getObject(i);
+        BasicDao.excuteQuery(source, Q_SQL, new ICallable<Object>() {
+            @Override
+            public void handleParams(PreparedStatement p) throws Exception {
+                p.setLong(1, currentPos);
+                p.setLong(2, Math.min(currentPos + config.getReaderStepSize(), config.getEnd().get()));
+            }
+
+            @Override
+            public Object handleResultSet(ResultSet r) throws Exception {
+                while (r.next()) {
+                    Object[] item = new Object[config.getSourceColumsArray().size()];
+                    for (int i = 1; i <= config.getSourceColumsArray().size(); i++) {
+                        item[i - 1] = r.getObject(i);
+                    }
+                    buffer.add(item);
                 }
-                buffer.add(item);
+                return null;
             }
-            r.close();
-        } catch (Exception e) {
-            // TODO LOG
-        } finally {
-            try {
-                if (p != null)
-                    p.close();
-                if (c != null)
-                    c.close();
-            } catch (SQLException e) {
-                // TODO LOG
-            }
-        }
+        });
     }
 }

@@ -60,7 +60,7 @@ public class Config {
     private int                  bufferSize;
     @Setter
     @Getter
-    private int                  readersNum;
+    private int                  readersNum;       // 只能为1
     @Setter
     @Getter
     private int                  writersNum;
@@ -83,7 +83,7 @@ public class Config {
         this.end = ps.getProperty("end") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("end")));
         this.syncMode = Boolean.valueOf(ps.getProperty("syncmode", "false"));
         this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
-        this.readersNum = Integer.valueOf(ps.getProperty("readersnum", "1"));
+        this.readersNum = 1;// Integer.valueOf(ps.getProperty("readersnum", "1"));
         this.writersNum = Integer.valueOf(ps.getProperty("writersnum", "1"));
     }
 

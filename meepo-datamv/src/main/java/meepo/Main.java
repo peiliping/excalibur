@@ -52,7 +52,7 @@ public class Main {
         final ThreadPoolExecutor readerPool =
                 new ThreadPoolExecutor(config.getReadersNum(), config.getReadersNum(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         for (int i = 0; i < config.getReadersNum(); i++) {
-            readerPool.submit(new DefaultMysqlReader(storage, config, source));
+            readerPool.submit(new DefaultMysqlReader(storage, config, source, i));
         }
         final ThreadPoolExecutor writerPool =
                 new ThreadPoolExecutor(config.getWritersNum(), config.getWritersNum(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());

@@ -21,13 +21,13 @@ public class DefaultMysqlReader extends IWorker {
 
     private volatile long            currentPos = 0;
 
-    private String                   Q_SQL;
+    private String                   SQL;
 
-    public DefaultMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source) {
+    public DefaultMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source, int index) {
         this.buffer = buffer;
         this.config = config;
         this.source = source;
-        this.Q_SQL = buildSQL();
+        this.SQL = buildSQL();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class DefaultMysqlReader extends IWorker {
     }
 
     private void executeQuery() {
-        BasicDao.excuteQuery(source, Q_SQL, new ICallable<Object>() {
+        BasicDao.excuteQuery(source, SQL, new ICallable<Object>() {
             @Override
             public void handleParams(PreparedStatement p) throws Exception {
                 p.setLong(1, currentPos);

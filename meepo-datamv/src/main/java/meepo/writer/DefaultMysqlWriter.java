@@ -8,20 +8,19 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import meepo.Config;
-import meepo.tools.RingBuffer;
-import meepo.tools.RingBuffer.Mode;
+import meepo.storage.IStorage;
 
 public class DefaultMysqlWriter implements Runnable {
 
-    private final RingBuffer<Object[]> buffer;
+    private final IStorage<Object[]> buffer;
 
-    private final Config               config;
+    private final Config             config;
 
-    private final DataSource           target;
+    private final DataSource         target;
 
-    private String                     SQL;
+    private String                   SQL;
 
-    public DefaultMysqlWriter(RingBuffer<Object[]> buffer, Config config, DataSource target, Integer index) {
+    public DefaultMysqlWriter(IStorage<Object[]> buffer, Config config, DataSource target) {
         this.buffer = buffer;
         this.config = config;
         this.target = target;
@@ -44,7 +43,7 @@ public class DefaultMysqlWriter implements Runnable {
     }
 
     private List<Object[]> getDatas() {
-        return buffer.get(Mode.MODE_SKIP, config.getStepSize(), 100);
+        return buffer.get(config.getWriterStepSize());
     }
 
     private void executeWrite(List<Object[]> datas) {
@@ -58,7 +57,7 @@ public class DefaultMysqlWriter implements Runnable {
             p = c.prepareStatement(SQL);
             for (Object[] data : datas) {
                 for (int i = 0; i < data.length; i++) {
-                    p.setObject(i + 1, data[i], config.getTargetSchema().get(config.getTargetColumsArray().get(i)));
+                    p.setObject(i + 1, data[i], config.getTargetColumsType().get(config.getTargetColumsArray().get(i)));
                 }
                 p.addBatch();
             }

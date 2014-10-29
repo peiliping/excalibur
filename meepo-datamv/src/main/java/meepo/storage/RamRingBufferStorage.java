@@ -25,7 +25,7 @@ public class RamRingBufferStorage<E> implements IStorage<E> {
 
     @Override
     public List<E> get(int size) {
-        return BUFFER.get(Mode.MODE_BLOCKING, size, 1000);
+        return BUFFER.get(Mode.MODE_BLOCKING, size, 500);
     }
 
     @Override

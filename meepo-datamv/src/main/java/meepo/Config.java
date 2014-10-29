@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class Config {
@@ -23,7 +24,10 @@ public class Config {
     private String               primaryKeyName;
     @Setter
     @Getter
-    private int                  stepSize;
+    private int                  readerStepSize;
+    @Setter
+    @Getter
+    private int                  writerStepSize;
     @Setter
     @Getter
     private String               sourceColumsNames;
@@ -32,22 +36,25 @@ public class Config {
     private String               targetColumsNames;
     @Setter
     @Getter
-    private Map<String, Integer> sourceSchema;
+    private Map<String, Integer> sourceColumsType;
     @Setter
     @Getter
     private List<String>         sourceColumsArray;
     @Setter
     @Getter
-    private Map<String, Integer> targetSchema;
+    private Map<String, Integer> targetColumsType;
     @Setter
     @Getter
     private List<String>         targetColumsArray;
     @Setter
     @Getter
-    private AtomicLong           start;
+    private AtomicLong           start;            // start为实际最小值-1
     @Setter
     @Getter
-    private AtomicLong           end;
+    private AtomicLong           end;              // end为实际最大值
+    @Setter
+    @Getter
+    private boolean              syncMode;
     @Setter
     @Getter
     private int                  bufferSize;
@@ -59,26 +66,34 @@ public class Config {
     private int                  writersNum;
 
     public Config(Properties ps) {
+        // ==================Required Config Item===================
         this.sourceTableName = ps.getProperty("sourcetablename");
         this.targetTableName = ps.getProperty("targettablename");
-        this.primaryKeyName = ps.getProperty("primarykeyname", "id");
-        this.stepSize = Integer.valueOf(ps.getProperty("stepsize", "100"));
         this.sourceColumsNames = ps.getProperty("sourcecolumsnames");
         this.targetColumsNames = ps.getProperty("targetcolumsnames");
-        this.start = new AtomicLong(Long.valueOf(ps.getProperty("start", "-1")));
-        this.end = new AtomicLong(Long.valueOf(ps.getProperty("end", "-1")));
+        Validate.notNull(this.sourceTableName);
+        Validate.notNull(this.targetTableName);
+        Validate.notNull(this.sourceColumsNames);
+        Validate.notNull(this.targetColumsNames);
+        // =========================================================
+        this.primaryKeyName = ps.getProperty("primarykeyname", "id");
+        this.readerStepSize = Integer.valueOf(ps.getProperty("readerstepsize", "100"));
+        this.writerStepSize = Integer.valueOf(ps.getProperty("writerstepsize", "100"));
+        this.start = ps.getProperty("start") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("start")));
+        this.end = ps.getProperty("end") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("end")));
+        this.syncMode = Boolean.valueOf(ps.getProperty("syncmode", "false"));
         this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
         this.readersNum = Integer.valueOf(ps.getProperty("readersnum", "1"));
         this.writersNum = Integer.valueOf(ps.getProperty("writersnum", "1"));
     }
 
     public void initStartEnd(Pair<Long, Long> ps) {
-        this.start.set(ps.getLeft());
-        this.end.set(ps.getRight());
+        this.start = new AtomicLong(ps.getLeft());
+        this.end = new AtomicLong(ps.getRight());
     }
 
     public boolean needAutoInitStartEnd() {
-        return start.get() < 0 && end.get() < 0;
+        return start == null;
     }
 
 }

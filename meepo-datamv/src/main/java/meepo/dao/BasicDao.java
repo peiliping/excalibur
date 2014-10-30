@@ -54,7 +54,7 @@ public class BasicDao {
         });
     }
 
-    public static <E> void excuteBatchAdd(DataSource ds, String sql, ICallable<E> cal) {
+    public static <E> boolean excuteBatchAdd(DataSource ds, String sql, ICallable<E> cal) {
         Connection c = null;
         PreparedStatement p = null;
         try {
@@ -63,10 +63,11 @@ public class BasicDao {
             p = c.prepareStatement(sql);
             cal.handleParams(p);
             p.executeBatch();
-            c.commit();
+            c.commit();  
+            return true;
         } catch (Exception e) {
             LOG.error("basicdao.excuteBatchAdd", e);
-            System.out.println(e);
+            return false ;
         } finally {
             try {
                 if (p != null)

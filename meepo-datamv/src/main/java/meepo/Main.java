@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import meepo.dao.BasicDao;
 import meepo.reader.DefaultMysqlReader;
+import meepo.reader.SyncMysqlReader;
 import meepo.storage.IStorage;
 import meepo.storage.RamRingBufferStorage;
 import meepo.tools.PropertiesTool;
@@ -51,8 +52,12 @@ public class Main {
         final IStorage<Object[]> storage = new RamRingBufferStorage<Object[]>(config.getBufferSize());
         final ThreadPoolExecutor readerPool =
                 new ThreadPoolExecutor(config.getReadersNum(), config.getReadersNum(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
-        for (int i = 0; i < config.getReadersNum(); i++) {
-            readerPool.submit(new DefaultMysqlReader(storage, config, source, i));
+        if (config.isSyncMode()) {
+            readerPool.submit(new SyncMysqlReader(storage, config, source));
+        } else {
+            for (int i = 0; i < config.getReadersNum(); i++) {
+                readerPool.submit(new DefaultMysqlReader(storage, config, source, i));
+            }
         }
         final ThreadPoolExecutor writerPool =
                 new ThreadPoolExecutor(config.getWritersNum(), config.getWritersNum(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
@@ -61,10 +66,10 @@ public class Main {
         }
         LOG.error("===Init Finished ");
         // END
-        checkAlive(storage);
+        checkAlive(storage, config);
     }
 
-    private static void checkAlive(IStorage<Object[]> storage) {
+    private static void checkAlive(IStorage<Object[]> storage, Config config) {
         while (!FINISHED) {
             try {
                 Thread.sleep(1000 * 60);

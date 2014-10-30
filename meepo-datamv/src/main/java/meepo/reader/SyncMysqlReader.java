@@ -5,13 +5,15 @@ import java.sql.ResultSet;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import meepo.Config;
 import meepo.dao.BasicDao;
 import meepo.dao.ICallable;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
 
-public class DefaultMysqlReader extends IWorker {
+public class SyncMysqlReader extends IWorker {
 
     private final IStorage<Object[]> buffer;
 
@@ -23,29 +25,31 @@ public class DefaultMysqlReader extends IWorker {
 
     private String                   SQL;
 
-    private final int                index;
-
-    public DefaultMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source, int index) {
+    public SyncMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source) {
         this.buffer = buffer;
         this.config = config;
         this.source = source;
-        this.index = index;
         this.SQL = buildSQL();
+        this.currentPos = config.getStart().get();
     }
 
     @Override
     public void work() {
-        if (currentPos >= config.getEnd().get()) {
-            run = false;
-            return;
+        Pair<Long, Long> p = BasicDao.autoGetStartEndPoint(source, config.getSourceTableName(), config.getPrimaryKeyName());
+        long tmpend = p.getRight();
+        while (currentPos < tmpend) {
+            if (tmpend - currentPos >= config.getReaderStepSize()) {
+                executeQuery(currentPos, currentPos + config.getReaderStepSize());
+                currentPos = currentPos + config.getReaderStepSize();
+            } else {
+                executeQuery(currentPos, tmpend);
+                currentPos = tmpend;
+            }
         }
-        executeQuery();
-        updateCurrentPos();
-    }
-
-    private void updateCurrentPos() {
-        long l = Math.max(config.getStart().get(), currentPos);
-        currentPos = l + config.getReaderStepSize() + config.getReaderStepSize() * index;
+        try {
+            Thread.sleep(config.getSyncDelay());
+        } catch (InterruptedException e) {
+        }
     }
 
     private String buildSQL() {
@@ -53,12 +57,12 @@ public class DefaultMysqlReader extends IWorker {
                 + config.getPrimaryKeyName() + " <= ? ";
     }
 
-    private void executeQuery() {
+    private void executeQuery(final long start, final long end) {
         BasicDao.excuteQuery(source, SQL, new ICallable<Object>() {
             @Override
             public void handleParams(PreparedStatement p) throws Exception {
-                p.setLong(1, Math.max(config.getStart().get(), currentPos));
-                p.setLong(2, Math.min(currentPos + config.getReaderStepSize() * index + config.getReaderStepSize(), config.getEnd().get()));
+                p.setLong(1, start);
+                p.setLong(2, end);
             }
 
             @Override

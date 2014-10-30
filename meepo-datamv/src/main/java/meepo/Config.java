@@ -51,16 +51,19 @@ public class Config {
     private AtomicLong           start;            // start为实际最小值-1
     @Setter
     @Getter
-    private AtomicLong           end;              // end为实际最大值
+    private AtomicLong           end;              // end为实际最大值 如果val = -1则是sync模式
     @Setter
     @Getter
     private boolean              syncMode;
     @Setter
     @Getter
+    private long                 syncDelay;
+    @Setter
+    @Getter
     private int                  bufferSize;
     @Setter
     @Getter
-    private int                  readersNum;       // 只能为1
+    private int                  readersNum;
     @Setter
     @Getter
     private int                  writersNum;
@@ -82,18 +85,28 @@ public class Config {
         this.start = ps.getProperty("start") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("start")));
         this.end = ps.getProperty("end") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("end")));
         this.syncMode = Boolean.valueOf(ps.getProperty("syncmode", "false"));
+        if (this.syncMode)
+            this.end = new AtomicLong(-1);
+        this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
         this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
-        this.readersNum = 1;// Integer.valueOf(ps.getProperty("readersnum", "1"));
+        this.readersNum = Integer.valueOf(ps.getProperty("readersnum", "1"));
         this.writersNum = Integer.valueOf(ps.getProperty("writersnum", "1"));
     }
 
     public void initStartEnd(Pair<Long, Long> ps) {
-        this.start = new AtomicLong(ps.getLeft());
-        this.end = new AtomicLong(ps.getRight());
+        if (syncMode) {
+            if (this.start == null)
+                this.start = new AtomicLong(ps.getRight());
+        } else {
+            if (this.start == null)
+                this.start = new AtomicLong(ps.getLeft());
+            if (this.end == null)
+                this.end = new AtomicLong(ps.getRight());
+        }
     }
 
     public boolean needAutoInitStartEnd() {
-        return start == null;
+        return start == null || end == null;
     }
 
 }

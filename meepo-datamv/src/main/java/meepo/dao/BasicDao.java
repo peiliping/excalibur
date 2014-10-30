@@ -62,16 +62,17 @@ public class BasicDao {
             c.setAutoCommit(false);
             p = c.prepareStatement(sql);
             cal.handleParams(p);
+            if (p.isClosed()) {
+                return excuteBatchAdd(ds, sql, cal);
+            }
             p.executeBatch();
-            c.commit();  
+            c.commit();
             return true;
         } catch (Exception e) {
             LOG.error("basicdao.excuteBatchAdd", e);
-            return false ;
+            return false;
         } finally {
             try {
-                if (p != null)
-                    p.close();
                 if (c != null)
                     c.close();
             } catch (SQLException e) {

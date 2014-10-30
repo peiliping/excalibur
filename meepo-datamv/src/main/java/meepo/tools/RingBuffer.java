@@ -77,6 +77,7 @@ public class RingBuffer<E> {
                 }
                 if (mode == Mode.MODE_BLOCKING) {
                     block();
+                    return get(Mode.MODE_SKIP);
                 }
             } else {
                 Object o = RING[cur];

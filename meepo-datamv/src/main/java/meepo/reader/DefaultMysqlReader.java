@@ -25,6 +25,8 @@ public class DefaultMysqlReader extends IWorker {
 
     private final int                index;
 
+    private volatile boolean         skip       = false;
+
     public DefaultMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source, int index) {
         this.buffer = buffer;
         this.config = config;
@@ -44,8 +46,12 @@ public class DefaultMysqlReader extends IWorker {
     }
 
     private void updateCurrentPos() {
+        if (skip) {
+            skip = false;
+            return;
+        }
         long l = Math.max(config.getStart().get(), currentPos);
-        currentPos = l + config.getReaderStepSize() + config.getReaderStepSize() * index;
+        currentPos = Math.min(l + config.getReaderStepSize() + config.getReaderStepSize() * index, config.getEnd().get());
     }
 
     private String buildSQL() {
@@ -54,7 +60,7 @@ public class DefaultMysqlReader extends IWorker {
     }
 
     private void executeQuery() {
-        BasicDao.excuteQuery(source, SQL, new ICallable<Object>() {
+        Boolean r = BasicDao.excuteQuery(source, SQL, new ICallable<Boolean>() {
             @Override
             public void handleParams(PreparedStatement p) throws Exception {
                 p.setLong(1, Math.max(config.getStart().get(), currentPos));
@@ -62,7 +68,7 @@ public class DefaultMysqlReader extends IWorker {
             }
 
             @Override
-            public Object handleResultSet(ResultSet r) throws Exception {
+            public Boolean handleResultSet(ResultSet r) throws Exception {
                 while (r.next()) {
                     Object[] item = new Object[config.getSourceColumsArray().size()];
                     for (int i = 1; i <= config.getSourceColumsArray().size(); i++) {
@@ -70,8 +76,11 @@ public class DefaultMysqlReader extends IWorker {
                     }
                     buffer.add(item);
                 }
-                return null;
+                return true;
             }
         });
+        if (r == null) {
+            this.skip = true;
+        }
     }
 }

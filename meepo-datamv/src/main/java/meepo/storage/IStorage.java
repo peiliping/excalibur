@@ -11,4 +11,6 @@ public interface IStorage<E> {
     public List<E> get(int size);
 
     public int getCurrentSize();
+
+    public void addPlugin(IPlugin<E> p);
 }

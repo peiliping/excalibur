@@ -25,6 +25,8 @@ public class SyncMysqlReader extends IWorker {
 
     private String                   SQL;
 
+    private volatile boolean         skip       = false;
+
     public SyncMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source) {
         this.buffer = buffer;
         this.config = config;
@@ -40,10 +42,18 @@ public class SyncMysqlReader extends IWorker {
         while (currentPos < tmpend) {
             if (tmpend - currentPos >= config.getReaderStepSize()) {
                 executeQuery(currentPos, currentPos + config.getReaderStepSize());
-                currentPos = currentPos + config.getReaderStepSize();
+                if (skip) {
+                    skip = false;
+                } else {
+                    currentPos = currentPos + config.getReaderStepSize();
+                }
             } else {
                 executeQuery(currentPos, tmpend);
-                currentPos = tmpend;
+                if (skip) {
+                    skip = false;
+                } else {
+                    currentPos = tmpend;
+                }
             }
         }
         try {
@@ -58,7 +68,7 @@ public class SyncMysqlReader extends IWorker {
     }
 
     private void executeQuery(final long start, final long end) {
-        BasicDao.excuteQuery(source, SQL, new ICallable<Object>() {
+        Boolean r = BasicDao.excuteQuery(source, SQL, new ICallable<Boolean>() {
             @Override
             public void handleParams(PreparedStatement p) throws Exception {
                 p.setLong(1, start);
@@ -66,7 +76,7 @@ public class SyncMysqlReader extends IWorker {
             }
 
             @Override
-            public Object handleResultSet(ResultSet r) throws Exception {
+            public Boolean handleResultSet(ResultSet r) throws Exception {
                 while (r.next()) {
                     Object[] item = new Object[config.getSourceColumsArray().size()];
                     for (int i = 1; i <= config.getSourceColumsArray().size(); i++) {
@@ -74,8 +84,11 @@ public class SyncMysqlReader extends IWorker {
                     }
                     buffer.add(item);
                 }
-                return null;
+                return true;
             }
         });
+        if (r == null) {
+            skip = true;
+        }
     }
 }

@@ -80,17 +80,19 @@ public class Config {
         Validate.notNull(this.targetColumsNames);
         // =========================================================
         this.primaryKeyName = ps.getProperty("primarykeyname", "id");
+        this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
         this.readerStepSize = Integer.valueOf(ps.getProperty("readerstepsize", "100"));
         this.writerStepSize = Integer.valueOf(ps.getProperty("writerstepsize", "100"));
         this.start = ps.getProperty("start") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("start")));
         this.end = ps.getProperty("end") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("end")));
-        this.syncMode = Boolean.valueOf(ps.getProperty("syncmode", "false"));
-        if (this.syncMode)
-            this.end = new AtomicLong(-1);
-        this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
-        this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
         this.readersNum = Integer.valueOf(ps.getProperty("readersnum", "1"));
         this.writersNum = Integer.valueOf(ps.getProperty("writersnum", "1"));
+        this.syncMode = Boolean.valueOf(ps.getProperty("syncmode", "false"));
+        if (this.syncMode) {
+            this.readersNum = 1;
+            this.end = new AtomicLong(-1);
+        }
+        this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
     }
 
     public void initStartEnd(Pair<Long, Long> ps) {

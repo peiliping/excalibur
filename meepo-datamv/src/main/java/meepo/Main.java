@@ -66,14 +66,16 @@ public class Main {
         }
         LOG.error("===Init Finished ");
         // END
-        checkAlive(storage, config);
+        checkAlive(storage, readerPool, writerPool, config);
     }
 
-    private static void checkAlive(IStorage<Object[]> storage, Config config) {
+    private static void checkAlive(IStorage<Object[]> storage, ThreadPoolExecutor readerPool, ThreadPoolExecutor writerPool, Config config) {
         while (!FINISHED) {
             try {
                 Thread.sleep(1000 * 60);
                 LOG.warn("storage size :" + storage.getCurrentSize());
+                LOG.warn("readerPool size :" + readerPool.getActiveCount());
+                LOG.warn("writerPool size :" + writerPool.getActiveCount());
             } catch (InterruptedException e) {
                 LOG.error("checkalive : ", e);
             }

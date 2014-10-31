@@ -33,6 +33,7 @@ public class DefaultMysqlReader extends IWorker {
         this.source = source;
         this.index = index;
         this.SQL = buildSQL();
+        this.currentPos = currentPos + index * config.getReaderStepSize();
     }
 
     @Override

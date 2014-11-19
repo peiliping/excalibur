@@ -25,6 +25,8 @@ public class CmdExecuter {
         CmdResult cr = new CmdResult();
         try {
             cr.contents = exec(cmd);
+            if (cr.contents.size() == 0)
+                cr.success = false;
         } catch (IOException e) {
             cr.success = false;
             cr.errorReason = e.getMessage();

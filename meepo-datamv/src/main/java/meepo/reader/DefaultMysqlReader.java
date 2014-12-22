@@ -25,11 +25,14 @@ public class DefaultMysqlReader extends IWorker {
 
     private volatile boolean         skip       = false;
 
+    private int                      index      = 0;
+
     public DefaultMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source, int index) {
         this.buffer = buffer;
         this.config = config;
         this.source = source;
         this.SQL = buildSQL();
+        this.index = index;
         this.currentPos = currentPos + index * config.getReaderStepSize();
     }
 
@@ -49,7 +52,7 @@ public class DefaultMysqlReader extends IWorker {
             return;
         }
         long l = Math.max(config.getStart().get(), currentPos);
-        currentPos = Math.min(l + config.getReaderStepSize() + config.getReaderStepSize() * config.getReadersNum(), config.getEnd().get());
+        currentPos = Math.min(l + config.getReaderStepSize() + config.getReaderStepSize() * index, config.getEnd().get());
     }
 
     private String buildSQL() {

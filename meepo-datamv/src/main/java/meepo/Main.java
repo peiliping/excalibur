@@ -16,6 +16,7 @@ import meepo.storage.IStorage;
 import meepo.storage.RamRingBufferStorage;
 import meepo.tools.PropertiesTool;
 import meepo.writer.DefaultMysqlWriter;
+import meepo.writer.LoadDataMysqlWriter;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ public class Main {
 
     public static volatile boolean FINISHED = false;
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         checkParams(args);
         // Init DataSource
         DataSource source = PropertiesTool.createDataSource(args[0]);
@@ -62,7 +63,7 @@ public class Main {
         final ThreadPoolExecutor writerPool =
                 new ThreadPoolExecutor(config.getWritersNum(), config.getWritersNum(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         for (int i = 0; i < config.getWritersNum(); i++) {
-            writerPool.submit(new DefaultMysqlWriter(storage, config, target));
+            writerPool.submit(config.isInsertOrLoadData() ? new DefaultMysqlWriter(storage, config, target) : new LoadDataMysqlWriter(storage, config, target));
         }
         LOG.error("===Init Finished ");
         // END

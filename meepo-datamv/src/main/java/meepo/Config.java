@@ -67,6 +67,9 @@ public class Config {
     @Setter
     @Getter
     private int                  writersNum;
+    @Setter
+    @Getter
+    private boolean              insertOrLoadData;
 
     public Config(Properties ps) {
         // ==================Required Config Item===================
@@ -93,6 +96,7 @@ public class Config {
             this.end = new AtomicLong(-1);
         }
         this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
+        this.insertOrLoadData = Boolean.valueOf(ps.getProperty("insertorloaddata", "true"));
     }
 
     public void initStartEnd(Pair<Long, Long> ps) {

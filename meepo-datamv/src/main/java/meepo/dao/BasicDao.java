@@ -1,5 +1,6 @@
 package meepo.dao;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -79,6 +80,33 @@ public class BasicDao {
                 LOG.error("basicdao.excuteBatchAdd", e);
             }
         }
+    }
+
+    public static <E> boolean excuteLoadData(DataSource ds, String sql, InputStream data) {
+        Connection c = null;
+        PreparedStatement p = null;
+        int result = 0;
+        try {
+            c = ds.getConnection();
+            p = c.prepareStatement(sql);
+            if (p.isWrapperFor(com.mysql.jdbc.Statement.class)) {
+                com.mysql.jdbc.PreparedStatement mysqlStatement = p.unwrap(com.mysql.jdbc.PreparedStatement.class);
+                mysqlStatement.setLocalInfileInputStream(data);
+                result = mysqlStatement.executeUpdate();
+            }
+        } catch (Exception e) {
+            LOG.error("basicdao.excuteLoadData", e);
+        } finally {
+            try {
+                if (p != null)
+                    p.close();
+                if (c != null)
+                    c.close();
+            } catch (SQLException e) {
+                LOG.error("basicdao.excutequery", e);
+            }
+        }
+        return result > 0;
     }
 
     public static <E> E excuteQuery(DataSource ds, String sql, ICallable<E> cal) {

@@ -27,6 +27,8 @@ public class SyncMysqlReader extends IWorker {
 
     private volatile boolean         skip       = false;
 
+    private long                     startTime  = System.currentTimeMillis();
+
     public SyncMysqlReader(IStorage<Object[]> buffer, Config config, DataSource source) {
         this.buffer = buffer;
         this.config = config;
@@ -58,8 +60,12 @@ public class SyncMysqlReader extends IWorker {
         }
         try {
             Thread.sleep(config.getSyncDelay());
+            if (config.isSyncSuicide() && System.currentTimeMillis() - startTime > 90000000) {
+                super.run = false;
+            }
         } catch (InterruptedException e) {
         }
+
     }
 
     private String buildSQL() {

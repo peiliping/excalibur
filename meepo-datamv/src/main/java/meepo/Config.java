@@ -60,6 +60,9 @@ public class Config {
     private long                 syncDelay;
     @Setter
     @Getter
+    private boolean              syncSuicide;
+    @Setter
+    @Getter
     private int                  bufferSize;
     @Setter
     @Getter
@@ -96,6 +99,7 @@ public class Config {
             this.end = new AtomicLong(-1);
         }
         this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
+        this.syncSuicide = Boolean.valueOf(ps.getProperty("syncsuicide", "false"));
         this.insertOrLoadData = Boolean.valueOf(ps.getProperty("insertorloaddata", "true"));
     }
 

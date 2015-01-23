@@ -77,6 +77,9 @@ public class Main {
                 LOG.warn("storage size :" + storage.getCurrentSize());
                 LOG.warn("readerPool size :" + readerPool.getActiveCount());
                 LOG.warn("writerPool size :" + writerPool.getActiveCount());
+                if (readerPool.getActiveCount() == 0 && storage.getCurrentSize() == 0) {
+                    FINISHED = true;
+                }
             } catch (InterruptedException e) {
                 LOG.error("checkalive : ", e);
             }

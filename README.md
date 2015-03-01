@@ -8,4 +8,8 @@ Java工具集合
 
 2) mirana-common   小工集
 
-3)
+3) lina-hive       自定义hive函数工具
+
+4) meepo-datamv    mysql数据迁移工具
+
+5) 

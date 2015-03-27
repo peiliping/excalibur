@@ -73,6 +73,9 @@ public class Config {
     @Setter
     @Getter
     private boolean              insertOrLoadData;
+    @Setter
+    @Getter
+    private String               pluginName;
 
     public Config(Properties ps) {
         // ==================Required Config Item===================
@@ -101,6 +104,7 @@ public class Config {
         this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
         this.syncSuicide = Boolean.valueOf(ps.getProperty("syncsuicide", "false"));
         this.insertOrLoadData = Boolean.valueOf(ps.getProperty("insertorloaddata", "true"));
+        this.pluginName = String.valueOf(ps.getProperty("pluginName", ""));
     }
 
     public void initStartEnd(Pair<Long, Long> ps) {

@@ -12,12 +12,15 @@ import javax.sql.DataSource;
 import meepo.dao.BasicDao;
 import meepo.reader.DefaultMysqlReader;
 import meepo.reader.SyncMysqlReader;
+import meepo.storage.IPlugin;
 import meepo.storage.IStorage;
 import meepo.storage.RamRingBufferStorage;
 import meepo.tools.PropertiesTool;
 import meepo.writer.DefaultMysqlWriter;
 import meepo.writer.LoadDataMysqlWriter;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,7 @@ public class Main {
 
     public static volatile boolean FINISHED = false;
 
+    @SuppressWarnings("unchecked")
     public static void main(String... args) {
         checkParams(args);
         // Init DataSource
@@ -51,6 +55,14 @@ public class Main {
         // Product & Custom
         LOG.error("==Start=== " + new Date());
         final IStorage<Object[]> storage = new RamRingBufferStorage<Object[]>(config.getBufferSize());
+        if (StringUtils.isNotBlank(config.getPluginName())) {
+            try {
+                storage.addPlugin((IPlugin<Object[]>) Class.forName(config.getPluginName()).newInstance());
+            } catch (Exception e) {
+                LOG.error("==Init Plugin Failed=== " + config.getPluginName());
+                Validate.isTrue(false);
+            }
+        }
         final ThreadPoolExecutor readerPool =
                 new ThreadPoolExecutor(config.getReadersNum(), config.getReadersNum(), 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         if (config.isSyncMode()) {

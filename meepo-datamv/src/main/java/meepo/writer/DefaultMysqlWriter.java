@@ -46,7 +46,7 @@ public class DefaultMysqlWriter extends IWorker {
         final List<Object[]> datas = buffer.get(config.getWriterStepSize());
         if (datas.isEmpty())
             return;
-        BasicDao.excuteBatchAdd(target, SQL, new ICallable<Object>() {
+        boolean s = BasicDao.excuteBatchAdd(target, SQL, new ICallable<Object>() {
             @Override
             public Object handleResultSet(ResultSet r) throws Exception {
                 return null;
@@ -62,5 +62,24 @@ public class DefaultMysqlWriter extends IWorker {
                 }
             }
         });
+
+        if (!s) {
+            for (final Object[] o : datas) {
+                BasicDao.excuteBatchAdd(target, SQL, new ICallable<Object>() {
+                    @Override
+                    public Object handleResultSet(ResultSet r) throws Exception {
+                        return null;
+                    }
+
+                    @Override
+                    public void handleParams(PreparedStatement p) throws Exception {
+                        for (int i = 0; i < o.length; i++) {
+                            p.setObject(i + 1, o[i], config.getTargetColumsType().get(config.getTargetColumsArray().get(i)));
+                        }
+                        p.addBatch();
+                    }
+                });
+            }
+        }
     }
 }

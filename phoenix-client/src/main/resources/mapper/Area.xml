@@ -20,4 +20,12 @@
 			<if test="parentId != null"> and parent_id = #{parentId}</if>
 		</where>
 	</select>
+
+	<select id="metricTest" parameterType="java.util.Map"
+		resultType="data">
+		SELECT metric_id
+		FROM metric_data_entity
+		where data_version=0 and application_id=883 and time_scope=#{timesc} and
+		metric_type_id=17840091 group by metric_id
+	</select>
 </mapper>

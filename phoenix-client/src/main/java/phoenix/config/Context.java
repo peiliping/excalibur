@@ -1,9 +1,5 @@
 package phoenix.config;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -128,12 +124,5 @@ public class Context {
     @Override
     public String toString() {
         return "{ parameters:" + parameters + " }";
-    }
-
-    public static Context buildContextByFilePath(String p) throws IOException {
-        InputStream in = new BufferedInputStream(new FileInputStream(p));
-        Properties properties = new Properties();
-        properties.load(in);
-        return new Context(properties);
     }
 }

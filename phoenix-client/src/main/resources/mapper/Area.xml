@@ -1,31 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="phoenix.dao.AreaDao">
+<mapper namespace="phoenix.dao.DualDao">
 
-	<sql id="areaColumns">
-		id,country_code,country_name,region_code,region_name,parent_id,gmt_create_time,gmt_modify_time,cc_lock,attributes
-	</sql>
-
-	<select id="queryAreaList" parameterType="java.util.Map"
-		resultType="area">
-		SELECT
-		<include refid="areaColumns" />
-		FROM area
-		<where>
-			<if test="id != null"> id = #{id}</if>
-			<if test="countryCode != null"> and country_code = #{countryCode}</if>
-			<if test="countryName != null"> and country_name = #{countryName}</if>
-			<if test="regionCode != null"> and region_code = #{regionCode}</if>
-			<if test="regionName != null"> and region_name = #{regionName}</if>
-			<if test="parentId != null"> and parent_id = #{parentId}</if>
-		</where>
+	<select id="query" parameterType="java.util.Map" resultType="string">
+		SELECT 'x' FROM dual
 	</select>
 
-	<select id="metricTest" parameterType="java.util.Map"
-		resultType="data">
-		SELECT metric_id
-		FROM metric_data_entity
-		where data_version=0 and application_id=883 and time_scope=#{timesc} and
-		metric_type_id=17840091 group by metric_id
-	</select>
 </mapper>

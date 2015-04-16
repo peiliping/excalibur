@@ -11,6 +11,8 @@
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
+	<bean id="dataSource" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
+
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath*:mapper/*.xml" />
@@ -22,6 +24,5 @@
 		<property name="basePackage" value="phoenix.dao" />
 	</bean>
 
-	<bean id="dataSource" class="phoenix.datasource.DataSourceProxy" init-method="init" destroy-method="close"/>
-	
+
 </beans>

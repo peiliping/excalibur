@@ -129,7 +129,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.13</version>
 		</dependency>
 		<!-- Other -->
 		<dependency>
@@ -161,11 +161,6 @@
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.phoenix</groupId>
-			<artifactId>phoenix-core</artifactId>
-			<version>4.3.0</version>
 		</dependency>
 	</dependencies>
 </project>

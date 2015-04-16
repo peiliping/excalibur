@@ -23,6 +23,7 @@ public class DataSourceProxy extends LazyConnectionDataSourceProxy {
         } catch (Exception e) {
             Validate.isTrue(false, "DataSource Init Error");
         }
+        super.afterPropertiesSet();
     }
 
     public void close() {

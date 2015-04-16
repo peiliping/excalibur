@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="LOG_HOME" value="/home/peiliping/dev/logs" />
+	
+	<appender name="main" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<file>${LOG_HOME}/phoenix.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/phoenix.log-%d{yyyy-MM-dd}</FileNamePattern>
+			<MaxHistory>7</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{HH:mm:ss.SSS} %class %-5level %msg%n</pattern><!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+		</layout>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="main" />
+	</root>
+</configuration> 

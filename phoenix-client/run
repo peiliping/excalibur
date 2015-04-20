@@ -1,0 +1,1 @@
+java -Djava.ext.dirs=target/lib:  -jar target/phoenix-client-1.0-SNAPSHOT.jar /home/peiliping/dev/logs/phoenix.conf

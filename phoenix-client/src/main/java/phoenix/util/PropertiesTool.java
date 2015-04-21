@@ -12,6 +12,7 @@ public class PropertiesTool {
         InputStream in = new BufferedInputStream(new FileInputStream(configPath));
         Properties properties = new Properties();
         properties.load(in);
+        in.close();
         return properties;
     }
 

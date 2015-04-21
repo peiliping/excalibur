@@ -20,15 +20,15 @@ import com.google.common.base.Preconditions;
 
 public class App {
 
-    private static final Logger LOG = LoggerFactory.getLogger("abc");
+    private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) throws Exception {
-        
+
         Preconditions.checkNotNull(args, "Missing Params");
         Config.setContext(new Context(PropertiesTool.loadFile(args[0])));
 
         initLogBack(Config.getContext().getString(Constants.CONF_LOGCONFIG_ITEM));
-        Config.setApplicationContext(new ClassPathXmlApplicationContext("classpath*:spring.xml"));
+        Config.setApplicationContext(new ClassPathXmlApplicationContext(Constants.CONF_SPRING_ITEM));
 
         // test--------
         DualDao a = Config.getApplicationContext().getBean(DualDao.class);

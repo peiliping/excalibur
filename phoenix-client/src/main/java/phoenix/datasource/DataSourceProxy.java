@@ -2,6 +2,9 @@ package phoenix.datasource;
 
 import java.util.Properties;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.commons.lang3.Validate;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
@@ -14,9 +17,16 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 
 public class DataSourceProxy extends LazyConnectionDataSourceProxy {
 
+    @Setter
+    @Getter
+    private String dataSourceName;
+
     @Override
     public void afterPropertiesSet() {
-        String path = Config.getContext().getString(Constants.CONF_DATASOURCE_ITEM);
+        if (dataSourceName == null) {
+            dataSourceName = Constants.CONF_DATASOURCE_ITEM;
+        }
+        String path = Config.getContext().getString(dataSourceName);
         try {
             Properties ps = PropertiesTool.loadFile(path);
             setTargetDataSource(DruidDataSourceFactory.createDataSource(ps));

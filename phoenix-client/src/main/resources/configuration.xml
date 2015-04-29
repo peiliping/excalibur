@@ -10,8 +10,8 @@
 		<setting name="defaultExecutorType" value="SIMPLE" />
 		<!-- 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载。 -->
 		<setting name="lazyLoadingEnabled" value="true" />
-		<!-- 设置超时时间，它决定驱动等待一个数据库响应的时间。 -->
-		<setting name="defaultStatementTimeout" value="5000" />
+		<!-- 设置超时时间，它决定驱动等待一个数据库响应的时间。
+		<setting name="defaultStatementTimeout" value="5000" />  -->
 		<!-- user_id = userId -->
 		<setting name="mapUnderscoreToCamelCase" value="true" />
 	</settings>

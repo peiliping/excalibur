@@ -32,9 +32,9 @@ public class App {
 
         // test--------
         DualDao a = Config.getApplicationContext().getBean(DualDao.class);
-        List<String> l = a.query(new HashMap<String, Object>());
+        List<String> l = a.queryM(new HashMap<String, Object>());
         LOG.warn(l.size() + " " + l.get(0));
-        System.out.println(l.size() + "" + l.get(0));
+        System.out.println(l.size() + "\t" + l.get(0));
     }
 
     private static void initLogBack(String fn) {

@@ -5,5 +5,9 @@
 	<select id="query" parameterType="java.util.Map" resultType="string">
 		SELECT 'x' FROM dual
 	</select>
+	
+		<select id="queryM" parameterType="java.util.Map" resultType="string">
+		SELECT id FROM mobile.account
+	</select>
 
 </mapper>

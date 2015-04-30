@@ -11,11 +11,14 @@
     http://www.springframework.org/schema/mvc
     http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
+	<context:component-scan base-package="phoenix.service" />
+
 	<bean id="mysqlDS" class="phoenix.datasource.DataSourceProxy"
 		destroy-method="close" />
 
 	<bean id="hive-driver" class="org.apache.hive.jdbc.HiveDriver" />
-	<bean id="hiveDS" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+	<bean id="hiveDS"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driver" ref="hive-driver" />
 		<property name="url" value="jdbc:hive2://119.29.58.96:50071/default" />
 	</bean>

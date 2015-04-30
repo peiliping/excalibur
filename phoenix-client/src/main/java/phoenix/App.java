@@ -1,6 +1,5 @@
 package phoenix;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,7 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import phoenix.config.Config;
 import phoenix.config.Context;
-import phoenix.dao.DualDao;
+import phoenix.service.DualService;
 import phoenix.util.Constants;
 import phoenix.util.PropertiesTool;
 import ch.qos.logback.classic.LoggerContext;
@@ -31,10 +30,11 @@ public class App {
         Config.setApplicationContext(new ClassPathXmlApplicationContext(Constants.CONF_SPRING_ITEM));
 
         // test--------
-        DualDao a = Config.getApplicationContext().getBean(DualDao.class);
-        List<String> l = a.queryM(new HashMap<String, Object>());
-        LOG.warn(l.size() + " " + l.get(0));
-        System.out.println(l.size() + "\t" + l.get(0));
+        DualService DS = Config.getApplicationContext().getBean(DualService.class);
+        List<String> l = DS.queryMobile("sldjlkjsadfsldfj", "20150429", "2015042915");
+        for (String s : l) {
+            LOG.warn(s);
+        }
     }
 
     private static void initLogBack(String fn) {

@@ -5,9 +5,15 @@
 	<select id="query" parameterType="java.util.Map" resultType="string">
 		SELECT 'x' FROM dual
 	</select>
-	
-		<select id="queryM" parameterType="java.util.Map" resultType="string">
-		SELECT id FROM mobile.account
+
+	<select id="queryMobile" parameterType="java.util.Map"
+		resultType="string">
+		SELECT data FROM mobile.originallog
+		WHERE
+		day = #{day}
+		and get_json_object(substr(data,0,instr(data,"|")),"$.token") = #{token}
+		and pt = #{pt}
+		limit 100
 	</select>
 
 </mapper>

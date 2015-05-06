@@ -20,6 +20,11 @@ public class DataSourceContextHolder {
         contextHolder.get().suffix = suffix;
     }
 
+    public static void setDataSourceRW(boolean isWrite) {
+        initDataSourceBody();
+        contextHolder.get().rw = isWrite ? "w" : "r";
+    }
+
     public static String getDataSourceName() {
         return contextHolder.get() != null ? contextHolder.get().buildName() : null;
     }

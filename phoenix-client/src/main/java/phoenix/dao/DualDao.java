@@ -7,6 +7,4 @@ public interface DualDao {
 
     public List<String> query(Map<String, Object> paramMap);
 
-    public List<String> queryMobile(Map<String, Object> paramMap);
-
 }

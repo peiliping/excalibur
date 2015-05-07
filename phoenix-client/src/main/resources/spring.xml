@@ -13,18 +13,10 @@
 
 	<context:component-scan base-package="phoenix.service" />
 
-	<bean id="mysqlDS" class="phoenix.datasource.DataSourceProxy"
-		destroy-method="close" />
-
-	<bean id="hive-driver" class="org.apache.hive.jdbc.HiveDriver" />
-	<bean id="hiveDS"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driver" ref="hive-driver" />
-		<property name="url" value="jdbc:hive2://119.29.58.96:50071/default" />
-	</bean>
+	<bean id="mysqlDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="hiveDS" />
+		<property name="dataSource" ref="mysqlDS" />
 		<property name="mapperLocations" value="classpath*:mapper/*.xml" />
 		<property name="configLocation" value="configuration.xml" />
 		<property name="typeAliasesPackage" value="phoenix.dataObject" />

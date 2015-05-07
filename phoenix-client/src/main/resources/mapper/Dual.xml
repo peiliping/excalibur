@@ -6,14 +6,4 @@
 		SELECT 'x' FROM dual
 	</select>
 
-	<select id="queryMobile" parameterType="java.util.Map"
-		resultType="string">
-		SELECT data FROM mobile.originallog
-		WHERE
-		day = #{day} 
-		and get_json_object(substr(data,0,instr(data,"|")),"$.token") = #{token} 
-		and pt = #{pt} 
-		limit 10
-	</select>
-
 </mapper>

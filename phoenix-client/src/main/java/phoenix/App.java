@@ -31,10 +31,9 @@ public class App {
 
         // test--------
         DualService DS = Config.getApplicationContext().getBean(DualService.class);
-        List<String> l = DS.queryMobile("sldjlkjsadfsldfj", "20150429", "2015042915");
-        for (String s : l) {
-            System.out.println(s);
-            LOG.warn(s);
+        List<String> r = DS.queryDual();
+        for (String i : r) {
+            System.out.println(i);
         }
     }
 

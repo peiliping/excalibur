@@ -1,14 +1,11 @@
 package phoenix;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import phoenix.config.Config;
 import phoenix.config.Context;
-import phoenix.service.DualService;
 import phoenix.util.Constants;
 import phoenix.util.PropertiesTool;
 import ch.qos.logback.classic.LoggerContext;
@@ -29,11 +26,9 @@ public class App {
         initLogBack(Config.getContext().getString(Constants.CONF_LOGCONFIG_ITEM));
         Config.setApplicationContext(new ClassPathXmlApplicationContext(Constants.CONF_SPRING_ITEM));
 
-        // test--------
-        DualService DS = Config.getApplicationContext().getBean(DualService.class);
-        List<String> r = DS.queryDual();
-        for (String i : r) {
-            System.out.println(i);
+        while (true) {
+            Thread.sleep(1000 * 60);
+            LOG.info("I am still alive");
         }
     }
 

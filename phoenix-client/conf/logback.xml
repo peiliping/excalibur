@@ -7,20 +7,11 @@
 		<file>${LOG_HOME}/phoenix.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${LOG_HOME}/phoenix.log-%d{yyyy-MM-dd}</FileNamePattern>
-			<MaxHistory>7</MaxHistory>
+			<MaxHistory>5</MaxHistory>
 		</rollingPolicy>
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%d{HH:mm:ss.SSS} %class %-5level %msg%n</pattern><!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
 		</layout>
-	</appender>
-	
-	<appender name="flume" class="phoenix.log.flume.LoadBalancingLog4jAppender">
-		<param name="hosts" value="localhost" />
-    	<param name="selector" value="10000" />
-    	<param name="unsafeMode" value="true" />
-		<layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%m%n"/>
-        </layout>
 	</appender>
 
 	<root level="INFO">

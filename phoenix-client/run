@@ -1,1 +1,1 @@
-java -Djava.ext.dirs=/home/peiliping/dev/gitwork/self/excalibur/phoenix-client/target/lib: -jar /home/peiliping/dev/gitwork/self/excalibur/phoenix-client/target/phoenix-client-1.0-SNAPSHOT.jar /home/peiliping/dev/gitwork/self/excalibur/phoenix-client/conf/phoenix.conf
+java  -Xms1g -Xmx1g -server  -Djava.ext.dirs=/home/peiliping/dev/gitwork/self/excalibur/phoenix-client/target/lib: -jar /home/peiliping/dev/gitwork/self/excalibur/phoenix-client/target/phoenix-client-1.0-SNAPSHOT.jar /home/peiliping/dev/gitwork/self/excalibur/phoenix-client/conf/phoenix.conf

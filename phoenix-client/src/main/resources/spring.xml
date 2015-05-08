@@ -13,10 +13,10 @@
 
 	<context:component-scan base-package="phoenix.service" />
 
-	<bean id="mysqlDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
+	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="mysqlDS" />
+		<property name="dataSource" ref="phoenixDS" />
 		<property name="mapperLocations" value="classpath*:mapper/*.xml" />
 		<property name="configLocation" value="configuration.xml" />
 		<property name="typeAliasesPackage" value="phoenix.dataObject" />

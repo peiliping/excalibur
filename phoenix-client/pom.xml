@@ -216,5 +216,16 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3</version>
 		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>9.2.10.v20150310</version>
+		</dependency>
+		
 	</dependencies>
 </project>

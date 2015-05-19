@@ -15,6 +15,17 @@
 
 	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
 
+	<bean id="dataSource" class="jakiro.DynamicDataSource" destroy-method="close">
+		<property name="dynamicDataSourceName" value="DS" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="defaultTargetDataSource" ref="phoenixDS" />
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry key="main" value-ref="phoenixDS" />
+			</map>
+		</property>
+	</bean>
+
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="phoenixDS" />
 		<property name="mapperLocations" value="classpath*:mapper/*.xml" />

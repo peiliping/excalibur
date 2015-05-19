@@ -221,5 +221,10 @@
 			<artifactId>jedis</artifactId>
 			<version>2.7.2</version>
 		</dependency>
+		<dependency>
+			<groupId>jakiro</groupId>
+			<artifactId>jakiro-tddl</artifactId>
+			<version>0.2-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

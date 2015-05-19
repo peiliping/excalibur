@@ -5,19 +5,5 @@
 	<select id="query" parameterType="java.util.Map" resultType="string">
 		SELECT 'x' FROM dual
 	</select>
-	
-	<select id="queryPhoenix" parameterType="java.util.Map" resultType="phoenix.dataObject.MultiResult">
-		SELECT metric_id AS "id",sum(num1) AS "count",sum(num2) AS "total",min(num4) AS "min",max(num5) AS "max"
-		FROM metric_data_entity_256
-		<where>
-			data_version = #{dataVersion}
-			and application_id= #{applicationId}
-			and metric_type_id= #{metricTypeId}
-			and time_scope between #{start} and #{end}
-			and salt in <foreach item="item" index="index" collection="salts" open="(" separator="," close=")">#{item}</foreach>
-			<if test="metric_id != null"> and metric_id=#{metricId} </if>
-		</where>
-		group by metric_id order by sum(num2)/sum(num1) desc limit 20
-	</select>
 
 </mapper>

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.executor.statement.RoutingStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -29,10 +30,10 @@ public class Interceptor4DB implements Interceptor {
     private Map<String, String>               tableNameVsDataSource = new HashMap<String, String>();
     private Map<String, TableNameHandler>     tableNameVsHandler    = new HashMap<String, TableNameHandler>();
     // cache sql parser
-    private Map<String, Pair<String, String>> idVSTableNameType     = new HashMap<String, Pair<String, String>>();
+    private Map<String, Pair<String, String>> idVSTableNameType     = new ConcurrentHashMap<String, Pair<String, String>>();
     // cache result
-    private Map<String, Pair<String, String>> id4TableName          = new HashMap<String, Pair<String, String>>();
-    private Map<String, Object>               id4DataSource         = new HashMap<String, Object>();
+    private Map<String, Pair<String, String>> id4TableName          = new ConcurrentHashMap<String, Pair<String, String>>();
+    private Map<String, Object>               id4DataSource         = new ConcurrentHashMap<String, Object>();
     private final static Pair<String, String> Skip4HandleName       = Pair.of("", "");
     private static final Object               Skip4DataSource       = new Object();
     // 配置

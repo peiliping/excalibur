@@ -14,6 +14,31 @@
 	<context:component-scan base-package="phoenix.service" />
 
 	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
+	
+	<bean id="PrivateBasicInfoDS" class="com.alibaba.druid.pool.DruidDataSource" 	init-method="init" destroy-method="close">
+		<property name="url" value="${PrivateBasicInfoDS.url}" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="username" value="${PrivateBasicInfoDS.username}" />
+		<property name="password" value="${PrivateBasicInfoDS.password}" />
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="5" />
+		<property name="maxActive" value="60" />
+		<property name="filters" value="stat,slf4j" />
+		<property name="connectionProperties"	value="druid.stat.slowSqlMillis=50;druid.stat.logSlowSql=true" />
+		<property name="maxWait" value="5000" />
+		<property name="defaultAutoCommit" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="300000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x' FROM DUAL" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="1200" />
+		<property name="logAbandoned" value="true" />
+	</bean>
 
 	<bean id="dataSource" class="jakiro.DynamicDataSource" destroy-method="close">
 		<property name="dynamicDataSourceName" value="DS" />

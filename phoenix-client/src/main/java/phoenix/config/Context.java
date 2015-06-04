@@ -1,5 +1,9 @@
 package phoenix.config;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -31,6 +35,10 @@ public class Context {
             String value = ps.getProperty(name);
             this.parameters.put(name, value);
         }
+    }
+
+    public Context(String propertyFilePath) throws IOException {
+        this(loadFile(propertyFilePath));
     }
 
     public ImmutableMap<String, String> getParameters() {
@@ -117,12 +125,20 @@ public class Context {
         return defaultValue;
     }
 
-    private String get(String key) {
+    public String get(String key) {
         return get(key, null);
     }
 
     @Override
     public String toString() {
         return "{ parameters:" + parameters + " }";
+    }
+
+    private static Properties loadFile(String configPath) throws IOException {
+        InputStream in = new BufferedInputStream(new FileInputStream(configPath));
+        Properties properties = new Properties();
+        properties.load(in);
+        in.close();
+        return properties;
     }
 }

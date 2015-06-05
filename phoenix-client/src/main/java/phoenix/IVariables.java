@@ -57,6 +57,10 @@ public abstract class IVariables implements InitializingBean {
                 val = ct.getLong(fn);
             } else if (c == long.class) {
                 val = ct.getLong(fn);
+            } else if (c == Double.class) {
+                val = ct.getDouble(fn);
+            } else if (c == double.class) {
+                val = ct.getDouble(fn);
             } else if (c == String.class) {
                 val = ct.getString(fn);
             }

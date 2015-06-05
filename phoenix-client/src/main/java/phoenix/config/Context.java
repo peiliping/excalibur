@@ -109,6 +109,19 @@ public class Context {
         return getLong(key, null);
     }
 
+    public Double getDouble(String key, Double defaultValue) {
+        String value = get(key);
+        if (value != null) {
+            return Double.parseDouble(value);
+        }
+        return defaultValue;
+    }
+
+    public Double getDouble(String key) {
+        return getDouble(key, null);
+    }
+
+
     public String getString(String key, String defaultValue) {
         return get(key, defaultValue);
     }

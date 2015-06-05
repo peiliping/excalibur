@@ -1,5 +1,7 @@
 package phoenix;
 
+import phoenix.config.IVariables;
+
 public class V extends IVariables {
 
     public static long   id      = 0;

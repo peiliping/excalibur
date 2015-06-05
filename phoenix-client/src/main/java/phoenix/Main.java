@@ -17,9 +17,6 @@ public class Main {
         v.set_variablesGroupName("all");
         v.set_variablesConfigFilePath("/home/peiliping/dev/logs/config");
         v.afterPropertiesSet();
-
-        v.toLog();
-
     }
 
     @Subscribe

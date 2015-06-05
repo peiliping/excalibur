@@ -1,4 +1,4 @@
-package phoenix;
+package phoenix.config;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -10,8 +10,6 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-
-import phoenix.config.Context;
 
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.Subscribe;

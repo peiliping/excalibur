@@ -26,7 +26,6 @@ public class App {
 
         DualService s = Config.getApplicationContext().getBean(DualService.class);
         System.out.println(s.queryDual());
-        
-        
+
     }
 }

@@ -1,6 +1,7 @@
-package phoenix;
+package phoenix.config;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,8 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import phoenix.config.Context;
 
 import com.google.common.eventbus.EventBus;
 
@@ -52,6 +51,11 @@ public class WatchConfigFileService {
         Validate.isTrue(this.file.exists(), "ConfigFile is not exist !");
         Validate.isTrue(checkConfigFileInterval > 0);
         this.intervalTime = checkConfigFileInterval;
+        try {
+            work();
+        } catch (IOException e) {
+            Validate.isTrue(false, "Init WatchConfigFileService Failed :" + name);
+        }
         this.executor.submit(new Runnable() {
             @Override
             public void run() {
@@ -60,10 +64,7 @@ public class WatchConfigFileService {
                         long lastModified = file.lastModified();
                         if (lastModified > lastChangeTimeStamp.get()) {
                             LOGGER.info("ConfigFile is changed ! WatchConfigFileService-" + serviceName);
-                            Context ct = new Context(file.getAbsolutePath());
-                            config = ct;
-                            eventBus.post(ct);
-                            lastChangeTimeStamp.set(lastModified);
+                            work();
                         }
                         Thread.sleep(intervalTime);
                     } catch (Throwable e) {
@@ -73,10 +74,12 @@ public class WatchConfigFileService {
             }
         });
         BOSS.put(name, this);
-        try {
-            Thread.sleep(50);
-        } catch (Exception e) {
-        }
+    }
+
+    public void work() throws IOException {
+        config = new Context(file.getAbsolutePath());
+        eventBus.post(config);
+        lastChangeTimeStamp.set(file.lastModified());
     }
 
     public void regist(Object o) {

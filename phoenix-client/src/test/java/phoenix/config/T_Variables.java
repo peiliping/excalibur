@@ -1,8 +1,8 @@
-package phoenix;
+package phoenix.config;
 
 import phoenix.config.IVariables;
 
-public class V extends IVariables {
+public class T_Variables extends IVariables {
 
     public static long   id      = 0;
 

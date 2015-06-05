@@ -1,4 +1,4 @@
-package phoenix;
+package phoenix.config;
 
 import phoenix.config.Context;
 
@@ -13,10 +13,11 @@ public class Main {
         // "/home/peiliping/dev/logs/config");
         // m.handle(wcs.getConfig());
         // wcs.regist(m);
-        V v = new V();
+        T_Variables v = new T_Variables();
         v.set_variablesGroupName("all");
-        v.set_variablesConfigFilePath("/home/peiliping/dev/logs/config");
+        v.set_variablesConfigFilePath("conf/variables.conf");
         v.afterPropertiesSet();
+        System.out.println("END");
     }
 
     @Subscribe

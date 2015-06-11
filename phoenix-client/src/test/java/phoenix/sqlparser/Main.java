@@ -35,9 +35,19 @@ public class Main {
 
         Map<String, List<SQLExpr>> results = new HashMap<String, List<SQLExpr>>();
         handle(results, mb);
-        System.out.println(results);
+        List<String> pks = new ArrayList<String>();
+        pks.add("a");
+        pks.add("b");
+        pks.add("c");
+        pks.add("f");
+        check(pks, results);
     }
 
+    private static void check(List<String> mustPk, Map<String, List<SQLExpr>> results) {
+        for (String pk : mustPk) {
+            Validate.isTrue(results.containsKey(pk), "No Key :" + pk);
+        }
+    }
 
     private static void handle(Map<String, List<SQLExpr>> r, SQLExpr se) {
         if (se instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) se).getLeft() instanceof SQLBinaryOpExpr) {

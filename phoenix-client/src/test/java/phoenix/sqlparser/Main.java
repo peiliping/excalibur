@@ -14,6 +14,7 @@ import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
 import com.alibaba.druid.sql.ast.expr.SQLBinaryOperator;
 import com.alibaba.druid.sql.ast.expr.SQLInListExpr;
 import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
+import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
@@ -22,13 +23,16 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String sql = "select f , count(1)  from abc where a=1 and b in(2,3,6) and c between 10 and 20 and d > 3 and d < 20 and e = \"abc\"  group by f order by g desc limit 100";
+        String sql =
+                "select count(1) from metric_data_entity_256 where salt between 1 and 2  and data_version=0 and application_id=8027 and time_scope=398689 and metric_type_id=-41191668";
 
         MySqlStatementParser p = new MySqlStatementParser(sql);
 
         List<SQLStatement> st = p.parseStatementList();
         Validate.isTrue(st.size() == 1);
 
+        if (st.get(0) instanceof SQLExplainStatement)
+            return;
         SQLSelectStatement s0 = (SQLSelectStatement) st.get(0);
         SQLBinaryOpExpr mb = (SQLBinaryOpExpr) ((MySqlSelectQueryBlock) s0.getSelect().getQuery()).getWhere();
         Validate.isTrue(mb.getOperator() == SQLBinaryOperator.BooleanAnd);
@@ -36,10 +40,11 @@ public class Main {
         Map<String, List<SQLExpr>> results = new HashMap<String, List<SQLExpr>>();
         handle(results, mb);
         List<String> pks = new ArrayList<String>();
-        pks.add("a");
-        pks.add("b");
-        pks.add("c");
-        pks.add("f");
+        pks.add("salt");
+        pks.add("data_version");
+        pks.add("application_id");
+        pks.add("time_scope");
+        pks.add("metric_type_id");
         check(pks, results);
     }
 
@@ -50,7 +55,7 @@ public class Main {
     }
 
     private static void handle(Map<String, List<SQLExpr>> r, SQLExpr se) {
-        if (se instanceof SQLBinaryOpExpr && ((SQLBinaryOpExpr) se).getLeft() instanceof SQLBinaryOpExpr) {
+        if (se instanceof SQLBinaryOpExpr && (((SQLBinaryOpExpr) se).getLeft() instanceof SQLBinaryOpExpr || ((SQLBinaryOpExpr) se).getRight() instanceof SQLBinaryOpExpr)) {
             SQLBinaryOpExpr sbo = (SQLBinaryOpExpr) se;
             if (sbo.getOperator() == SQLBinaryOperator.BooleanOr)
                 return;

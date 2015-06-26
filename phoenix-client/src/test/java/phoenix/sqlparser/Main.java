@@ -17,6 +17,7 @@ import com.alibaba.druid.sql.ast.expr.SQLIntegerExpr;
 import com.alibaba.druid.sql.ast.statement.SQLExplainStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.mysql.ast.statement.MySqlSelectQueryBlock.Limit;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
 
 public class Main {
@@ -24,7 +25,7 @@ public class Main {
     public static void main(String[] args) {
 
         String sql =
-                "select count(1) from metric_data_entity_256 where salt between 1 and 2  and data_version=0 and application_id=8027 and time_scope=398689 and metric_type_id=-41191668";
+                "select count(1) from metric_data_entity_256 where salt between 1 and 2  and data_version=0 and application_id=8027 and time_scope=398689 and metric_type_id=-41191668  ";
 
         MySqlStatementParser p = new MySqlStatementParser(sql);
 
@@ -34,6 +35,16 @@ public class Main {
         if (st.get(0) instanceof SQLExplainStatement)
             return;
         SQLSelectStatement s0 = (SQLSelectStatement) st.get(0);
+
+        if (((MySqlSelectQueryBlock) s0.getSelect().getQuery()).getLimit() == null) {
+            Limit l = new Limit();
+            l.setRowCount(new SQLIntegerExpr(100));
+            ((MySqlSelectQueryBlock) s0.getSelect().getQuery()).setLimit(l);
+        } else {
+            Limit l = ((MySqlSelectQueryBlock) s0.getSelect().getQuery()).getLimit();
+            Validate.isTrue(((SQLIntegerExpr) l.getRowCount()).getNumber().intValue() < 1000);
+        }
+        sql = s0.toString();
         SQLBinaryOpExpr mb = (SQLBinaryOpExpr) ((MySqlSelectQueryBlock) s0.getSelect().getQuery()).getWhere();
         Validate.isTrue(mb.getOperator() == SQLBinaryOperator.BooleanAnd);
 

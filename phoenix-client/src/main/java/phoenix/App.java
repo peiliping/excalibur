@@ -24,11 +24,8 @@ public class App {
         InitTool.initLogBack(Config.getContext().getString(Constants.CONF_LOGCONFIG_ITEM));
         Config.setApplicationContext(new ClassPathXmlApplicationContext(Constants.CONF_SPRING_ITEM));
 
-        SimpleProccessResult sr = new SimpleProccessResult(4, 1, 1, 1, 1);
-        System.out.println(sr.toString());
+        
 
-        
-        
         // DualService s = Config.getApplicationContext().getBean(DualService.class);
         // System.out.println(s.queryDual());
 

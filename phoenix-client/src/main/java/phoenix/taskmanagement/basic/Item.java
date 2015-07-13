@@ -1,4 +1,4 @@
-package phoenix.taskmanagement;
+package phoenix.taskmanagement.basic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +17,9 @@ public abstract class Item {
     @Getter
     @Setter
     protected Long                endTime;
+    @Getter
+    @Setter
+    protected Long                expireInterval;
     @Getter
     @Setter
     protected Map<String, String> attributes = new HashMap<String, String>();

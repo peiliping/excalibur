@@ -1,10 +1,13 @@
-package phoenix.taskmanagement.exec;
+package phoenix.taskmanagement.basic;
 
-import phoenix.taskmanagement.Item;
+import lombok.Getter;
 import phoenix.taskmanagement.result.SimpleResult;
 
 public abstract class IAction extends Item {
 
+    @Getter
     protected SimpleResult result;
+
+    public abstract void action();
 
 }

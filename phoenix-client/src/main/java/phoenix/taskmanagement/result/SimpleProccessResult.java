@@ -1,23 +1,27 @@
 package phoenix.taskmanagement.result;
 
-import com.alibaba.fastjson.JSON;
-
 import lombok.Getter;
+import lombok.Setter;
+
+import com.alibaba.fastjson.JSON;
 
 public class SimpleProccessResult {
 
     @Getter
-    private int     total    = 0;
+    private int     total        = 0;
     @Getter
-    private int     finished = 0;
+    private int     finished     = 0;
     @Getter
-    private int     failed   = 0;
+    private int     failed       = 0;
     @Getter
-    private int     running  = 0;
+    private int     running      = 0;
     @Getter
-    private int     waiting  = 0;
+    private int     waiting      = 0;
     @Getter
-    private boolean success  = false;
+    private boolean success      = false;
+    @Getter
+    @Setter
+    private String  failedReason = "";
 
     public SimpleProccessResult(int total, int finished, int running, int waiting, int failed) {
         this.total = total;

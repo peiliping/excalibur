@@ -1,7 +1,11 @@
 package phoenix.taskmanagement.priority;
 
-public class Priority {
+import lombok.Getter;
+import lombok.Setter;
 
+public class Priority {
+    @Setter
+    @Getter
     protected int level;
 
     protected int weight; // 0-5

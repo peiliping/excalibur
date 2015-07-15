@@ -74,7 +74,7 @@ public class Yggdrasil {
         for (Task task : core.breadthFirstTraversal(root)) {
             System.out.println(JSON.toJSONString(task));
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
             }
         }

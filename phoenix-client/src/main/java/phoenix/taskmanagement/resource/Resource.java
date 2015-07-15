@@ -18,4 +18,9 @@ public class Resource {
         return type.toString() + "" + path;
     }
 
+    public Resource(ResourceType type, String path) {
+        this.type = type;
+        this.path = path;
+    }
+
 }

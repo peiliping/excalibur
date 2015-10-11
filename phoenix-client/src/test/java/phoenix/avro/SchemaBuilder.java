@@ -85,4 +85,22 @@ public class SchemaBuilder {
         }
         return result.toString();
     }
+
+    private class Item {
+        @Setter
+        @Getter
+        private String   fieldName;
+        @Setter
+        @Getter
+        private int      order;
+        @Setter
+        @Getter
+        private Class<?> type;
+
+        public Item(Field f) {
+            this.fieldName = SchemaBuilder.underscoreName(f.getName());
+            this.type = f.getType();
+            this.order = f.getAnnotation(LogOrder.class).order();
+        }
+    }
 }

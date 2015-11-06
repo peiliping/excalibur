@@ -11,7 +11,7 @@ import phoenix.dao.DualDao;
 @Service
 public class DualService {
 
-    @Autowired
+//    @Autowired
     private DualDao            dao;
 
     public List<String> queryDual() {

@@ -31,7 +31,7 @@ public class App {
                 s.log2();
             } catch (Exception e) {
             }
-            Thread.sleep(1000);
+            Thread.sleep(10);
         }
         // DualService s = Config.getApplicationContext().getBean(DualService.class);
         // System.out.println(s.queryDual());

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Monitor {
     /**
-     * 指标名称 (不能包含 . _ - / 等分割符号)
+     * 指标名称 (不能包含 . _ - / 等分割符号) 此annotation必须作用在spring的bean上才能生效
      * 
      * @return
      */

@@ -24,11 +24,13 @@
     <bean class="phoenix.aop.MonitorAspect" >
     	<property name="groupName" value="AI" />
     	<property name="appName" value="DC" />
+    	<property name="meterLoggerName" value="meter"/>
+    	<property name="timerLoggerName" value="timer"/>
     </bean>
 
+<!-- 
 	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
 
-<!-- 
 	<bean id="dataSource" class="jakiro.DynamicDataSource" destroy-method="close">
 		<property name="dynamicDataSourceName" value="DS" />
 		<property name="defaultAutoCommit" value="true" />

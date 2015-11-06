@@ -17,6 +17,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
@@ -48,10 +49,27 @@ public class MonitorAspect implements InitializingBean {
     @Setter
     private CheckResult          cr;
 
+    /**
+     * meterLogger的名字
+     */
+    @Getter
+    @Setter
+    private String               meterLoggerName;
+
+    /**
+     * timerLogger的名字
+     */
+    @Getter
+    @Setter
+    private String               timerLoggerName;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         Validate.isTrue(StringUtils.isNotBlank(groupName) && StringUtils.isNotBlank(appName));
-        this.REPORT = Reporter.forRegistry(CORE).outputTo(LoggerFactory.getLogger(MonitorAspect.class)).prefixedWith(MetricRegistry.name(groupName, appName)).build();
+        Validate.isTrue(StringUtils.isNotBlank(meterLoggerName) && StringUtils.isNotBlank(timerLoggerName));
+        this.REPORT =
+                Reporter.forRegistry(CORE).outputTo(LoggerFactory.getLogger(meterLoggerName), LoggerFactory.getLogger(timerLoggerName))
+                        .prefixedWith(MetricRegistry.name(groupName, appName)).build();
         this.REPORT.start(1, TimeUnit.MINUTES);
     }
 
@@ -95,7 +113,7 @@ public class MonitorAspect implements InitializingBean {
     public void custom4Mark(String metricName) {
         this.CORE.meter(metricName).mark();
     }
-
+    
     public void stopReport() {
         if (this.REPORT != null) {
             this.REPORT.stop();

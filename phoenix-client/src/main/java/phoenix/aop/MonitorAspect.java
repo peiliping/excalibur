@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.ScheduledReporter;
 import com.codahale.metrics.Timer;
 
 @Aspect
@@ -25,7 +26,7 @@ public class MonitorAspect implements InitializingBean {
 
     private final MetricRegistry CORE = new MetricRegistry();
 
-    private Reporter             REPORT;
+    private ScheduledReporter    REPORT;
 
     /**
      * 业务、团队名称（ex： AI、BI、MI）
@@ -112,7 +113,7 @@ public class MonitorAspect implements InitializingBean {
     public void custom4Mark(String metricName) {
         this.CORE.meter(metricName).mark();
     }
-    
+
     public void stopReport() {
         if (this.REPORT != null) {
             this.REPORT.stop();

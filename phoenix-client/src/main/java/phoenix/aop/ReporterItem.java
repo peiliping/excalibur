@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class ReporterItem {
 
+    private long   timestamp;
     private String type;
     private String name;
     private long   count;

@@ -150,18 +150,18 @@ public class Reporter extends ScheduledReporter {
 
     private void logTimer(String name, Timer timer) {
         final Snapshot snapshot = timer.getSnapshot();
-        timerLogger.info(JSON.toJSONString(ReporterItem.builder().type("TIMER").name(prefix(name)).ip(this.ip).count(timer.getCount()).meanRate(convertRate(timer.getMeanRate()))
-                .m1(convertRate(timer.getOneMinuteRate())).m5(convertRate(timer.getFiveMinuteRate())).m15(convertRate(timer.getFifteenMinuteRate())).rateUnit(getRateUnit())
-                .min(convertDuration(snapshot.getMin())).max(convertDuration(snapshot.getMax())).mean(convertDuration(snapshot.getMean()))
-                .stddev(convertDuration(snapshot.getStdDev())).median(convertDuration(snapshot.getMedian())).p75(convertDuration(snapshot.get75thPercentile()))
-                .p95(convertDuration(snapshot.get95thPercentile())).p98(convertDuration(snapshot.get98thPercentile())).p99(convertDuration(snapshot.get99thPercentile()))
-                .p999(convertDuration(snapshot.get999thPercentile())).durationUnit(getDurationUnit()).build()));
+        timerLogger.info(JSON.toJSONString(ReporterItem.builder().timestamp(System.currentTimeMillis()).type("TIMER").name(prefix(name)).ip(this.ip).count(timer.getCount())
+                .meanRate(convertRate(timer.getMeanRate())).m1(convertRate(timer.getOneMinuteRate())).m5(convertRate(timer.getFiveMinuteRate()))
+                .m15(convertRate(timer.getFifteenMinuteRate())).rateUnit(getRateUnit()).min(convertDuration(snapshot.getMin())).max(convertDuration(snapshot.getMax()))
+                .mean(convertDuration(snapshot.getMean())).stddev(convertDuration(snapshot.getStdDev())).median(convertDuration(snapshot.getMedian()))
+                .p75(convertDuration(snapshot.get75thPercentile())).p95(convertDuration(snapshot.get95thPercentile())).p98(convertDuration(snapshot.get98thPercentile()))
+                .p99(convertDuration(snapshot.get99thPercentile())).p999(convertDuration(snapshot.get999thPercentile())).durationUnit(getDurationUnit()).build()));
     }
 
     private void logMeter(String name, Meter meter) {
-        meterLogger.info(JSON.toJSONString(ReporterItem.builder().type("METER").name(prefix(name)).ip(this.ip).count(meter.getCount()).meanRate(convertRate(meter.getMeanRate()))
-                .m1(convertRate(meter.getOneMinuteRate())).m5(convertRate(meter.getFiveMinuteRate())).m15(convertRate(meter.getFifteenMinuteRate())).rateUnit(getRateUnit())
-                .build()));
+        meterLogger.info(JSON.toJSONString(ReporterItem.builder().timestamp(System.currentTimeMillis()).type("METER").name(prefix(name)).ip(this.ip).count(meter.getCount())
+                .meanRate(convertRate(meter.getMeanRate())).m1(convertRate(meter.getOneMinuteRate())).m5(convertRate(meter.getFiveMinuteRate()))
+                .m15(convertRate(meter.getFifteenMinuteRate())).rateUnit(getRateUnit()).build()));
     }
 
     @Override

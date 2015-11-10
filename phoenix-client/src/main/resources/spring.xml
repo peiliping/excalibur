@@ -21,12 +21,15 @@
 	<aop:aspectj-autoproxy/>
 	<context:component-scan base-package="phoenix" />
 	
-    <bean class="phoenix.aop.MonitorAspect" >
+    <bean class="com.oneapm.operation.monitor.aop.MonitorAspect" >
     	<property name="groupName" value="AI" />
     	<property name="appName" value="DC" />
     	<property name="meterLoggerName" value="meter"/>
     	<property name="timerLoggerName" value="timer"/>
+    	<property name="influxDBService" ref="influxdbService" />
     </bean>
+    
+    <bean id="influxdbService" class="com.oneapm.operation.monitor.reporter.influxdb.InfluxDBService"/>
 
 <!-- 
 	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />

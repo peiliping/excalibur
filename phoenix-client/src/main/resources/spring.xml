@@ -26,7 +26,7 @@
     	<property name="appName" value="DC" />
     	<property name="meterLoggerName" value="meter"/>
     	<property name="timerLoggerName" value="timer"/>
-    	<property name="influxDBService" ref="influxdbService" />
+    	<!-- <property name="influxDBService" ref="influxdbService" /> -->
     </bean>
     
     <bean id="influxdbService" class="com.oneapm.operation.monitor.reporter.influxdb.InfluxDBService"/>

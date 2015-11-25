@@ -6,7 +6,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import phoenix.config.Config;
 import phoenix.config.Context;
-import phoenix.service.TestLogService;
+import phoenix.service.ITestLogService;
+import phoenix.service.Test2LogService;
 import phoenix.util.Constants;
 import phoenix.util.InitTool;
 
@@ -24,11 +25,19 @@ public class App {
         InitTool.initLogBack(Config.getContext().getString(Constants.CONF_LOGCONFIG_ITEM));
         Config.setApplicationContext(new ClassPathXmlApplicationContext(Constants.CONF_SPRING_ITEM));
 
+        ITestLogService s = Config.getApplicationContext().getBean(ITestLogService.class);
+        Test2LogService s2 = Config.getApplicationContext().getBean(Test2LogService.class);
+
         while (true) {
-            TestLogService s = Config.getApplicationContext().getBean(TestLogService.class);
             s.log();
             try {
                 s.log2();
+            } catch (Exception e) {
+            }
+
+            s2.log();
+            try {
+                s2.log2();
             } catch (Exception e) {
             }
             Thread.sleep(10);

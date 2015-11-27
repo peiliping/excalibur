@@ -11,8 +11,8 @@ import phoenix.dao.DualDao;
 @Service
 public class DualService {
 
-//    @Autowired
-    private DualDao            dao;
+    @Autowired
+    private DualDao dao;
 
     public List<String> queryDual() {
         return dao.query(new HashMap<String, Object>());

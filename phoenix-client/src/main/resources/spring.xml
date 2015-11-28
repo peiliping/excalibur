@@ -48,6 +48,7 @@
 			<array>
 				<bean class="com.oneapm.operation.monitor.aop.MybatisAspect">
 					<property name="monitorAspect" ref="monitorAspect" />
+					<property name="monitorAllSql" value="false" />
 				</bean>
 			</array>
 		</property>

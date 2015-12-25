@@ -37,7 +37,7 @@ public class App {
             }
             try {
                 s2.log();
-                s.log2();
+                s2.log2();
             } catch (Exception e) {
             }
             Thread.sleep(100);

@@ -16,6 +16,41 @@
 		</layout>
 	</appender>
 
+	<appender name="meter"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<file>${LOG_HOME}/meter.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/monitor/meter.log-%d{yyyy-MM-dd}
+			</FileNamePattern>
+			<MaxHistory>3</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="timer"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<file>${LOG_HOME}/timer.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${LOG_HOME}/monitor/timer.log-%d{yyyy-MM-dd}
+			</FileNamePattern>
+			<MaxHistory>3</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>
+
+	<logger name="meter" level="DEBUG" additivity="false">
+		<appender-ref ref="meter" />
+	</logger>
+	<logger name="timer" level="DEBUG" additivity="false">
+		<appender-ref ref="timer" />
+	</logger>
+
 	<root level="INFO">
 		<appender-ref ref="main" />
 	</root>

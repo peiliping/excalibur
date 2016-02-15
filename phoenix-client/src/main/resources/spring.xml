@@ -19,9 +19,11 @@
 	<aop:aspectj-autoproxy />
 	<context:component-scan base-package="phoenix" />
 
-	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" />
+	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy"
+		destroy-method="close" />
 
-	<bean id="dataSource" class="jakiro.DynamicDataSource"	destroy-method="close">
+	<bean id="dataSource" class="jakiro.DynamicDataSource"
+		destroy-method="close">
 		<property name="dynamicDataSourceName" value="DS" />
 		<property name="defaultAutoCommit" value="true" />
 		<property name="defaultTargetDataSource" ref="phoenixDS" />
@@ -37,11 +39,26 @@
 		<property name="mapperLocations" value="classpath*:mapper/*.xml" />
 		<property name="configLocation" value="configuration.xml" />
 		<property name="typeAliasesPackage" value="phoenix.dataObject" />
+		<property name="plugins">
+			<array>
+				<bean class="com.oneapm.operation.monitor.aop.MybatisAspect">
+					<property name="monitorAspect" ref="monitorAspect" />
+					<property name="monitorAllSql" value="true" />
+				</bean>
+			</array>
+		</property>
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="phoenix.dao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="monitorAspect" class="com.oneapm.operation.monitor.aop.MonitorAspect">
+		<property name="groupName" value="AI" />
+		<property name="appName" value="DC" />
+		<property name="meterLoggerName" value="meter" />
+		<property name="timerLoggerName" value="timer" />
 	</bean>
 
 </beans>

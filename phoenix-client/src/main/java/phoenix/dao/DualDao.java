@@ -7,7 +7,6 @@ import com.oneapm.operation.monitor.annotation.Monitor;
 
 public interface DualDao {
 
-    @Monitor(metricName = "dualQuery")
     public List<String> query(Map<String, Object> paramMap);
 
 }

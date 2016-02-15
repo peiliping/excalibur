@@ -11,7 +11,6 @@ import sun.jvmstat.monitor.MonitoredVm;
 import sun.jvmstat.monitor.MonitoredVmUtil;
 import sun.jvmstat.monitor.VmIdentifier;
 import sun.tools.jps.Arguments;
-import earthshaker.jps.JvmItem;
 
 public class App {
 

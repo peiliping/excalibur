@@ -1,4 +1,4 @@
-package earthshaker.jps;
+package earthshaker;
 
 public class JvmItem {
 

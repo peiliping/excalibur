@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,11 +24,12 @@ import com.sun.tools.attach.VirtualMachine;
 
 public class App {
 
-    private static Arguments   JPS_ARGUMENTS = new Arguments(new String[] {"-lmv"});
-    private static Set<String> whiteList     = new HashSet<String>();
-    private static String      team          = "";
-    private static String      app           = "";
-    private static String      ip            = "";
+    private static Arguments        JPS_ARGUMENTS = new Arguments(new String[] {"-lmv"});
+    private static SimpleDateFormat sdf           = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static Set<String>      whiteList     = new HashSet<String>();
+    private static String           team          = "";
+    private static String           app           = "";
+    private static String           ip            = "";
 
     public static void main(String[] args) throws IOException {
         parseArgs(args);
@@ -55,6 +58,8 @@ public class App {
 
     private static void jmap(String pid, boolean live, JvmItem jvmitem) throws IOException {
         long timestamp = System.currentTimeMillis();
+        Date d = new Date();
+        String date = sdf.format(d);
         VirtualMachine vm = attach(pid);
         InputStream in = ((HotSpotVirtualMachine) vm).heapHisto(live ? LIVE_OBJECTS_OPTION : ALL_OBJECTS_OPTION);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -74,6 +79,7 @@ public class App {
                 sb.append("\"ip\":\"").append(ip).append("\",");
                 sb.append("\"orderId\":").append(lineNum - 3).append(",");
                 sb.append("\"team\":\"").append(team).append("\",");
+                sb.append("\"date\":\"").append(date).append("\",");
                 sb.append("\"timestamp\":").append(timestamp);
                 sb.append("}");
                 System.out.println(sb.toString());

@@ -79,6 +79,7 @@ public class App {
                 sb.append("\"ip\":\"").append(ip).append("\",");
                 sb.append("\"orderId\":").append(lineNum - 3).append(",");
                 sb.append("\"team\":\"").append(team).append("\",");
+                sb.append("\"processType\":\"").append(jvmitem.mainClass).append("\",");
                 sb.append("\"date\":\"").append(date).append("\",");
                 sb.append("\"timestamp\":").append(timestamp);
                 sb.append("}");

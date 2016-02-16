@@ -34,7 +34,7 @@ public class App {
     public static void main(String[] args) throws IOException {
         parseArgs(args);
         if (checkTimeDelay(500)) {
-            System.out.println("Now is too busy to analyse memory , wait a minute !");
+            System.out.println("{\"reason\":\"Now is too busy to analyse memory , wait a minute !\"}");
             System.exit(-1);
         }
         try {

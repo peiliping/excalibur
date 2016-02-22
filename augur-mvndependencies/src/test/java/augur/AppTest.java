@@ -13,10 +13,11 @@ public class AppTest {
     public static void main(String[] args) {
 
         Set<String> excludes = new HashSet<String>();
-        excludes.add("jakiro:jakiro-tddl:[0.5,)");
+        excludes.add("jakiro:jakiro-tddl:(,0.7)");
+        excludes.add("com.alibaba:fastjson:(,1.1.30)");
+        excludes.add("com.oneapm.operation:Operation-Monitor:(,1.3)");
         Set<String> includes = new HashSet<String>();
         Set<String> warnings = new HashSet<String>();
-        warnings.add("com.alibaba:fastjson:[1.1.30,)");
 
         Map<String, Set<String>> rules = new HashMap<String, Set<String>>();
         rules.put("excludes", excludes);

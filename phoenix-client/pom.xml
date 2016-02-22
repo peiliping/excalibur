@@ -51,6 +51,34 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>augur</groupId>
+						<artifactId>augur-mvndependencies</artifactId>
+						<version>1.0-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>enforce</id>
+						<phase>package</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<bannedDependenciesEX implementation="augur.BannedDependenciesEX">
+									<configUrl>http://127.0.0.1/test</configUrl>
+								</bannedDependenciesEX>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>

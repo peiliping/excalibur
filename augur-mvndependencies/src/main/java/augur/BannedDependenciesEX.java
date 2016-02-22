@@ -10,10 +10,13 @@ import org.apache.commons.lang.Validate;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.enforcer.rule.api.EnforcerRuleException;
+import org.apache.maven.enforcer.rule.api.EnforcerRuleHelper;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.enforcer.AbstractBanDependencies;
 import org.apache.maven.plugins.enforcer.utils.ArtifactMatcher;
 import org.apache.maven.plugins.enforcer.utils.ArtifactMatcher.Pattern;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 
 import augur.HttpUtil.HttpResult;
 
@@ -32,6 +35,19 @@ public class BannedDependenciesEX extends AbstractBanDependencies {
     private Set<String> warnings  = new HashSet<String>();
 
     private boolean     init      = false;
+    private Artifact    root      = null;
+
+    @Override
+    public void execute(EnforcerRuleHelper helper) throws EnforcerRuleException {
+        MavenProject project = null;
+        try {
+            project = (MavenProject) helper.evaluate("${project}");
+        } catch (ExpressionEvaluationException eee) {
+            throw new EnforcerRuleException("Unable to retrieve the MavenProject: ", eee);
+        }
+        root = project.getArtifact();
+        super.execute(helper);
+    }
 
     private synchronized void initConfig(Log log) {
         if (init) {
@@ -72,10 +88,14 @@ public class BannedDependenciesEX extends AbstractBanDependencies {
         if (!warnings.isEmpty()) {
             Set<Artifact> warningList = checkDependencies(theDependencies, warnings);
             if (warningList != null) {
-                log.warn("========== BannedDependenciesEX  Warning Start ==========");
+                log.warn("========== BannedDependenciesEX Deprecated Warning Start ==========");
+                log.warn("group of this project:\t" + root.getGroupId());
+                log.warn("artifact of this project:\t" + root.getArtifactId());
+                log.warn("version of this project:\t" + root.getVersion());
+                log.warn("---------------------------------------------------------------------");
                 for (Artifact aft : warningList)
-                    log.warn("BannedDependenciesEX : " + aft.toString());
-                log.warn("========== BannedDependenciesEX  Warning END ==========");
+                    log.warn(aft.toString());
+                log.warn("========== BannedDependenciesEX Deprecated Warning END ==========");
                 // Post Data to Server
             }
         }

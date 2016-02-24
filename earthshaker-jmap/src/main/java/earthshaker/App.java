@@ -128,6 +128,8 @@ public class App {
             return false;
         if (jvmItem.mainClass.startsWith("sun.tools"))
             return false;
+        if (jvmItem.mainClass.contains("jmap-ex.jar"))
+            return false;
         if (!whiteList.isEmpty() && !whiteList.contains(jvmItem.mainClass))
             return false;
         return true;

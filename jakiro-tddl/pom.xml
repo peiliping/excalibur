@@ -3,7 +3,7 @@
 
 	<groupId>jakiro</groupId>
 	<artifactId>jakiro-tddl</artifactId>
-	<version>0.3</version>
+	<version>0.9</version>
 	<packaging>jar</packaging>
 
 	<name>jakiro-tddl</name>

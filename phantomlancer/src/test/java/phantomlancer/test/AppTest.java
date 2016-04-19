@@ -5,6 +5,7 @@ import phantomlancer.test.dataobject.Dimensions;
 import phantomlancer.test.dataobject.MetricDataDO;
 import phantomlancer.test.dataobject.Metrics;
 import phantomlancer.test.dataobject.Tags;
+import phantomlancer.test.serialize.Metric;
 
 import com.google.gson.Gson;
 
@@ -33,9 +34,13 @@ public class AppTest {
 
         System.out.println((new Gson()).toJson(mdd));
 
-        AvscSchemaBuilder sb = new AvscSchemaBuilder(MetricDataDO.class);
+        AvscSchemaBuilder sb1 = new AvscSchemaBuilder(MetricDataDO.class);
 
-        System.out.println(sb.getResult());
+        System.out.println(sb1.getResult());
+
+        AvscSchemaBuilder sb2 = new AvscSchemaBuilder(Metric.class);
+
+        System.out.println(sb2.getResult());
 
     }
 

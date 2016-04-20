@@ -10,6 +10,6 @@ public abstract class AbstractMetricDataDO implements Serializable {
     private static final long serialVersionUID = 2919772490904364757L;
     @Getter
     @Setter
-    protected long            timestampms;
+    protected Timestamps      timestamps;
 
 }

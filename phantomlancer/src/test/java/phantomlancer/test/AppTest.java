@@ -5,6 +5,7 @@ import phantomlancer.test.dataobject.Dimensions;
 import phantomlancer.test.dataobject.MetricDataDO;
 import phantomlancer.test.dataobject.Metrics;
 import phantomlancer.test.dataobject.Tags;
+import phantomlancer.test.dataobject.Timestamps;
 import phantomlancer.test.serialize.Metric;
 
 import com.google.gson.Gson;
@@ -28,9 +29,11 @@ public class AppTest {
                         .tag9("127.0.0.1").tag10("127.0.0.1").tag11("127.0.0.1").tag12("127.0.0.1").tag13("127.0.0.1").tag14("127.0.0.1").tag15("127.0.0.1").tag16("127.0.0.1")
                         .build();
 
+        Timestamps tts = Timestamps.builder().timestampms(now).timestampmt(Long.valueOf(now / 60000).intValue()).timestamphr(Long.valueOf(now / 3600000).intValue()).build();
+
         MetricDataDO mdd = MetricDataDO.builder().parentId(1).parentName("ROOT").metricId(2).metricName("Node").dimensions(dms).metrics(metrics).tags(tgs).build();
 
-        mdd.setTimestampms(now);
+        mdd.setTimestamps(tts);
 
         System.out.println((new Gson()).toJson(mdd));
 
@@ -43,5 +46,4 @@ public class AppTest {
         System.out.println(sb2.getResult());
 
     }
-
 }

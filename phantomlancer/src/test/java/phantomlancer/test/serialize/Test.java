@@ -20,8 +20,8 @@ public class Test {
 
         AvscSchemaBuilder asb = new AvscSchemaBuilder(Metric.class);
 
-        final DataFileWriter<Metric2> dataFileWriter = new DataFileWriter<Metric2>(new SpecificDatumWriter<Metric2>(asb.getResult()));
-        dataFileWriter.create(asb.getResult(), new File("/home/peiliping/dev/logs/v1.avro"));
+        final DataFileWriter<Metric2> dataFileWriter = new DataFileWriter<Metric2>(new SpecificDatumWriter<Metric2>(asb.createSchema()));
+        dataFileWriter.create(asb.createSchema(), new File("/home/peiliping/dev/logs/v1.avro"));
 
         Path p = Paths.get("/home/peiliping/dev/logs/v1.log");
         Files.readLines(p.toFile(), Charset.defaultCharset(), new LineProcessor<String>() {

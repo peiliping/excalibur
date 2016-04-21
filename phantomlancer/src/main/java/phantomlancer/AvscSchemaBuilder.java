@@ -23,48 +23,44 @@ import com.google.common.collect.Sets;
 public class AvscSchemaBuilder {
 
     private Class<?>        clazz;
-    private String          packageName;
-    private String          className;
     private AvroScan        avroScan;
     private volatile Schema schema;
+    private boolean         nameSpaceByPKN;
 
     public AvscSchemaBuilder(Class<?> clazz) {
         this.clazz = clazz;
-        this.packageName = clazz.getPackage().getName();
         this.avroScan = clazz.getAnnotation(AvroScan.class);
-        this.className = StrUtils.camelConvert(avroScan, clazz.getSimpleName());
         Validate.notNull(avroScan, "[%s] not found annotation(AvroScan.class)", clazz);
     }
 
-    public Schema getResult() {
-        if (schema == null) {
-            schema = convert2Schema();
-        }
-        return schema;
-    }
+    public synchronized Schema createSchema() {
 
-    private synchronized Schema convert2Schema() {
-        Schema sc = Schema.createRecord(className, "Auto Schema " + className, avroScan.nameSpace(), false);
-        List<org.apache.avro.Schema.Field> avrofields = new ArrayList<org.apache.avro.Schema.Field>();
+        String tableName = StrUtils.camelConvert(avroScan, clazz.getSimpleName());
+        String nameSpace = (avroScan.nameSpaceByPackageName() ? clazz.getPackage().getName() : avroScan.nameSpaceByManul());
+
+        Schema sc = Schema.createRecord(tableName, "Auto Schema " + tableName, nameSpace, false);
+        List<org.apache.avro.Schema.Field> avroFields = new ArrayList<org.apache.avro.Schema.Field>();
         HashSet<String> fieldNames = Sets.newHashSet();
+
         for (Class<?> tclazz = clazz; tclazz != Object.class; tclazz = tclazz.getSuperclass()) {
             Field[] fs = tclazz.getDeclaredFields();
-            for (Field fld : fs) {
-                if ((avroScan.skipStaticField() && Modifier.isStatic(fld.getModifiers()) || (avroScan.skipTransientField() && Modifier.isTransient(fld.getModifiers())))) {
+            for (Field field : fs) {
+                if ((avroScan.skipStaticField() && Modifier.isStatic(field.getModifiers()) || (avroScan.skipTransientField() && Modifier.isTransient(field.getModifiers())))) {
                     continue;
                 }
-                String fdName = StrUtils.camelConvert(avroScan, fld.getName());
+                String fieldName = StrUtils.camelConvert(avroScan, field.getName());
                 org.apache.avro.Schema.Field avroField = null;
-                if (!fieldNames.contains(fdName)) {
-                    fieldNames.add(fdName);
-                    avroField = JavaClass2Type.toAvroField(fld, fdName, avroScan);
+                if (!fieldNames.contains(fieldName)) {
+                    fieldNames.add(fieldName);
+                    avroField = JavaClass2Type.toAvroField(field, avroScan);
                 }
                 if (avroField != null) {
-                    avrofields.add(avroField);
+                    avroFields.add(avroField);
                 }
             }
         }
-        sc.setFields(avrofields);
-        return sc;
+        sc.setFields(avroFields);
+        schema = sc;
+        return getSchema();
     }
 }

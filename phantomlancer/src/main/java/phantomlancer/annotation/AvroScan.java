@@ -17,6 +17,10 @@ public @interface AvroScan {
 
     boolean skipTransientField() default true;
 
-    String nameSpace() default "PhantomLancer";
+    boolean nameSpaceByPackageName() default true;
+
+    String nameSpaceByManul() default "PhantomLancer.Auto";
+
+    boolean allCanBeNull() default true;
 
 }

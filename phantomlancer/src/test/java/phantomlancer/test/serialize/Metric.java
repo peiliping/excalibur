@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-@AvroScan(camelConvert = true, nameSpace = "phantomlancer.test.serialize")
+@AvroScan
 public class Metric {
 
     private int    dataVersion;

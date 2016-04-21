@@ -1,12 +1,13 @@
 package phantomlancer.test;
 
+import org.apache.avro.reflect.ReflectData;
+
 import phantomlancer.AvscSchemaBuilder;
 import phantomlancer.test.dataobject.Dimensions;
 import phantomlancer.test.dataobject.MetricDataDO;
 import phantomlancer.test.dataobject.Metrics;
 import phantomlancer.test.dataobject.Tags;
 import phantomlancer.test.dataobject.Timestamps;
-import phantomlancer.test.serialize.Metric;
 
 import com.google.gson.Gson;
 
@@ -39,11 +40,9 @@ public class AppTest {
 
         AvscSchemaBuilder sb1 = new AvscSchemaBuilder(MetricDataDO.class);
 
-        System.out.println(sb1.getResult());
+        System.out.println(sb1.createSchema());
 
-        AvscSchemaBuilder sb2 = new AvscSchemaBuilder(Metric.class);
-
-        System.out.println(sb2.getResult());
+        System.out.println(ReflectData.get().getSchema(MetricDataDO.class));
 
     }
 }

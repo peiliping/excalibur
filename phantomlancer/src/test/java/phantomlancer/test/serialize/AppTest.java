@@ -14,25 +14,18 @@ import phantomlancer.AvscSchemaBuilder;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 
-public class Test {
+public class AppTest {
 
     public static void main(String[] args) throws IOException {
 
         AvscSchemaBuilder asb = new AvscSchemaBuilder(Metric.class);
-
         final DataFileWriter<Metric2> dataFileWriter = new DataFileWriter<Metric2>(new SpecificDatumWriter<Metric2>(asb.createSchema()));
-        dataFileWriter.create(asb.createSchema(), new File("/home/peiliping/dev/logs/v1.avro"));
-
-        Path p = Paths.get("/home/peiliping/dev/logs/v1.log");
+        dataFileWriter.create(asb.createSchema(), new File("v1.avro"));
+        Path p = Paths.get("v1.log");
         Files.readLines(p.toFile(), Charset.defaultCharset(), new LineProcessor<String>() {
-            int i = 1;
-
             @Override
             public boolean processLine(String line) throws IOException {
                 String[] vals = line.split(" ");
-                if (i++ % 1000000 == 0) {
-                    System.out.println(i);
-                }
                 Metric2 mc =
                         Metric2.builder().dataVersion(Integer.valueOf(vals[0])).salt(Integer.valueOf(vals[1])).applicationId(Long.valueOf(vals[2]))
                                 .timeScope(Integer.valueOf(vals[3])).metricTypeId(Long.valueOf(vals[4])).metricId(Long.valueOf(vals[5])).time(Integer.valueOf(vals[6]))

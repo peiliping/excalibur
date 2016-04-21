@@ -1,13 +1,8 @@
-package phantomlancer.test;
+package phantomlancer.test.dataobject;
 
 import org.apache.avro.reflect.ReflectData;
 
 import phantomlancer.AvscSchemaBuilder;
-import phantomlancer.test.dataobject.Dimensions;
-import phantomlancer.test.dataobject.MetricDataDO;
-import phantomlancer.test.dataobject.Metrics;
-import phantomlancer.test.dataobject.Tags;
-import phantomlancer.test.dataobject.Timestamps;
 
 import com.google.gson.Gson;
 

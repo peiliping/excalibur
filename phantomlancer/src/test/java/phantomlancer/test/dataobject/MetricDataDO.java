@@ -14,9 +14,9 @@ public class MetricDataDO extends AbstractMetricDataDO {
     private static final long serialVersionUID = 5806385316864751488L;
 
     private long              parentId;
-    private String            parentName;
+    private transient String  parentName;
     private long              metricId;
-    private String            metricName;
+    private transient String  metricName;
     private Dimensions        dimensions;
     private Metrics           metrics;
     private Tags              tags;

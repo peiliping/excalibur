@@ -55,8 +55,8 @@
 	</bean>
 
 	<bean id="monitorAspect" class="com.oneapm.operation.monitor.aop.MonitorAspect">
-		<property name="groupName" value="AI" />
-		<property name="appName" value="DC" />
+		<property name="groupName" value="PE" />
+		<property name="appName" value="Phoenix" />
 		<property name="meterLoggerName" value="meter" />
 		<property name="timerLoggerName" value="timer" />
 	</bean>

@@ -4,48 +4,49 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
 import org.springframework.context.ApplicationContext;
 
-import co.paralleluniverse.fibers.Fiber;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.strands.Strand;
 import phoenix.datasource.DataSourceProxy;
 
-public class Quasar {
+public class Quasar2 {
 
 	public static void main(final ApplicationContext applicationContext, int tn)
-			throws SuspendExecution, InterruptedException, ExecutionException {
+			throws SuspendExecution, InterruptedException {
+
+		final ThreadPoolExecutor pool = new ThreadPoolExecutor(4, 1000, 0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>());
 
 		final AtomicInteger total = new AtomicInteger(0);
 		long start = System.currentTimeMillis();
 		System.out.println("==============");
 		int i = 0;
-		while (i++ < tn) {
-			Fiber f = new Fiber<Void>() {
-				private static final long serialVersionUID = 1L;
+		while (i++ < tn)
+			pool.submit(new Runnable() {
 
 				@Override
-				protected Void run() throws SuspendExecution, InterruptedException {
+				public void run() {
 					int k = 0;
 					while (k++ < 10) {
 						DataSourceProxy phoenixDS = (DataSourceProxy) applicationContext.getBean("phoenixDS");
 						excuteQuery(phoenixDS, "select count(1) from metric_data_entity_pt1m_2");
 					}
 					total.addAndGet(10);
-					return super.run();
 				}
-			};
-			f.start();
-		}
+			});
 		while (total.get() < tn * 10) {
 			Strand.sleep(2);
 		}
-		System.out.println("F" + (System.currentTimeMillis() - start));
+		System.out.println("T" + (System.currentTimeMillis() - start));
+		pool.shutdown();
 	}
 
 	public static <E> E excuteQuery(DataSource ds, String sql) {

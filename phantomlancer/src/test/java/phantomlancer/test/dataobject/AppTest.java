@@ -25,9 +25,11 @@ public class AppTest {
                         .tag9("127.0.0.1").tag10("127.0.0.1").tag11("127.0.0.1").tag12("127.0.0.1").tag13("127.0.0.1").tag14("127.0.0.1").tag15("127.0.0.1").tag16("127.0.0.1")
                         .build();
 
-        Timestamps tts = Timestamps.builder().timestampms(now).timestampmt(Long.valueOf(now / 60000).intValue()).timestamphr(Long.valueOf(now / 3600000).intValue()).build();
+        Timestamps tts = Timestamps.builder().timestampsc(now).timestampmt(Long.valueOf(now / 60000).intValue()).timestamphr(Long.valueOf(now / 3600000).intValue()).build();
 
-        MetricDataDO mdd = MetricDataDO.builder().parentId(1).parentName("ROOT").metricId(2).metricName("Node").dimensions(dms).metrics(metrics).tags(tgs).build();
+        NameSpace ns = NameSpace.builder().parentId(1).parentName("ROOT").metricId(2).metricName("Node").build();
+
+        MetricDataDO mdd = MetricDataDO.builder().nameSpace(ns).dimensions(dms).metrics(metrics).tags(tgs).build();
 
         mdd.setTimestamps(tts);
 

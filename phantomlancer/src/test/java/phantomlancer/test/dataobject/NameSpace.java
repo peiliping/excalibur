@@ -9,16 +9,11 @@ import phantomlancer.annotation.AvroScan;
 @Getter
 @Setter
 @Builder
-public class Timestamps {
+public class NameSpace {
 
-    private long timestampsc;
-
-    private int  timestampmt;
-
-    private int  timestamp10mt;
-
-    private int  timestamphr;
-
-    private int  timestampday;
+    private long             parentId;
+    private transient String parentName;
+    private long             metricId;
+    private transient String metricName;
 
 }

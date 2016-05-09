@@ -43,5 +43,38 @@ public class Metrics {
     private Double           mtc15;
     private transient String mtc16Name;
     private Double           mtc16;
+    private transient String mtc17Name;
+    private Double           mtc17;
+    private transient String mtc18Name;
+    private Double           mtc18;
+    private transient String mtc19Name;
+    private Double           mtc19;
+    private transient String mtc20Name;
+    private Double           mtc20;
+    private transient String mtc21Name;
+    private Double           mtc21;
+    private transient String mtc22Name;
+    private Double           mtc22;
+    private transient String mtc23Name;
+    private Double           mtc23;
+    private transient String mtc24Name;
+    private Double           mtc24;
+    private transient String tc25Name;
+    private Double           mtc25;
+    private transient String mtc26Name;
+    private Double           mtc26;
+    private transient String mtc27Name;
+    private Double           mtc27;
+    private transient String mtc28Name;
+    private Double           mtc28;
+    private transient String mtc29Name;
+    private Double           mtc29;
+    private transient String mtc30Name;
+    private Double           mtc30;
+    private transient String mtc31Name;
+    private Double           mtc31;
+    private transient String mtc32Name;
+    private Double           mtc32;
+
 
 }

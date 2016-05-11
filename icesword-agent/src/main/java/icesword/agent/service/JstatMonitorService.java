@@ -1,6 +1,6 @@
-package icesword.agent;
+package icesword.agent.service;
 
-public class MonitorService {
+public class JstatMonitorService {
     
     //thread pool 
     //pid vs future 

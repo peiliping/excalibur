@@ -1,4 +1,5 @@
-package icesword.agent;
+package icesword.agent.data;
+
 
 public class JvmItem {
 
@@ -11,5 +12,9 @@ public class JvmItem {
     public String vmArgs;
 
     public String vmFlags;
+
+    public JvmItem(int pid) {
+        this.pid = pid;
+    }
 
 }

@@ -1,5 +1,8 @@
 package icesword.agent;
 
+import icesword.agent.data.JvmItem;
+import icesword.agent.service.JpsMonitorService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,9 +17,6 @@ import java.util.Set;
 
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredHost;
-import sun.jvmstat.monitor.MonitoredVm;
-import sun.jvmstat.monitor.MonitoredVmUtil;
-import sun.jvmstat.monitor.VmIdentifier;
 import sun.tools.attach.HotSpotVirtualMachine;
 import sun.tools.jps.Arguments;
 
@@ -41,9 +41,8 @@ public class App2 {
             MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());
             Set<?> jvms = monitoredHost.activeVms();
             for (Iterator<?> jvm = jvms.iterator(); jvm.hasNext();) {
-                JvmItem jvmItem = new JvmItem();
-                jvmItem.pid = ((Integer) jvm.next()).intValue();
-                buildJvmItem(monitoredHost, jvmItem);
+                JvmItem jvmItem = new JvmItem(((Integer) jvm.next()).intValue());
+                JpsMonitorService.buildJvmItem(monitoredHost, jvmItem);
                 if (filterJvm(jvmItem)) {
                     jmap(jvmItem.pid + "", false, jvmItem);
                 }
@@ -135,43 +134,4 @@ public class App2 {
         return true;
     }
 
-    private static void buildJvmItem(MonitoredHost monitoredHost, JvmItem jvmItem) {
-        MonitoredVm vm = null;
-        String vmidString = "//" + jvmItem.pid + "?mode=r";
-        String errorString = null;
-        try {
-            errorString = " -- process information unavailable";
-            VmIdentifier id = new VmIdentifier(vmidString);
-            vm = monitoredHost.getMonitoredVm(id, 0);
-            errorString = " -- main class information unavailable";
-            jvmItem.mainClass = "" + MonitoredVmUtil.mainClass(vm, JPS_ARGUMENTS.showLongPaths());
-            if (JPS_ARGUMENTS.showMainArgs()) {
-                errorString = " -- main args information unavailable";
-                String mainArgs = MonitoredVmUtil.mainArgs(vm);
-                if (mainArgs != null && mainArgs.length() > 0) {
-                    jvmItem.mainArgs = mainArgs;
-                }
-            }
-            if (JPS_ARGUMENTS.showVmArgs()) {
-                errorString = " -- jvm args information unavailable";
-                String jvmArgs = MonitoredVmUtil.jvmArgs(vm);
-                if (jvmArgs != null && jvmArgs.length() > 0) {
-                    jvmItem.vmArgs = jvmArgs;
-                }
-            }
-            if (JPS_ARGUMENTS.showVmFlags()) {
-                errorString = " -- jvm flags information unavailable";
-                String jvmFlags = MonitoredVmUtil.jvmFlags(vm);
-                if (jvmFlags != null && jvmFlags.length() > 0) {
-                    jvmItem.vmFlags = jvmFlags;
-                }
-            }
-            errorString = " -- detach failed";
-            monitoredHost.detach(vm);
-            errorString = null;
-        } catch (Exception e) {
-            System.out.println(errorString);
-            e.printStackTrace();
-        }
-    }
 }

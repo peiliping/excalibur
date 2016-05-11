@@ -1,4 +1,4 @@
-package earthshaker;
+package icesword.agent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import sun.tools.jps.Arguments;
 
 import com.sun.tools.attach.VirtualMachine;
 
-public class App {
+public class App2 {
 
     private static Arguments        JPS_ARGUMENTS = new Arguments(new String[] {"-lmv"});
     private static SimpleDateFormat sdf           = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

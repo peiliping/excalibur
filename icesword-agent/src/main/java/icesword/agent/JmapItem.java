@@ -1,4 +1,4 @@
-package earthshaker;
+package icesword.agent;
 
 public class JmapItem {
 

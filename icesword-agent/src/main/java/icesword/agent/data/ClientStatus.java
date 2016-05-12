@@ -3,7 +3,7 @@ package icesword.agent.data;
 
 public class ClientStatus {
 
-    public int    statusCode;
+    public int    statusCode; // 0 = error 1 = normal
 
     public String msg;
 

@@ -13,6 +13,8 @@ public class JvmItem {
 
     public String vmFlags;
 
+    public String vmVersion;
+
     public JvmItem(int pid) {
         this.pid = pid;
     }

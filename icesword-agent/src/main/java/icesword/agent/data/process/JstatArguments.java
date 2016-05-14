@@ -3,6 +3,8 @@ package icesword.agent.data.process;
 import java.net.URL;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import sun.tools.jstat.Arguments;
 
 public class JstatArguments extends Arguments {
@@ -13,10 +15,9 @@ public class JstatArguments extends Arguments {
 
     @Override
     public List<URL> optionsSources() {
-        List<URL> result = super.optionsSources();
-        // TODO add source
-        // URL u = this.getClass().getResource("resources/jstat_options");
-        // result.add(u);
+        List<URL> result = Lists.newArrayList();
+        URL u = this.getClass().getResource("jstat_options");
+        result.add(u);
         return result;
     }
 }

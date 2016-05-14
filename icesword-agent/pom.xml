@@ -41,7 +41,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>icesword.agent.App</mainClass>
+							<mainClass>icesword.agent.JstatPlus</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

@@ -1,11 +1,13 @@
 package icesword.agent.service;
 
-import icesword.agent.data.JvmItem;
+import icesword.agent.data.process.JvmItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.tools.attach.VirtualMachine;
 
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredHost;
@@ -18,7 +20,7 @@ public class JpsMonitorService {
 
     public static Arguments JPS_ARGUMENTS = new Arguments(new String[] {"-lmv"});
 
-    public static List<JvmItem> findWorkerJVM() {
+    public static List<JvmItem> findWorkerJVM(String filterWord) {
         List<JvmItem> result = new ArrayList<JvmItem>();
         try {
             MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());
@@ -26,8 +28,11 @@ public class JpsMonitorService {
             for (Iterator<?> jvm = jvms.iterator(); jvm.hasNext();) {
                 JvmItem jvmItem = new JvmItem(((Integer) jvm.next()).intValue());
                 buildJvmItem(monitoredHost, jvmItem);
-                if (filterJvm(jvmItem)) {
-                    result.add(jvmItem);
+                if (filterJvm(jvmItem, filterWord)) {
+                    getJVMVersion(jvmItem);
+                    if (jvmItem.status) {
+                        result.add(jvmItem);
+                    }
                 }
             }
         } catch (MonitorException e) {
@@ -36,14 +41,14 @@ public class JpsMonitorService {
         return result;
     }
 
-
-    public static boolean filterJvm(JvmItem jvmItem) {
+    public static boolean filterJvm(JvmItem jvmItem, String filterWord) {
         if (jvmItem.mainClass.startsWith("sun.tools"))
             return false;
-        if (jvmItem.mainClass.equals("icesword.agent.App"))
+        if (jvmItem.mainClass.contains("icesword"))
             return false;
-        // if (jvmItem.mainClass.contains("jmap-ex.jar"))
-        // return false;
+        if (filterWord != null) {
+            return jvmItem.mainClass.contains(filterWord);
+        }
         return true;
     }
 
@@ -81,9 +86,22 @@ public class JpsMonitorService {
             errorString = " -- detach failed";
             monitoredHost.detach(vm);
             errorString = null;
+            jvmItem.simpleDesc();
         } catch (Exception e) {
-            System.out.println(errorString);
-            e.printStackTrace();
+            jvmItem.errorString = errorString;
+            jvmItem.status = false;
+        }
+    }
+
+    public static void getJVMVersion(JvmItem jvmItem) {
+        try {
+            VirtualMachine vm = VirtualMachine.attach("" + jvmItem.pid);
+            String r = (vm.getSystemProperties().getProperty("java.vm.specification.version"));
+            vm.detach();
+            jvmItem.vmVersion = r.trim();
+        } catch (Exception e) {
+            jvmItem.status = false;
+            jvmItem.errorString = "vm version information unavailable";
         }
     }
 }

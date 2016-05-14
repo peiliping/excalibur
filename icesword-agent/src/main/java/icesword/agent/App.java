@@ -2,8 +2,7 @@ package icesword.agent;
 
 import icesword.agent.data.ClientStatus;
 import icesword.agent.data.Config;
-import icesword.agent.data.JvmItem;
-import icesword.agent.data.Result;
+import icesword.agent.data.process.JvmItem;
 import icesword.agent.service.JpsMonitorService;
 import icesword.agent.service.JstatMonitorService;
 import icesword.agent.util.NetTools;
@@ -39,14 +38,14 @@ public class App {
                 if (true) {
                     // TODO
                     System.out.println(JSON.toJSONString(config));
-                    List<JvmItem> jvms = JpsMonitorService.findWorkerJVM();
-                    jstatMonitorService.addJVMs(jvms, clientStatus);
-                    if (jstatMonitorService.data.size() > 0) {
-                        Result rs = new Result(config);
-                        rs.data.addAll(jstatMonitorService.data);
-                        jstatMonitorService.data.clear();
-                        sendData(configServerAddress + MEMORY_PATH, JSON.toJSONString(rs));
-                    }
+                    List<JvmItem> jvms = JpsMonitorService.findWorkerJVM(null);
+                    // jstatMonitorService.addJVMs(jvms, clientStatus);
+                    // if (jstatMonitorService.data.size() > 0) {
+                    // Result rs = new Result(config);
+                    // rs.data.addAll(jstatMonitorService.data);
+                    // jstatMonitorService.data.clear();
+                    // sendData(configServerAddress + MEMORY_PATH, JSON.toJSONString(rs));
+                    // }
                 }
                 Thread.sleep(60 * 1000);
             } catch (Exception e) {

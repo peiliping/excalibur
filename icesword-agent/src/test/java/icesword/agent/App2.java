@@ -1,6 +1,6 @@
 package icesword.agent;
 
-import icesword.agent.data.JvmItem;
+import icesword.agent.data.process.JvmItem;
 import icesword.agent.service.JpsMonitorService;
 
 import java.io.BufferedReader;

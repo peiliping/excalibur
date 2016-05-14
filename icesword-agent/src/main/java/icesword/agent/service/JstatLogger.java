@@ -18,11 +18,12 @@ public class JstatLogger {
     }
 
     public void logSamples(OutputFormatter formatter, int headerRate, int sampleInterval) throws MonitorException {
+        System.out.println("PID" + "\t" + formatter.getHeader());
         while (active) {
             try {
                 String row = formatter.getRow();
-                row = row.replaceAll("\\s+ ", " ");
-                System.out.println(item.simpleDesc + " " + row);
+                // row = row.replaceAll("\\s+ ", " ");
+                System.out.println(item.pid + "\t" + row);
             } catch (Exception e) {
                 e.printStackTrace();
             }

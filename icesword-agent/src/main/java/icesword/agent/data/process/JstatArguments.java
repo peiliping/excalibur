@@ -16,7 +16,7 @@ public class JstatArguments extends Arguments {
     @Override
     public List<URL> optionsSources() {
         List<URL> result = Lists.newArrayList();
-        URL u = this.getClass().getResource("jstat_options");
+        URL u = this.getClass().getResource("/jstat_options");
         result.add(u);
         return result;
     }

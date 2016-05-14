@@ -1,4 +1,4 @@
-package icesword.agent.data;
+package icesword.agent;
 
 
 public class ClientStatus {

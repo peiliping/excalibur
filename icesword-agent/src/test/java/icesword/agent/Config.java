@@ -1,4 +1,4 @@
-package icesword.agent.data;
+package icesword.agent;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;

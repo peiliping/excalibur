@@ -11,8 +11,11 @@ import lombok.Setter;
 public class Meta {
 
     public long   app_group_id;
+
     public long   app_id;
+
     public String idnetifier;
+
     public String name_space;
 
 }

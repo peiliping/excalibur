@@ -13,7 +13,7 @@ public class JstatPlus {
     public static final String         AGENT_VERSION    = "1.0";
 
     public static AtomicLong           POLL_INTERVEL    = new AtomicLong(60 * 1000);
-    public static AtomicBoolean       RUNNING          = new AtomicBoolean(true);
+    public static AtomicBoolean        RUNNING          = new AtomicBoolean(true);
 
     private static long                MONITOR_INTERVAL = 1000;
 
@@ -31,7 +31,7 @@ public class JstatPlus {
             while (RUNNING.get()) {
                 // Update Config
                 List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null);
-                jstatPool.addJVMs(jvmList, MONITOR_INTERVAL * 2);
+                jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                 jstatPool.cleanDoneFuture();
                 Thread.sleep(POLL_INTERVEL.get());
                 // Send Data

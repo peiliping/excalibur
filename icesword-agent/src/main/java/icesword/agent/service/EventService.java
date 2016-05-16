@@ -2,6 +2,7 @@ package icesword.agent.service;
 
 import icesword.agent.data.process.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -12,6 +13,11 @@ public class EventService {
     private static AtomicLong        CURRENT_POSITION = new AtomicLong(0);
 
     private static List<List<Event>> DATA_POOL        = Lists.newArrayList();
+
+    static {
+        DATA_POOL.add(new ArrayList<Event>());
+        DATA_POOL.add(new ArrayList<Event>());
+    }
 
     public static synchronized void oOOo() {
         CURRENT_POSITION.addAndGet(1);
@@ -32,6 +38,6 @@ public class EventService {
 
     public static synchronized void cleanLastOne() {
         int p = Long.valueOf((CURRENT_POSITION.get() + 1 % 2)).intValue();
-        DATA_POOL.get(p).clear();;
+        DATA_POOL.get(p).clear();
     }
 }

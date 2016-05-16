@@ -7,13 +7,15 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class GCDataItem extends IData {
+public class MemoryDataItem extends IData {
 
     private static final long serialVersionUID = 9037008483960292039L;
 
     private Double            times;
 
-    private Double            cost_ms;
+    private Double            capacity;
+
+    private Double            used;
 
     private long              timestamp;
 

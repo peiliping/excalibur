@@ -14,6 +14,7 @@ import sun.tools.jstat.OptionFormat;
 import sun.tools.jstat.OptionOutputFormatter;
 import sun.tools.jstat.OutputFormatter;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Preconditions;
 
 @Builder
@@ -69,6 +70,7 @@ public class JstatWorker implements Runnable {
             }
             monitoredHost.detach(monitoredVm);
         } catch (Exception e) {
+            e.printStackTrace();
             EventService.addEvent(new Event(0, "Monitor " + item.mainClass + " Exception" + e.getMessage()));
         }
     }

@@ -23,6 +23,10 @@ public class ConfigService {
 
     public static final String  CONNECT_PATH     = "/connect";
 
+    public static final String  M_DATA_PATH      = "/metrics/jvm/gc";
+
+    public static final String  G_DATA_PATH      = "/metrics/jvm/memory";
+
     private String              configServerAddress;
 
     private Config              config;
@@ -39,5 +43,9 @@ public class ConfigService {
         } else {
             EventService.addEvent(new Event(0, "Update Config Error ."));
         }
+    }
+
+    public void sendData() {
+
     }
 }

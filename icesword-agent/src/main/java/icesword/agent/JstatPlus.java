@@ -21,9 +21,9 @@ public class JstatPlus {
     private static JstatMonitorService jstatPool        = new JstatMonitorService();
 
     public static void main(String[] args) throws InterruptedException {
-        if (args == null || (args.length == 2 && args[1].trim().equals("-k"))) { // 单机模式
+        if (args.length == 0 || (args.length == 2 && args[1].trim().equals("-k"))) { // 单机模式
             while (RUNNING.get()) {
-                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM((args[1].trim()));
+                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM((args.length == 0 ? null : args[1].trim()));
                 jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                 jstatPool.cleanDoneFuture();
                 Thread.sleep(POLL_INTERVEL.get());
@@ -48,7 +48,7 @@ public class JstatPlus {
                     }
                 }
                 Thread.sleep(POLL_INTERVEL.get());
-                // TODO Send Data
+                cs.sendData();
             }
         }
         System.exit(0);

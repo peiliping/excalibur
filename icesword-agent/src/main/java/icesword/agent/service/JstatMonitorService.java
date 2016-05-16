@@ -20,6 +20,7 @@ public class JstatMonitorService {
         for (Map.Entry<Integer, Pair<Future<?>, JstatWorker>> one : processing.entrySet()) {
             if (one.getValue().getLeft().isCancelled() || one.getValue().getLeft().isDone()) {
                 processing.remove(one.getKey());
+                DataService.cleanOneCache(one.getKey());
             }
         }
     }

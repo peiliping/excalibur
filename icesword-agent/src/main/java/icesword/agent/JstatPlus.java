@@ -2,7 +2,6 @@ package icesword.agent;
 
 import icesword.agent.data.process.JvmItem;
 import icesword.agent.service.ConfigService;
-import icesword.agent.service.EventService;
 import icesword.agent.service.JpsMonitorService;
 import icesword.agent.service.JstatMonitorService;
 
@@ -16,6 +15,7 @@ public class JstatPlus {
 
     public static AtomicLong           POLL_INTERVEL    = new AtomicLong(60 * 1000);
     public static AtomicBoolean        RUNNING          = new AtomicBoolean(true);
+    public static AtomicBoolean        ONLINE           = new AtomicBoolean(false);
 
     private static long                MONITOR_INTERVAL = 1000;
 
@@ -32,10 +32,10 @@ public class JstatPlus {
         } else if (args.length == 2 && args[1].trim().startsWith("-r")) { // Diamond模式
             while (RUNNING.get()) {
                 ConfigService cs = ConfigService.builder().configServerAddress(args[1].trim()).build();
-                cs.updateConfigAndSendEvent();
+                cs.updateConfigAndSendEvent(AGENT_VERSION);
                 if (cs.getConfig() != null) {
                     if (cs.getConfig().getStatus() == 1) {
-                        EventService.status(true);
+                        ONLINE.set(true);
                         POLL_INTERVEL.set(cs.getConfig().getPeriod());
                         List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null);
                         jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);

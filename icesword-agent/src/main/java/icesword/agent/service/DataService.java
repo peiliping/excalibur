@@ -1,6 +1,7 @@
 package icesword.agent.service;
 
 import icesword.agent.data.process.JstatItem;
+import icesword.agent.data.process.JvmItem;
 import icesword.agent.data.result.ResultData;
 import icesword.agent.util.Pair;
 
@@ -13,9 +14,9 @@ import com.google.common.collect.Maps;
 
 public class DataService {
 
-    private static AtomicLong                     CURRENT_POSITION = new AtomicLong(0);
-    private static List<ResultData>               MEMORY_DATA_POOL = Lists.newArrayList();
-    private static List<ResultData>               GC_DATA_POOL     = Lists.newArrayList();
+    private static AtomicLong                        CURRENT_POSITION = new AtomicLong(0);
+    private static List<ResultData>                  MEMORY_DATA_POOL = Lists.newArrayList();
+    private static List<ResultData>                  GC_DATA_POOL     = Lists.newArrayList();
 
     private static ConcurrentMap<Integer, JstatItem> CACHE            = Maps.newConcurrentMap();
 
@@ -23,8 +24,9 @@ public class DataService {
         CURRENT_POSITION.addAndGet(1);
     }
 
-    public static synchronized void addData() {
+    public static synchronized void addData(JvmItem jvmItem, JstatItem jstatItem) {
         int p = Long.valueOf((CURRENT_POSITION.get() % 2)).intValue();
+        // TODO
     }
 
     public static synchronized Pair<ResultData, ResultData> getLastOne() {

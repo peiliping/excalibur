@@ -27,4 +27,8 @@ public class JstatItem {
     private long   FGC;
     private double FGCT;
 
+    public JstatItem(String content, JvmItem jvmItem) {
+
+    }
+
 }

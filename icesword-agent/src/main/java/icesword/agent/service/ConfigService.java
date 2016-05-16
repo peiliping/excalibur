@@ -31,8 +31,8 @@ public class ConfigService {
 
     private Config              config;
 
-    public void updateConfigAndSendEvent() {
-        String params = "agent_ip=" + CLIENT_IP + "&" + "health_info=";
+    public void updateConfigAndSendEvent(String agentVersion) {
+        String params = "agent_ip=" + CLIENT_IP + "&agent_version=" + agentVersion + "&health_info=";
         EventService.oOOo();
         List<Event> es = EventService.getLastOne();
         params = params + JSON.toJSONString(es);
@@ -46,6 +46,6 @@ public class ConfigService {
     }
 
     public void sendData() {
-
+        // TODO
     }
 }

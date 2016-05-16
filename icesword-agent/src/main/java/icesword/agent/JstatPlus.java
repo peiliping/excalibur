@@ -2,6 +2,7 @@ package icesword.agent;
 
 import icesword.agent.data.process.JvmItem;
 import icesword.agent.service.ConfigService;
+import icesword.agent.service.EventService;
 import icesword.agent.service.JpsMonitorService;
 import icesword.agent.service.JstatMonitorService;
 
@@ -34,11 +35,13 @@ public class JstatPlus {
                 cs.updateConfigAndSendEvent();
                 if (cs.getConfig() != null) {
                     if (cs.getConfig().getStatus() == 1) {
+                        EventService.status(true);
                         POLL_INTERVEL.set(cs.getConfig().getPeriod());
                         List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null);
                         jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                         jstatPool.cleanDoneFuture();
                     } else if (cs.getConfig().getStatus() == 0) {
+                        POLL_INTERVEL.set(cs.getConfig().getPeriod());
                         jstatPool.killAllAttach();
                         jstatPool.cleanDoneFuture();
                     } else if (cs.getConfig().getStatus() == -1) {

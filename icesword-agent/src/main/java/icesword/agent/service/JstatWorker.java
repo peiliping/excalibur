@@ -14,7 +14,6 @@ import sun.tools.jstat.OptionFormat;
 import sun.tools.jstat.OptionOutputFormatter;
 import sun.tools.jstat.OutputFormatter;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.base.Preconditions;
 
 @Builder

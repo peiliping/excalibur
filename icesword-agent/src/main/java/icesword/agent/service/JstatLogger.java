@@ -22,7 +22,6 @@ public class JstatLogger {
         while (active) {
             try {
                 String row = formatter.getRow();
-                // row = row.replaceAll("\\s+ ", " ");
                 System.out.println(item.pid + "\t" + row);
             } catch (Exception e) {
                 e.printStackTrace();

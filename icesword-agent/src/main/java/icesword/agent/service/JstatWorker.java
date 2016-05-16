@@ -1,5 +1,6 @@
 package icesword.agent.service;
 
+import icesword.agent.data.process.Event;
 import icesword.agent.data.process.JstatArguments;
 import icesword.agent.data.process.JvmItem;
 import lombok.Builder;
@@ -18,9 +19,11 @@ import com.google.common.base.Preconditions;
 @Builder
 public class JstatWorker implements Runnable {
 
-    private long    interval;
+    private long        interval;
 
-    private JvmItem item;
+    private JvmItem     item;
+
+    private JstatLogger logger;
 
     @Override
     public void run() {
@@ -30,7 +33,7 @@ public class JstatWorker implements Runnable {
             int interval = arguments.sampleInterval();
             final MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(vmId);
             MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
-            final JstatLogger logger = new JstatLogger(item);
+            logger = new JstatLogger(item);
             OutputFormatter formatter = null;
             Preconditions.checkArgument(arguments.isSpecialOption());
             OptionFormat format = arguments.optionFormat();
@@ -59,15 +62,18 @@ public class JstatWorker implements Runnable {
             if (vmId.getLocalVmId() != 0) {
                 monitoredHost.addHostListener(terminator);
             }
-            // TODO SEND EVENT
+            EventService.addEvent(new Event(1, "Monitor " + item.mainClass));
             logger.logSamples(formatter, arguments.headerRate(), arguments.sampleInterval());
             if (terminator != null) {
                 monitoredHost.removeHostListener(terminator);
             }
             monitoredHost.detach(monitoredVm);
         } catch (Exception e) {
-            // TODO SEND EVENT
-            e.printStackTrace();
+            EventService.addEvent(new Event(0, "Monitor " + item.mainClass + " Exception" + e.getMessage()));
         }
+    }
+
+    public void stop() {
+        logger.stopLogging();
     }
 }

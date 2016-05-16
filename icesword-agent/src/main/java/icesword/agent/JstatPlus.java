@@ -1,6 +1,7 @@
 package icesword.agent;
 
 import icesword.agent.data.process.JvmItem;
+import icesword.agent.service.ConfigService;
 import icesword.agent.service.JpsMonitorService;
 import icesword.agent.service.JstatMonitorService;
 
@@ -29,12 +30,25 @@ public class JstatPlus {
             }
         } else if (args.length == 2 && args[1].trim().startsWith("-r")) { // Diamond模式
             while (RUNNING.get()) {
-                // Update Config
-                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null);
-                jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
-                jstatPool.cleanDoneFuture();
+                ConfigService cs = ConfigService.builder().configServerAddress(args[1].trim()).build();
+                cs.updateConfigAndSendEvent();
+                if (cs.getConfig() != null) {
+                    if (cs.getConfig().getStatus() == 1) {
+                        POLL_INTERVEL.set(cs.getConfig().getPeriod());
+                        List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null);
+                        jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
+                        jstatPool.cleanDoneFuture();
+                    } else if (cs.getConfig().getStatus() == 0) {
+                        jstatPool.killAllAttach();
+                        jstatPool.cleanDoneFuture();
+                    } else if (cs.getConfig().getStatus() == -1) {
+                        jstatPool.killAllAttach();
+                        jstatPool.cleanDoneFuture();
+                        break;
+                    }
+                }
                 Thread.sleep(POLL_INTERVEL.get());
-                // Send Data
+                // TODO Send Data
             }
         }
         System.exit(0);

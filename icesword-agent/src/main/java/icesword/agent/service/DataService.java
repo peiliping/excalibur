@@ -18,6 +18,13 @@ public class DataService {
     private static List<ResultData>                  MEMORY_DATA_POOL = Lists.newArrayList();
     private static List<ResultData>                  GC_DATA_POOL     = Lists.newArrayList();
 
+    static {
+        MEMORY_DATA_POOL.add(new ResultData());
+        MEMORY_DATA_POOL.add(new ResultData());
+        GC_DATA_POOL.add(new ResultData());
+        GC_DATA_POOL.add(new ResultData());
+    }
+
     private static ConcurrentMap<Integer, JstatItem> CACHE            = Maps.newConcurrentMap();
 
     public static synchronized void oOOo() {
@@ -26,16 +33,22 @@ public class DataService {
 
     public static synchronized void addData(JvmItem jvmItem, JstatItem jstatItem) {
         int p = Long.valueOf((CURRENT_POSITION.get() % 2)).intValue();
-        // TODO
+        if (CACHE.containsKey(jvmItem.pid)) {
+            JstatItem now = jstatItem.compare(CACHE.get(jvmItem.pid));
+            now.toIDataPool(MEMORY_DATA_POOL.get(p), GC_DATA_POOL.get(p));
+            CACHE.put(jvmItem.pid, jstatItem);
+        } else {
+            CACHE.put(jvmItem.pid, jstatItem);
+        }
     }
 
     public static synchronized Pair<ResultData, ResultData> getLastOne() {
-        int p = Long.valueOf((CURRENT_POSITION.get() + 1 % 2)).intValue();
+        int p = Long.valueOf(((CURRENT_POSITION.get() + 1) % 2)).intValue();
         return new Pair<ResultData, ResultData>(MEMORY_DATA_POOL.get(p), GC_DATA_POOL.get(p));
     }
 
     public static synchronized void cleanLastOne() {
-        int p = Long.valueOf((CURRENT_POSITION.get() + 1 % 2)).intValue();
+        int p = Long.valueOf(((CURRENT_POSITION.get() + 1) % 2)).intValue();
         GC_DATA_POOL.get(p).getData().clear();
         MEMORY_DATA_POOL.get(p).getData().clear();
     }

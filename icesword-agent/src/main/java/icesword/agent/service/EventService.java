@@ -36,12 +36,12 @@ public class EventService {
     }
 
     public static synchronized List<Event> getLastOne() {
-        int p = Long.valueOf((CURRENT_POSITION.get() + 1 % 2)).intValue();
+        int p = Long.valueOf(((CURRENT_POSITION.get() + 1) % 2)).intValue();
         return DATA_POOL.get(p);
     }
 
     public static synchronized void cleanLastOne() {
-        int p = Long.valueOf((CURRENT_POSITION.get() + 1 % 2)).intValue();
+        int p = Long.valueOf(((CURRENT_POSITION.get() + 1) % 2)).intValue();
         DATA_POOL.get(p).clear();
     }
 }

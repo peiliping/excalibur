@@ -24,8 +24,7 @@ public class JstatLogger {
             while (active) {
                 try {
                     String row = formatter.getRow();
-                    JstatItem ji = new JstatItem(row, item);
-                    DataService.addData(item, ji);
+                    DataService.addData(item, new JstatItem(row, item));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

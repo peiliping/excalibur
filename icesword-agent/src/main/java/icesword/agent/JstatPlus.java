@@ -22,14 +22,14 @@ public class JstatPlus {
     private static JstatMonitorService jstatPool        = new JstatMonitorService();
 
     public static void main(String[] args) throws InterruptedException {
-        if (args.length == 0 || (args.length == 2 && args[1].trim().equals("-k"))) { // 单机模式
+        if (args.length == 0 || (args.length == 2 && args[0].trim().equals("-k"))) { // 单机模式
             while (RUNNING.get()) {
                 List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM((args.length == 0 ? null : args[1].trim()));
                 jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                 jstatPool.cleanDoneFuture();
                 Thread.sleep(POLL_INTERVEL.get());
             }
-        } else if (args.length == 2 && args[1].trim().startsWith("-r")) { // Diamond模式
+        } else if (args.length == 2 && args[0].trim().equals("-r")) { // Diamond模式
             while (RUNNING.get()) {
                 ConfigService cs = ConfigService.builder().configServerAddress(args[1].trim()).build();
                 cs.updateConfigAndSendEvent(AGENT_VERSION);
@@ -41,7 +41,6 @@ public class JstatPlus {
                         jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                         jstatPool.cleanDoneFuture();
                     } else if (cs.getConfig().getStatus() == 0) {
-                        POLL_INTERVEL.set(cs.getConfig().getPeriod());
                         jstatPool.killAllAttach();
                         jstatPool.cleanDoneFuture();
                     } else if (cs.getConfig().getStatus() == -1) {

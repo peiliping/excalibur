@@ -14,7 +14,7 @@ public class Meta {
 
     public long   app_id;
 
-    public String idnetifier;
+    public String identifier;
 
     public String name_space;
 

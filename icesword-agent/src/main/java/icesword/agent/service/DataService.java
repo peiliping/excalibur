@@ -20,9 +20,13 @@ public class DataService {
 
     static {
         MEMORY_DATA_POOL.add(new ResultData());
+        MEMORY_DATA_POOL.get(MEMORY_DATA_POOL.size() - 1).getMeta().name_space = "JVMMemoryMetrics";
         MEMORY_DATA_POOL.add(new ResultData());
+        MEMORY_DATA_POOL.get(MEMORY_DATA_POOL.size() - 1).getMeta().name_space = "JVMMemoryMetrics";
         GC_DATA_POOL.add(new ResultData());
+        GC_DATA_POOL.get(GC_DATA_POOL.size() - 1).getMeta().name_space = "JVMGCMetrics";
         GC_DATA_POOL.add(new ResultData());
+        GC_DATA_POOL.get(GC_DATA_POOL.size() - 1).getMeta().name_space = "JVMGCMetrics";
     }
 
     private static ConcurrentMap<Integer, JstatItem> CACHE            = Maps.newConcurrentMap();

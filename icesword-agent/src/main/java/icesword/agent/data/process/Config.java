@@ -11,7 +11,7 @@ public class Config {
 
     public long   app_id;
 
-    public String idnetifier;
+    public String identifier;
 
     public int    status;
 

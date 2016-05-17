@@ -24,7 +24,7 @@ public class JstatPlus {
     public static void main(String[] args) throws InterruptedException {
         if (args.length == 0 || (args.length == 2 && args[0].trim().equals("-k"))) { // 单机模式
             while (RUNNING.get()) {
-                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM((args.length == 0 ? null : args[1].trim()));
+                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM((args.length == 0 ? null : args[1].trim()), jstatPool);
                 jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                 jstatPool.cleanDoneFuture();
                 Thread.sleep(POLL_INTERVEL.get());
@@ -37,7 +37,7 @@ public class JstatPlus {
                     if (cs.getConfig().getStatus() == 1) {
                         ONLINE.set(true);
                         POLL_INTERVEL.set(cs.getConfig().getPeriod());
-                        List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null);
+                        List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null, jstatPool);
                         jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
                         jstatPool.cleanDoneFuture();
                     } else if (cs.getConfig().getStatus() == 0) {

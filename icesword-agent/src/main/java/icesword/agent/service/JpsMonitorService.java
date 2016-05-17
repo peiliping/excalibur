@@ -20,7 +20,7 @@ public class JpsMonitorService {
 
     public static Arguments JPS_ARGUMENTS = new Arguments(new String[] {"-lmv"});
 
-    public static List<JvmItem> findWorkerJVM(String filterWord) {
+    public static List<JvmItem> findWorkerJVM(String filterWord, JstatMonitorService jsm) {
         List<JvmItem> result = new ArrayList<JvmItem>();
         try {
             MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());
@@ -28,7 +28,7 @@ public class JpsMonitorService {
             for (Iterator<?> jvm = jvms.iterator(); jvm.hasNext();) {
                 JvmItem jvmItem = new JvmItem(((Integer) jvm.next()).intValue());
                 buildJvmItem(monitoredHost, jvmItem);
-                if (filterJvm(jvmItem, filterWord)) {
+                if (filterJvm(jvmItem, filterWord) && !jsm.isExistPid(jvmItem.pid)) {
                     getJVMVersion(jvmItem);
                     if (jvmItem.status) {
                         result.add(jvmItem);

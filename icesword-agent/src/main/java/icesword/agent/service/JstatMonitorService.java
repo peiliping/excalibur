@@ -16,6 +16,10 @@ public class JstatMonitorService {
     private ExecutorService                                      executor   = Executors.newFixedThreadPool(20);
     private ConcurrentMap<Integer, Pair<Future<?>, JstatWorker>> processing = new ConcurrentHashMap<Integer, Pair<Future<?>, JstatWorker>>();
 
+    public boolean isExistPid(int pid) {
+        return processing.containsKey(pid);
+    }
+
     public synchronized void cleanDoneFuture() {
         for (Map.Entry<Integer, Pair<Future<?>, JstatWorker>> one : processing.entrySet()) {
             if (one.getValue().getLeft().isCancelled() || one.getValue().getLeft().isDone()) {

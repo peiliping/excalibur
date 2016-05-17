@@ -1,5 +1,6 @@
 package icesword.agent.util.jstatex;
 
+import icesword.agent.JstatPlus;
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredVm;
 import sun.tools.jstat.OptionFormat;
@@ -20,8 +21,8 @@ public class OptionOutputFormatterEx extends OptionOutputFormatter {
     @Override
     public String getRow() throws MonitorException {
         RowClosureEx rc = new RowClosureEx(vm);
+        rc.split = (JstatPlus.ONLINE.get() ? "\001" : " ");
         format.apply(rc);
         return rc.getRow();
     }
-
 }

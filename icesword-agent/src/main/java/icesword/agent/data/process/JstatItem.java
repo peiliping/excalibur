@@ -40,8 +40,8 @@ public class JstatItem implements Cloneable {
     public JstatItem(String content, JvmItem jvmItem) {
         this.vmVersion = jvmItem.vmVersion;
         this.processSignal = jvmItem.simpleDesc;
-        content = content.trim().replaceAll("\\s+", " ");
-        String[] tmp = content.split(" ");
+        content = content.trim().replaceAll("\\s+", "");
+        String[] tmp = content.split("\001");
         this.PID = jvmItem.pid;
         this.S0C = Integer.valueOf(tmp[0]);
         this.S0U = Integer.valueOf(tmp[1]);

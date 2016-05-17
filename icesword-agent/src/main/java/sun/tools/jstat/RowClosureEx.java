@@ -7,7 +7,8 @@ import sun.jvmstat.monitor.MonitoredVm;
 
 public class RowClosureEx implements Closure {
     private MonitoredVm   vm;
-    private StringBuilder row = new StringBuilder();
+    private StringBuilder row   = new StringBuilder();
+    public String         split = " ";
 
     public RowClosureEx(MonitoredVm vm) {
         this.vm = vm;
@@ -36,10 +37,9 @@ public class RowClosureEx implements Closure {
 
         c.setPreviousValue(value);
         s = c.getAlignment().align(s, c.getWidth());
-        s.replaceAll(" ", "_");
         row.append(s);
         if (hasNext) {
-            row.append(" ");
+            row.append(split);
         }
     }
 

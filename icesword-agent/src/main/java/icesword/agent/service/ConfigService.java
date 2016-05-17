@@ -2,6 +2,7 @@ package icesword.agent.service;
 
 import icesword.agent.data.process.Config;
 import icesword.agent.data.process.Event;
+import icesword.agent.data.result.Meta;
 import icesword.agent.data.result.ResultData;
 import icesword.agent.util.NetTools;
 import icesword.agent.util.NetTools.HttpResult;
@@ -41,7 +42,6 @@ public class ConfigService {
         params = params + JSON.toJSONString(es);
         HttpResult hr = NetTools.httpPost(PROTOCAL + configServerAddress + CONNECT_PATH, params);
         if (hr.success) {
-            System.out.println(hr.content);
             config = JSON.parseObject(hr.content, Config.class);
             config.period = config.period * 1000;
             EventService.cleanLastOne();
@@ -51,22 +51,30 @@ public class ConfigService {
     }
 
     public void sendData() {
-        DataService.oOOo();
-        Pair<ResultData, ResultData> result = DataService.getLastOne();
-        result.getLeft().getMeta().app_group_id = config.app_group_id;
-        result.getLeft().getMeta().app_id = config.app_id;
-        result.getLeft().getMeta().identifier = config.identifier;
-        String paramsM = "data=" + JSON.toJSONString(result.getLeft());
-        System.out.println(paramsM);
-        HttpResult hr1 = NetTools.httpPost(PROTOCAL + configServerAddress + M_DATA_PATH, paramsM);
-        System.out.println(JSON.toJSONString(hr1));
-        result.getRight().getMeta().app_group_id = config.app_group_id;
-        result.getRight().getMeta().app_id = config.app_id;
-        result.getRight().getMeta().identifier = config.identifier;
-        String paramsG = "data=" + JSON.toJSONString(result.getRight());
-        System.out.println(paramsM);
-        HttpResult hr2 = NetTools.httpPost(PROTOCAL + configServerAddress + G_DATA_PATH, paramsG);
-        System.out.println(JSON.toJSONString(hr2));
-        DataService.cleanLastOne();
+        try {
+            DataService.oOOo();
+            Pair<ResultData, ResultData> result = DataService.getLastOne();
+            if (result.getLeft().getData().size() > 0) {
+                buildMeta(result.getLeft().getMeta());
+                String paramsM = "data=" + JSON.toJSONString(result.getLeft());
+                System.out.println(paramsM);
+                NetTools.httpPost(PROTOCAL + configServerAddress + M_DATA_PATH, paramsM);
+            }
+            if (result.getRight().getData().size() > 0) {
+                buildMeta(result.getRight().getMeta());
+                String paramsG = "data=" + JSON.toJSONString(result.getRight());
+                System.out.println(paramsG);
+                NetTools.httpPost(PROTOCAL + configServerAddress + G_DATA_PATH, paramsG);
+            }
+            DataService.cleanLastOne();
+        } catch (Exception ec) {
+            ec.printStackTrace();
+        }
+    }
+
+    public void buildMeta(Meta meta) {
+        meta.app_group_id = config.app_group_id;
+        meta.app_id = config.app_id;
+        meta.identifier = config.identifier;
     }
 }

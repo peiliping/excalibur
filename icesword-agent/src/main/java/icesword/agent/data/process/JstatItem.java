@@ -95,6 +95,8 @@ public class JstatItem implements Cloneable {
     public void pushGCData(ResultData rd, String key, Long v1, Double v2) {
         if (v1 == null || v2 == null)
             return;
+        if (v1 == 0)
+            return;
         String tkey = buildKey(key);
         GCDataItem gd = GCDataItem.builder().times(Double.valueOf(v1)).cost_ms(v2).timestamp(timestamp).process_signal(processSignal).build();
         rd.addOne(tkey, gd);

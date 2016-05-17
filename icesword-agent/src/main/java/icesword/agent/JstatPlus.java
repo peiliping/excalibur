@@ -17,7 +17,7 @@ public class JstatPlus {
     public static AtomicBoolean        RUNNING          = new AtomicBoolean(true);
     public static AtomicBoolean        ONLINE           = new AtomicBoolean(false);
 
-    private static long                MONITOR_INTERVAL = 1000;
+    private static long                MONITOR_INTERVAL = 2 * 1000;
 
     private static JstatMonitorService jstatPool        = new JstatMonitorService();
 

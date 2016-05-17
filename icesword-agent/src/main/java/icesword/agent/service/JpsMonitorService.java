@@ -90,6 +90,7 @@ public class JpsMonitorService {
             errorString = null;
             jvmItem.simpleDesc();
         } catch (Exception e) {
+            e.printStackTrace();
             jvmItem.errorString = errorString;
             jvmItem.status = false;
         }
@@ -102,6 +103,7 @@ public class JpsMonitorService {
             vm.detach();
             jvmItem.vmVersion = r.trim();
         } catch (Exception e) {
+            e.printStackTrace();
             jvmItem.status = false;
             jvmItem.errorString = "vm version information unavailable";
         }

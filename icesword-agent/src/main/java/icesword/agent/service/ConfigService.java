@@ -21,15 +21,13 @@ import com.alibaba.fastjson.JSON;
 @Builder
 public class ConfigService {
 
-    private static final String CLIENT_IP    = "10.128.7.116";      // NetTools.getLocalIP();
+    private static final String CLIENT_IP    = "10.128.7.116"; // NetTools.getLocalIP();
 
     public static final String  PROTOCAL     = "http://";
 
     public static final String  CONNECT_PATH = "/connect";
 
-    public static final String  M_DATA_PATH  = "/metric/jvm/gc";
-
-    public static final String  G_DATA_PATH  = "/metric/jvm/memory";
+    public static final String  DATA_PATH    = "/metric/jvm";
 
     private String              configServerAddress;
 
@@ -58,13 +56,13 @@ public class ConfigService {
                 buildMeta(result.getLeft().getMeta());
                 String paramsM = "data=" + JSON.toJSONString(result.getLeft());
                 System.out.println(paramsM);
-                NetTools.httpPost(PROTOCAL + configServerAddress + M_DATA_PATH, paramsM);
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
             }
             if (result.getRight().getData().size() > 0) {
                 buildMeta(result.getRight().getMeta());
                 String paramsG = "data=" + JSON.toJSONString(result.getRight());
                 System.out.println(paramsG);
-                NetTools.httpPost(PROTOCAL + configServerAddress + G_DATA_PATH, paramsG);
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
             }
             DataService.cleanLastOne();
         } catch (Exception ec) {

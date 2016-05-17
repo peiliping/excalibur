@@ -57,10 +57,10 @@ public class JstatItem implements Cloneable {
             this.PU = Integer.valueOf(tmp[9]);
             this.YGCType = String.valueOf(tmp[10]);
             this.YGC = Long.valueOf(tmp[11]);
-            this.YGCT = Double.valueOf(tmp[12]);
+            this.YGCT = Double.valueOf(tmp[12]) * 1000;
             this.FGCType = String.valueOf(tmp[13]);
             this.FGC = Long.valueOf(tmp[14]);
-            this.FGCT = Double.valueOf(tmp[15]);
+            this.FGCT = Double.valueOf(tmp[15]) * 1000;
         } else if ("1.8".equals(jvmItem.vmVersion)) {
             this.MC = Integer.valueOf(tmp[8]);
             this.MU = Integer.valueOf(tmp[9]);
@@ -68,10 +68,10 @@ public class JstatItem implements Cloneable {
             this.CCSU = Integer.valueOf(tmp[11]);
             this.YGCType = String.valueOf(tmp[12]);
             this.YGC = Long.valueOf(tmp[13]);
-            this.YGCT = Double.valueOf(tmp[14]);
+            this.YGCT = Double.valueOf(tmp[14]) * 1000;
             this.FGCType = String.valueOf(tmp[15]);
             this.FGC = Long.valueOf(tmp[16]);
-            this.FGCT = Double.valueOf(tmp[17]);
+            this.FGCT = Double.valueOf(tmp[17]) * 1000;
         }
     }
 

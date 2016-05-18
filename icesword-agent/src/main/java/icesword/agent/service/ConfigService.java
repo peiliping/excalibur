@@ -6,7 +6,7 @@ import icesword.agent.data.result.Meta;
 import icesword.agent.data.result.ResultData;
 import icesword.agent.util.NetTools;
 import icesword.agent.util.NetTools.HttpResult;
-import icesword.agent.util.Pair;
+import icesword.agent.util.Triple;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class ConfigService {
     public void sendData() {
         try {
             DataService.oOOo();
-            Pair<ResultData, ResultData> result = DataService.getLastOne();
+            Triple<ResultData, ResultData, ResultData> result = DataService.getLastOne();
             if (result.getLeft().getData().size() > 0) {
                 buildMeta(result.getLeft().getMeta());
                 String paramsM = "data=" + JSON.toJSONString(result.getLeft());
@@ -63,6 +63,12 @@ public class ConfigService {
                 String paramsG = "data=" + JSON.toJSONString(result.getRight());
                 System.out.println(paramsG);
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
+            }
+            if (result.getMiddle().getData().size() > 0) {
+                buildMeta(result.getMiddle().getMeta());
+                String paramsA = "data=" + JSON.toJSONString(result.getRight());
+                System.out.println(paramsA);
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsA);
             }
             DataService.cleanLastOne();
         } catch (Exception ec) {

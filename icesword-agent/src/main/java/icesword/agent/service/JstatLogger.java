@@ -3,6 +3,10 @@ package icesword.agent.service;
 import icesword.agent.JstatPlus;
 import icesword.agent.data.process.JstatItem;
 import icesword.agent.data.process.JvmItem;
+
+import java.util.List;
+
+import sun.jvmstat.monitor.Monitor;
 import sun.jvmstat.monitor.MonitorException;
 import sun.tools.jstat.OutputFormatter;
 
@@ -11,9 +15,11 @@ public class JstatLogger {
     private volatile static boolean printedHeader = false;
     private volatile boolean        active        = true;
     private JvmItem                 item;
+    private List<Monitor>           ageTable;
 
-    public JstatLogger(JvmItem item) {
+    public JstatLogger(JvmItem item, List<Monitor> ageTable) {
         this.item = item;
+        this.ageTable = ageTable;
     }
 
     public void stopLogging() {
@@ -25,7 +31,7 @@ public class JstatLogger {
             while (active) {
                 try {
                     String row = formatter.getRow();
-                    DataService.addData(item, new JstatItem(row, item));
+                    DataService.addData(item, new JstatItem(row, item, ageTable));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -1,43 +1,52 @@
 package icesword.agent.data.process;
 
+import icesword.agent.data.result.AgeTableDataItem;
 import icesword.agent.data.result.GCDataItem;
 import icesword.agent.data.result.MemoryDataItem;
 import icesword.agent.data.result.ResultData;
+
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
+import sun.jvmstat.monitor.LongMonitor;
+import sun.jvmstat.monitor.Monitor;
 
 @Setter
 @Getter
 public class JstatItem implements Cloneable {
 
-    private int     PID;
-    private int     S0C;
-    private int     S0U;
-    private int     S1C;
-    private int     S1U;
-    private int     EC;
-    private int     EU;
-    private int     OC;
-    private int     OU;
-    private Integer PC;
-    private Integer PU;
-    private Integer MC;
-    private Integer MU;
-    private Integer CCSC;
-    private Integer CCSU;
-    private String  YGCType;
-    private long    YGC;
-    private double  YGCT;
-    private String  FGCType;
-    private long    FGC;
-    private double  FGCT;
+    private int      PID;
+    private int      S0C;
+    private int      S0U;
+    private int      S1C;
+    private int      S1U;
+    private int      EC;
+    private int      EU;
+    private int      OC;
+    private int      OU;
+    private Integer  PC;
+    private Integer  PU;
+    private Integer  MC;
+    private Integer  MU;
+    private Integer  CCSC;
+    private Integer  CCSU;
+    private String   YGCType;
+    private long     YGC;
+    private double   YGCT;
+    private String   FGCType;
+    private long     FGC;
+    private double   FGCT;
 
-    private long    timestamp = System.currentTimeMillis();
+    private String[] ageTableNames;
+    private Long[]   ageTableValues;
 
-    private String  vmVersion;
-    private String  processSignal;
+    private long     timestamp = System.currentTimeMillis();
 
-    public JstatItem(String content, JvmItem jvmItem) {
+    private String   vmVersion;
+    private String   processSignal;
+
+    public JstatItem(String content, JvmItem jvmItem, List<Monitor> ageTable) {
         this.vmVersion = jvmItem.vmVersion;
         this.processSignal = jvmItem.simpleDesc;
         content = content.trim().replaceAll("\\s+", "");
@@ -73,13 +82,21 @@ public class JstatItem implements Cloneable {
             this.FGC = Long.valueOf(tmp[16]);
             this.FGCT = Double.valueOf(tmp[17]) * 1000;
         }
+        if (ageTable != null && ageTable.size() > 0) {
+            ageTableNames = new String[ageTable.size()];
+            ageTableValues = new Long[ageTable.size()];
+            for (int i = 0; i < ageTable.size(); i++) {
+                ageTableNames[i++] = ((LongMonitor) ageTable.get(i)).getName();
+                ageTableValues[i++] = ((LongMonitor) ageTable.get(i)).longValue();
+            }
+        }
     }
 
     public String buildKey(String key) {
         return vmVersion + "/" + key;
     }
 
-    public void toIDataPool(ResultData memory, ResultData gc) {
+    public void toIDataPool(ResultData memory, ResultData gc, ResultData age) {
         pushMemoryData(memory, "S0", S0C, S0U);
         pushMemoryData(memory, "S1", S1C, S1U);
         pushMemoryData(memory, "EDEN", EC, EU);
@@ -88,26 +105,40 @@ public class JstatItem implements Cloneable {
         pushMemoryData(memory, "META", MC, MU);
         pushMemoryData(memory, "CCS", CCSC, CCSU);
 
-        pushGCData(gc, this.YGCType, this.YGC, this.YGCT);
-        pushGCData(gc, this.FGCType, this.FGC, this.FGCT);
+        boolean p1 = pushGCData(gc, this.YGCType, this.YGC, this.YGCT);
+        boolean p2 = pushGCData(gc, this.FGCType, this.FGC, this.FGCT);
+
+        if ((p1 || p2) && ageTableNames.length > 0) {
+            for (int i = 0; i < ageTableNames.length; i++) {
+                pushAgeData(age, ageTableNames[i], ageTableValues[i]);
+            }
+        }
     }
 
-    public void pushGCData(ResultData rd, String key, Long v1, Double v2) {
+    public void pushAgeData(ResultData rd, String key, Long v) {
+        String tkey = buildKey(key);
+        AgeTableDataItem ad = AgeTableDataItem.builder().times(1d).size(Double.valueOf(v)).timestamp(timestamp).process_signal(processSignal).build();
+        rd.addOne(tkey, ad);
+    }
+
+    public boolean pushGCData(ResultData rd, String key, Long v1, Double v2) {
         if (v1 == null || v2 == null)
-            return;
+            return false;
         if (v1 == 0)
-            return;
+            return false;
         String tkey = buildKey(key);
         GCDataItem gd = GCDataItem.builder().times(Double.valueOf(v1)).cost_ms(v2).timestamp(timestamp).process_signal(processSignal).build();
         rd.addOne(tkey, gd);
+        return true;
     }
 
-    public void pushMemoryData(ResultData rd, String key, Integer v1, Integer v2) {
+    public boolean pushMemoryData(ResultData rd, String key, Integer v1, Integer v2) {
         if (v1 == null || v2 == null)
-            return;
+            return false;
         String tkey = buildKey(key);
         MemoryDataItem md = MemoryDataItem.builder().times(1d).capacity(Double.valueOf(v1)).used(Double.valueOf(v2)).timestamp(timestamp).process_signal(processSignal).build();
         rd.addOne(tkey, md);
+        return true;
     }
 
     public JstatItem compare(JstatItem last) {

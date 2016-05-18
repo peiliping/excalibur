@@ -4,7 +4,11 @@ import icesword.agent.data.process.Event;
 import icesword.agent.data.process.JstatArguments;
 import icesword.agent.data.process.JvmItem;
 import icesword.agent.util.jstatex.OptionOutputFormatterEx;
+
+import java.util.List;
+
 import lombok.Builder;
+import sun.jvmstat.monitor.Monitor;
 import sun.jvmstat.monitor.MonitoredHost;
 import sun.jvmstat.monitor.MonitoredVm;
 import sun.jvmstat.monitor.VmIdentifier;
@@ -33,7 +37,8 @@ public class JstatWorker implements Runnable {
             int interval = arguments.sampleInterval();
             final MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(vmId);
             MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
-            logger = new JstatLogger(item);
+            List<Monitor> ageTable = monitoredVm.findByPattern("sun.gc.generation.0.agetable.bytes");
+            logger = new JstatLogger(item, ageTable);
             OutputFormatter formatter = null;
             Preconditions.checkArgument(arguments.isSpecialOption());
             OptionFormat format = arguments.optionFormat();

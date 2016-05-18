@@ -8,8 +8,9 @@ import sun.tools.jstat.OutputFormatter;
 
 public class JstatLogger {
 
-    private volatile boolean active = true;
-    private JvmItem          item;
+    private volatile static boolean printedHeader = false;
+    private volatile boolean        active        = true;
+    private JvmItem                 item;
 
     public JstatLogger(JvmItem item) {
         this.item = item;
@@ -34,7 +35,10 @@ public class JstatLogger {
                 };
             }
         } else {
-            System.out.println("PID" + "\t" + formatter.getHeader());
+            if (!printedHeader) {
+                System.out.println("PID" + "\t" + formatter.getHeader());
+                printedHeader = true;;
+            }
             while (active) {
                 try {
                     String row = formatter.getRow();

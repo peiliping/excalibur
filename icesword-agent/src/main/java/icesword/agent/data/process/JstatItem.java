@@ -82,8 +82,8 @@ public class JstatItem implements Cloneable {
             this.FGC = Long.valueOf(tmp[16]);
             this.FGCT = Double.valueOf(tmp[17]) * 1000;
         }
+        ageTableValues = new Long[ageTable.size()];
         if (ageTable != null && ageTable.size() > 0) {
-            ageTableValues = new Long[ageTable.size()];
             for (int i = 0; i < ageTable.size(); i++) {
                 ageTableValues[i++] = ((LongMonitor) ageTable.get(i)).longValue();
             }

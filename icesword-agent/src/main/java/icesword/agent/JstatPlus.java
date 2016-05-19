@@ -38,7 +38,7 @@ public class JstatPlus {
                         ONLINE.set(true);
                         POLL_INTERVEL.set(cs.getConfig().getPeriod());
                         List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null, jstatPool);
-                        jstatPool.addJVMs(jvmList, MONITOR_INTERVAL);
+                        jstatPool.addJVMs(jvmList, MONITOR_INTERVAL * 2);
                         jstatPool.cleanDoneFuture();
                     } else if (cs.getConfig().getStatus() == 0) {
                         jstatPool.killAllAttach();

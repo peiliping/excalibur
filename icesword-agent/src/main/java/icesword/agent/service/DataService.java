@@ -60,6 +60,7 @@ public class DataService {
         int p = Long.valueOf(((CURRENT_POSITION.get() + 1) % 2)).intValue();
         GC_DATA_POOL.get(p).getData().clear();
         MEMORY_DATA_POOL.get(p).getData().clear();
+        AGE_DATA_POOL.get(p).getData().clear();
     }
 
     public static synchronized void cleanOneCache(int pid) {

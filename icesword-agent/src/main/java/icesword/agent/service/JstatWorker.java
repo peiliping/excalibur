@@ -38,7 +38,8 @@ public class JstatWorker implements Runnable {
             final MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(vmId);
             MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
             List<Monitor> ageTable = monitoredVm.findByPattern("sun.gc.generation.0.agetable.bytes");
-            logger = new JstatLogger(item, ageTable);
+            Monitor desiredSurvivorSize = monitoredVm.findByName("sun.gc.policy.desiredSurvivorSize");
+            logger = new JstatLogger(item, ageTable, desiredSurvivorSize);
             OutputFormatter formatter = null;
             Preconditions.checkArgument(arguments.isSpecialOption());
             OptionFormat format = arguments.optionFormat();

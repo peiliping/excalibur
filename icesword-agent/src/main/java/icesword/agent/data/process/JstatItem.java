@@ -16,37 +16,37 @@ import sun.jvmstat.monitor.Monitor;
 @Getter
 public class JstatItem implements Cloneable {
 
-    private int      PID;
-    private int      S0C;
-    private int      S0U;
-    private int      S1C;
-    private int      S1U;
-    private int      EC;
-    private int      EU;
-    private int      OC;
-    private int      OU;
-    private Integer  PC;
-    private Integer  PU;
-    private Integer  MC;
-    private Integer  MU;
-    private Integer  CCSC;
-    private Integer  CCSU;
-    private String   YGCType;
-    private long     YGC;
-    private double   YGCT;
-    private String   FGCType;
-    private long     FGC;
-    private double   FGCT;
+    private int     PID;
+    private int     S0C;
+    private int     S0U;
+    private int     S1C;
+    private int     S1U;
+    private int     EC;
+    private int     EU;
+    private int     OC;
+    private int     OU;
+    private Integer PC;
+    private Integer PU;
+    private Integer MC;
+    private Integer MU;
+    private Integer CCSC;
+    private Integer CCSU;
+    private String  YGCType;
+    private long    YGC;
+    private double  YGCT;
+    private String  FGCType;
+    private long    FGC;
+    private double  FGCT;
 
-    private String[] ageTableNames;
-    private Long[]   ageTableValues;
+    private Long[]  ageTableValues;
+    private Long    desiredSurvivorSize;
 
-    private long     timestamp = System.currentTimeMillis();
+    private long    timestamp = System.currentTimeMillis();
 
-    private String   vmVersion;
-    private String   processSignal;
+    private String  vmVersion;
+    private String  processSignal;
 
-    public JstatItem(String content, JvmItem jvmItem, List<Monitor> ageTable) {
+    public JstatItem(String content, JvmItem jvmItem, List<Monitor> ageTable, Monitor desiredSurvivorSize) {
         this.vmVersion = jvmItem.vmVersion;
         this.processSignal = jvmItem.simpleDesc;
         content = content.trim().replaceAll("\\s+", "");
@@ -83,11 +83,12 @@ public class JstatItem implements Cloneable {
             this.FGCT = Double.valueOf(tmp[17]) * 1000;
         }
         if (ageTable != null && ageTable.size() > 0) {
-            ageTableNames = new String[ageTable.size()];
             ageTableValues = new Long[ageTable.size()];
             for (int i = 0; i < ageTable.size(); i++) {
-                ageTableNames[i++] = ((LongMonitor) ageTable.get(i)).getName();
                 ageTableValues[i++] = ((LongMonitor) ageTable.get(i)).longValue();
+            }
+            if (desiredSurvivorSize != null) {
+                this.desiredSurvivorSize = ((LongMonitor) desiredSurvivorSize).longValue();
             }
         }
     }
@@ -108,16 +109,21 @@ public class JstatItem implements Cloneable {
         boolean p1 = pushGCData(gc, this.YGCType, this.YGC, this.YGCT);
         boolean p2 = pushGCData(gc, this.FGCType, this.FGC, this.FGCT);
 
-        if ((p1 || p2) && ageTableNames.length > 0) {
-            for (int i = 0; i < ageTableNames.length; i++) {
-                pushAgeData(age, ageTableNames[i], ageTableValues[i]);
+        if ((p1 || p2) && ageTableValues.length > 0) {
+            for (int i = 0; i < ageTableValues.length; i++) {
+                pushAgeData(age, "AgeTable", ageTableValues[i], i, ageTableValues.length, desiredSurvivorSize);
             }
         }
     }
 
-    public void pushAgeData(ResultData rd, String key, Long v) {
+    public void pushAgeData(ResultData rd, String key, Long v, int age, int totalAge, long desiredSurvivorSize) {
+        if (v == null || v == 0) {
+            return;
+        }
         String tkey = buildKey(key);
-        AgeTableDataItem ad = AgeTableDataItem.builder().times(1d).size(Double.valueOf(v)).timestamp(timestamp).process_signal(processSignal).build();
+        AgeTableDataItem ad =
+                AgeTableDataItem.builder().times(1d).size(Double.valueOf(v)).age(Double.valueOf(age)).total_age(Double.valueOf(totalAge))
+                        .desired_survivor_size(Double.valueOf(desiredSurvivorSize)).dim_age(age).timestamp(timestamp).process_signal(processSignal).build();
         rd.addOne(tkey, ad);
     }
 

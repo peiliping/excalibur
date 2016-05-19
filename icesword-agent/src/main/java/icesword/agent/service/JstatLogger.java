@@ -16,10 +16,12 @@ public class JstatLogger {
     private volatile boolean        active        = true;
     private JvmItem                 item;
     private List<Monitor>           ageTable;
+    private Monitor                 desiredSurvivorSize;
 
-    public JstatLogger(JvmItem item, List<Monitor> ageTable) {
+    public JstatLogger(JvmItem item, List<Monitor> ageTable, Monitor desiredSurvivorSize) {
         this.item = item;
         this.ageTable = ageTable;
+        this.desiredSurvivorSize = desiredSurvivorSize;
     }
 
     public void stopLogging() {
@@ -31,7 +33,7 @@ public class JstatLogger {
             while (active) {
                 try {
                     String row = formatter.getRow();
-                    DataService.addData(item, new JstatItem(row, item, ageTable));
+                    DataService.addData(item, new JstatItem(row, item, ageTable, desiredSurvivorSize));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -15,6 +15,14 @@ public class AgeTableDataItem extends IData {
 
     private Double            size;
 
+    private Double            desired_survivor_size;
+
+    private Double            age;
+
+    private Double            total_age;
+
+    private int               dim_age;
+
     private long              timestamp;
 
     private String            process_signal;

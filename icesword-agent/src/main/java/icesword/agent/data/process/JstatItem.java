@@ -109,9 +109,9 @@ public class JstatItem implements Cloneable {
         boolean p1 = pushGCData(gc, this.YGCType, this.YGC, this.YGCT);
         boolean p2 = pushGCData(gc, this.FGCType, this.FGC, this.FGCT);
 
-        if ((p1 || p2) && ageTableValues.length > 0) {
+        if (p1 || p2) {
             for (int i = 0; i < ageTableValues.length; i++) {
-                pushAgeData(age, "AgeTable", ageTableValues[i], i, ageTableValues.length, desiredSurvivorSize);
+                pushAgeData(age, "AgeTable", ageTableValues[i], i + 1, ageTableValues.length, desiredSurvivorSize);
             }
         }
     }

@@ -55,26 +55,17 @@ public class ConfigService {
             if (result.getLeft().getData().size() > 0) {
                 buildMeta(result.getLeft().getMeta());
                 String paramsM = "data=" + JSON.toJSONString(result.getLeft());
-                System.out.println(JSON.toJSONString(result.getLeft().getMeta()));
-                long t = System.currentTimeMillis();
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
-                System.out.println(System.currentTimeMillis() - t);
             }
             if (result.getRight().getData().size() > 0) {
                 buildMeta(result.getRight().getMeta());
                 String paramsA = "data=" + JSON.toJSONString(result.getRight());
-                System.out.println(JSON.toJSONString(result.getRight()));
-                long t = System.currentTimeMillis();
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsA);
-                System.out.println(System.currentTimeMillis() - t);
             }
             if (result.getMiddle().getData().size() > 0) {
                 buildMeta(result.getMiddle().getMeta());
                 String paramsG = "data=" + JSON.toJSONString(result.getMiddle());
-                System.out.println(JSON.toJSONString(result.getMiddle()));
-                long t = System.currentTimeMillis();
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
-                System.out.println(System.currentTimeMillis() - t);
             }
             DataService.cleanLastOne();
         } catch (Exception ec) {

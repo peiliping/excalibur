@@ -5,7 +5,6 @@ import icesword.agent.data.process.Config;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.result.Meta;
 import icesword.agent.data.result.ResultData;
-import icesword.agent.util.CompressUtil;
 import icesword.agent.util.NetTools;
 import icesword.agent.util.NetTools.HttpResult;
 import icesword.agent.util.Triple;
@@ -35,20 +34,25 @@ public class ConfigService {
 
     private Config              config;
 
-    public void updateConfigAndSendEvent() {
-        String agentVersion = Startup.AGENT_VERSION;
-        String params = "agent_ip=" + CLIENT_IP + "&agent_version=" + agentVersion + "&health_info=";
+    public void updateConfigAndSendEvents() {
+
         EventService.oOOo();
-        List<Event> es = EventService.getLastOne();
-        params = params + JSON.toJSONString(es);
+        List<Event> events = EventService.getLastOne();
+
+        String params = null;
+        params = NetTools.buildParams(params, "agent_ip", CLIENT_IP);
+        params = NetTools.buildParams(params, "agent_version", Startup.AGENT_VERSION);
+        params = NetTools.buildParams(params, "health_info", JSON.toJSONString(events));
+
         HttpResult hr = NetTools.httpPost(PROTOCAL + address + CONNECT_PATH, params);
         if (hr.success) {
             config = JSON.parseObject(hr.content, Config.class);
             config.period = config.period * 1000;
-            EventService.cleanLastOne();
         } else {
             EventService.addEvent(new Event(0, "Update Config Error ."));
         }
+
+        EventService.cleanLastOne();
     }
 
     public void sendData() {
@@ -68,14 +72,14 @@ public class ConfigService {
         if (rd.getData().size() > 0) {
             buildMeta(rd.getMeta());
             try {
-                NetTools.httpPost(PROTOCAL + address + DATA_PATH, CompressUtil.compress(rd));
+                NetTools.httpPost(PROTOCAL + address + DATA_PATH, NetTools.compress(rd));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void buildMeta(Meta meta) {
+    private void buildMeta(Meta meta) {
         meta.app_group_id = config.app_group_id;
         meta.app_id = config.app_id;
         meta.identifier = config.identifier;

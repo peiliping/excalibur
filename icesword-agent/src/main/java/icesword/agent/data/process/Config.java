@@ -7,14 +7,14 @@ import lombok.Setter;
 @Getter
 public class Config {
 
-    public long   app_group_id;
+    public Long    app_group_id;
 
-    public long   app_id;
+    public Long    app_id;
 
-    public String identifier;
+    public String  identifier;
 
-    public int    status;
+    public Integer status;
 
-    public int    period;
+    public Integer period;
 
 }

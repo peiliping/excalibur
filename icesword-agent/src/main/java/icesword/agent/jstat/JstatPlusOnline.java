@@ -21,7 +21,7 @@ public class JstatPlusOnline extends JstatPlus {
 
     @Override
     public void fly() {
-        configService.updateConfigAndSendEvent();
+        configService.updateConfigAndSendEvents();
         Config config = configService.getConfig();
         if (config != null) {
             if (config.getStatus() == 1) {
@@ -32,7 +32,7 @@ public class JstatPlusOnline extends JstatPlus {
                 jstatPool.killAllAttach();
             } else if (config.getStatus() == -1) {
                 jstatPool.killAllAttach();
-                super.running.set(false);
+                running.set(false);
             }
         }
         configService.sendData();

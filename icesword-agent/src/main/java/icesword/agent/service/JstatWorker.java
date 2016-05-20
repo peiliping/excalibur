@@ -3,6 +3,7 @@ package icesword.agent.service;
 import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.process.JvmItem;
+import icesword.agent.jstat.JstatLoggerRemote;
 import icesword.agent.util.Mode;
 
 import java.util.List;
@@ -25,11 +26,11 @@ import com.google.common.base.Preconditions;
 @Builder
 public class JstatWorker implements Runnable {
 
-    private long        interval;
+    private long              interval;
 
-    private JvmItem     item;
+    private JvmItem           item;
 
-    private JstatLogger logger;
+    private JstatLoggerRemote logger;
 
     @Override
     public void run() {
@@ -41,7 +42,7 @@ public class JstatWorker implements Runnable {
             MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
             List<Monitor> ageTable = monitoredVm.findByPattern("sun.gc.generation.0.agetable.bytes");
             Monitor desiredSurvivorSize = monitoredVm.findByName("sun.gc.policy.desiredSurvivorSize");
-            logger = new JstatLogger(item, ageTable, desiredSurvivorSize);
+            logger = new JstatLoggerRemote(item, interval, ageTable, desiredSurvivorSize);
             OutputFormatter formatter = null;
             Preconditions.checkArgument(arguments.isSpecialOption());
             OptionFormat format = arguments.optionFormat();
@@ -71,7 +72,7 @@ public class JstatWorker implements Runnable {
                 monitoredHost.addHostListener(terminator);
             }
             EventService.addEvent(new Event(1, "Monitor " + item.mainClass));
-            logger.logSamples(formatter, arguments.headerRate(), arguments.sampleInterval());
+            logger.logSamples(formatter);
             if (terminator != null) {
                 monitoredHost.removeHostListener(terminator);
             }

@@ -3,6 +3,7 @@ package icesword.agent.service;
 import icesword.agent.data.process.JvmItem;
 import icesword.agent.util.Pair;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +22,11 @@ public class JstatMonitorService {
     }
 
     public synchronized void cleanDoneFuture() {
-        for (Map.Entry<Integer, Pair<Future<?>, JstatWorker>> one : processing.entrySet()) {
+        Iterator<Map.Entry<Integer, Pair<Future<?>, JstatWorker>>> it = processing.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, Pair<Future<?>, JstatWorker>> one = it.next();
             if (one.getValue().getLeft().isCancelled() || one.getValue().getLeft().isDone()) {
-                processing.remove(one.getKey());
+                it.remove();
                 DataService.cleanOneCache(one.getKey());
             }
         }

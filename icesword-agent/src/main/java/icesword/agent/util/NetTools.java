@@ -149,4 +149,8 @@ public class NetTools {
         }
     }
 
+    public static String buildParams(String base, String key, String value) {
+        base = ((base != null && base.length() > 0) ? (base + "&") : "");
+        return base + key + "=" + value;
+    }
 }

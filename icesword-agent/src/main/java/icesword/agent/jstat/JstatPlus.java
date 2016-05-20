@@ -21,12 +21,16 @@ public abstract class JstatPlus implements Runnable {
 
     public JstatPlus(CommandLine commandLine) {
         this.commandLine = commandLine;
+        this.running.set(true);
     }
 
-    public void fly() {
+    protected abstract void fly();
+
+    @Override
+    public void run() {
         while (running.get()) {
             try {
-                run();
+                fly();
             } catch (Exception e) {
                 e.printStackTrace();
             }

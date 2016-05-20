@@ -19,7 +19,7 @@ public class Startup {
 
         Options options = (new Options()).addOption("m", "mode", true, "offline or online").addOption("r", "remoteAddress", true, "Config Server Ip .");
         CommandLine commandLine = (new DefaultParser()).parse(options, args);
-        
+
         JstatPlus jstat = null;
         MODE = Mode.getMode(commandLine.getOptionValue('m'));
 
@@ -28,7 +28,7 @@ public class Startup {
         } else if (MODE == Mode.ON_LINE) { // Diamond模式
             jstat = new JstatPlusOnline(commandLine);
         }
-        
-        jstat.fly();
+
+        jstat.run();
     }
 }

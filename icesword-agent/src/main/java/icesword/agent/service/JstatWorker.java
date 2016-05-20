@@ -1,9 +1,9 @@
 package icesword.agent.service;
 
-import icesword.agent.JstatPlus;
+import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
-import icesword.agent.data.process.JstatArguments;
 import icesword.agent.data.process.JvmItem;
+import icesword.agent.util.Mode;
 
 import java.util.List;
 
@@ -15,6 +15,7 @@ import sun.jvmstat.monitor.VmIdentifier;
 import sun.jvmstat.monitor.event.HostEvent;
 import sun.jvmstat.monitor.event.HostListener;
 import sun.jvmstat.monitor.event.VmStatusChangeEvent;
+import sun.tools.jstat.JstatArguments;
 import sun.tools.jstat.OptionFormat;
 import sun.tools.jstat.OptionOutputFormatterEx;
 import sun.tools.jstat.OutputFormatter;
@@ -44,7 +45,7 @@ public class JstatWorker implements Runnable {
             OutputFormatter formatter = null;
             Preconditions.checkArgument(arguments.isSpecialOption());
             OptionFormat format = arguments.optionFormat();
-            formatter = new OptionOutputFormatterEx(monitoredVm, format, JstatPlus.ONLINE.get());
+            formatter = new OptionOutputFormatterEx(monitoredVm, format, Startup.MODE == Mode.ON_LINE);
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     logger.stopLogging();

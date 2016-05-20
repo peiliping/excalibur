@@ -1,8 +1,9 @@
 package icesword.agent.service;
 
-import icesword.agent.JstatPlus;
+import icesword.agent.Startup;
 import icesword.agent.data.process.JstatItem;
 import icesword.agent.data.process.JvmItem;
+import icesword.agent.util.Mode;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class JstatLogger {
     }
 
     public void logSamples(OutputFormatter formatter, int headerRate, int sampleInterval) throws MonitorException {
-        if (JstatPlus.ONLINE.get()) {
+        if (Startup.MODE == Mode.ON_LINE) {
             while (active) {
                 try {
                     String row = formatter.getRow();

@@ -1,4 +1,4 @@
-package icesword.agent.data.process;
+package sun.tools.jstat;
 
 import java.net.URL;
 import java.util.List;
@@ -15,9 +15,8 @@ public class JstatArguments extends Arguments {
 
     @Override
     public List<URL> optionsSources() {
-        List<URL> result = Lists.newArrayList();
-        URL u = this.getClass().getResource("/jstat_options");
-        result.add(u);
+        URL url = this.getClass().getResource("/jstat_options");
+        List<URL> result = Lists.newArrayList(url);
         return result;
     }
 }

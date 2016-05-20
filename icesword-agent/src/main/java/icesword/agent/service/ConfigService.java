@@ -4,12 +4,11 @@ import icesword.agent.data.process.Config;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.result.Meta;
 import icesword.agent.data.result.ResultData;
+import icesword.agent.util.CompressUtil;
 import icesword.agent.util.NetTools;
 import icesword.agent.util.NetTools.HttpResult;
 import icesword.agent.util.Triple;
 
-import java.util.Base64Ex;
-import java.util.Date;
 import java.util.List;
 
 import lombok.Builder;
@@ -23,7 +22,7 @@ import com.alibaba.fastjson.JSON;
 @Builder
 public class ConfigService {
 
-    private static final String CLIENT_IP    = "10.128.7.116"; // NetTools.getLocalIP();
+    private static final String CLIENT_IP    = "10.44.23.9"; // NetTools.getLocalIP();
 
     public static final String  PROTOCAL     = "http://";
 
@@ -54,30 +53,24 @@ public class ConfigService {
         try {
             DataService.oOOo();
             Triple<ResultData, ResultData, ResultData> result = DataService.getLastOne();
-            if (result.getLeft().getData().size() > 0) {
-                buildMeta(result.getLeft().getMeta());
-                String paramsM = "data=" + Base64Ex.getEncoder().encode(JSON.toJSONBytes(result.getLeft()));
-                System.out.println(new Date() + "\t " + JSON.toJSONString(result.getLeft().getMeta()));
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
-            }
-            if (result.getRight().getData().size() > 0) {
-                buildMeta(result.getRight().getMeta());
-                String paramsA = "data=" + Base64Ex.getEncoder().encode(JSON.toJSONBytes(result.getRight()));
-                System.out.println(new Date() + "\t " + JSON.toJSONString(result.getRight().getMeta()));
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsA);
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsA);
-            }
-            if (result.getMiddle().getData().size() > 0) {
-                buildMeta(result.getMiddle().getMeta());
-                String paramsG = "data=" + Base64Ex.getEncoder().encode(JSON.toJSONBytes(result.getMiddle()));
-                System.out.println(new Date() + "\t " + JSON.toJSONString(result.getMiddle().getMeta()));
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
-            }
+            sendData(result.getLeft());
+            sendData(result.getMiddle());
+            sendData(result.getRight());
             DataService.cleanLastOne();
         } catch (Exception ec) {
             ec.printStackTrace();
+        }
+    }
+
+    private void sendData(ResultData rd) {
+        if (rd.getData().size() > 0) {
+            buildMeta(rd.getMeta());
+            try {
+                String paramsM = "data=" + CompressUtil.compress(rd);
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

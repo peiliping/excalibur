@@ -1,4 +1,4 @@
-package java.util;
+package icesword.agent.util;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Objects;
 
 
 public class Base64Ex {

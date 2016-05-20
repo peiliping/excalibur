@@ -1,7 +1,8 @@
 package icesword.agent.service;
 
-import icesword.agent.JstatPlus;
+import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
+import icesword.agent.util.Mode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class EventService {
     }
 
     public static synchronized void addEvent(Event e) {
-        if (!JstatPlus.ONLINE.get()) {
+        if (Startup.MODE == Mode.OFF_LINE) {
             return;
         }
         int p = Long.valueOf((CURRENT_POSITION.get() % 2)).intValue();

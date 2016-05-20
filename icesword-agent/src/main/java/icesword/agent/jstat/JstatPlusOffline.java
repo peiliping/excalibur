@@ -15,9 +15,8 @@ public class JstatPlusOffline extends JstatPlus {
 
     @Override
     public void run() {
-        List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null, jstatPool);
+        List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(jstatPool, null);
         jstatPool.addJVMs(jvmList, super.monitorIntervel);
-        jstatPool.cleanDoneFuture();
     }
 
 }

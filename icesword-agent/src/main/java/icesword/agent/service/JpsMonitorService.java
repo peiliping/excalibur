@@ -20,7 +20,7 @@ public class JpsMonitorService {
 
     public static Arguments JPS_ARGUMENTS = new Arguments(new String[] {"-lmv"});
 
-    public static List<JvmItem> findWorkerJVM(String filterWord, JstatMonitorService jsm) {
+    public static List<JvmItem> findWorkerJVM(JstatMonitorService jsm, String filterWord) {
         List<JvmItem> result = new ArrayList<JvmItem>();
         try {
             MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());

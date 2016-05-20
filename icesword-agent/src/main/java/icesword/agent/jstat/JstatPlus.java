@@ -31,6 +31,11 @@ public abstract class JstatPlus implements Runnable {
                 e.printStackTrace();
             }
             try {
+                jstatPool.cleanDoneFuture();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
                 Thread.sleep(coordinateIntervel.get());
             } catch (Exception e) {
                 e.printStackTrace();

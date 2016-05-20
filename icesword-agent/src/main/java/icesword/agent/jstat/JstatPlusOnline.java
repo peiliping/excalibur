@@ -24,15 +24,12 @@ public class JstatPlusOnline extends JstatPlus {
         if (cs.getConfig() != null) {
             if (cs.getConfig().getStatus() == 1) {
                 super.coordinateIntervel.set(cs.getConfig().getPeriod());
-                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(null, jstatPool);
+                List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM( jstatPool , null);
                 jstatPool.addJVMs(jvmList, super.monitorIntervel * 2);
-                jstatPool.cleanDoneFuture();
             } else if (cs.getConfig().getStatus() == 0) {
                 jstatPool.killAllAttach();
-                jstatPool.cleanDoneFuture();
             } else if (cs.getConfig().getStatus() == -1) {
                 jstatPool.killAllAttach();
-                jstatPool.cleanDoneFuture();
                 super.running.set(false);
             }
         }

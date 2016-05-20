@@ -6,7 +6,6 @@ import icesword.agent.jstat.JstatPlusOnline;
 import icesword.agent.util.Mode;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
@@ -18,12 +17,10 @@ public class Startup {
 
     public static void main(String[] args) throws Exception {
 
-        JstatPlus jstat = null;
-
-        CommandLineParser parser = new DefaultParser();
         Options options = (new Options()).addOption("m", "mode", true, "offline or online").addOption("r", "remoteAddress", true, "Config Server Ip .");
-
-        CommandLine commandLine = parser.parse(options, args);
+        CommandLine commandLine = (new DefaultParser()).parse(options, args);
+        
+        JstatPlus jstat = null;
         MODE = Mode.getMode(commandLine.getOptionValue('m'));
 
         if (MODE == Mode.OFF_LINE) { // 单机模式
@@ -31,7 +28,7 @@ public class Startup {
         } else if (MODE == Mode.ON_LINE) { // Diamond模式
             jstat = new JstatPlusOnline(commandLine);
         }
-
+        
         jstat.fly();
     }
 }

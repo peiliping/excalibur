@@ -4,10 +4,12 @@ import icesword.agent.data.process.Config;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.result.Meta;
 import icesword.agent.data.result.ResultData;
+import icesword.agent.util.Base64;
 import icesword.agent.util.NetTools;
 import icesword.agent.util.NetTools.HttpResult;
 import icesword.agent.util.Triple;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.Builder;
@@ -54,17 +56,23 @@ public class ConfigService {
             Triple<ResultData, ResultData, ResultData> result = DataService.getLastOne();
             if (result.getLeft().getData().size() > 0) {
                 buildMeta(result.getLeft().getMeta());
-                String paramsM = "data=" + JSON.toJSONString(result.getLeft());
+                String paramsM = "data=" + Base64.encode(JSON.toJSONBytes(result.getLeft()));
+                System.out.println(new Date() + "\t " + JSON.toJSONString(result.getLeft().getMeta()));
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
             }
             if (result.getRight().getData().size() > 0) {
                 buildMeta(result.getRight().getMeta());
-                String paramsA = "data=" + JSON.toJSONString(result.getRight());
+                String paramsA = "data=" + Base64.encode(JSON.toJSONBytes(result.getRight()));
+                System.out.println(new Date() + "\t " + JSON.toJSONString(result.getRight().getMeta()));
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsA);
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsA);
             }
             if (result.getMiddle().getData().size() > 0) {
                 buildMeta(result.getMiddle().getMeta());
-                String paramsG = "data=" + JSON.toJSONString(result.getMiddle());
+                String paramsG = "data=" + Base64.encode(JSON.toJSONBytes(result.getMiddle()));
+                System.out.println(new Date() + "\t " + JSON.toJSONString(result.getMiddle().getMeta()));
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
                 NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsG);
             }
             DataService.cleanLastOne();

@@ -133,7 +133,9 @@ public class JstatItem implements Cloneable {
         if (v1 == 0)
             return false;
         String tkey = buildKey(key);
-        GCDataItem gd = GCDataItem.builder().times(Double.valueOf(v1)).cost_ms(v2).timestamp(timestamp).process_signal(processSignal).build();
+        GCDataItem gd =
+                GCDataItem.builder().times(Double.valueOf(v1)).cost_ms(v2).cost_ms_min(v2 / v1).cost_ms_max(v2 / v1).cost_ms_p75(v2 / v1).cost_ms_p95(v2 / v1).timestamp(timestamp)
+                        .process_signal(processSignal).build();
         rd.addOne(tkey, gd);
         return true;
     }

@@ -30,8 +30,8 @@ public class JstatPlus {
                 Thread.sleep(POLL_INTERVEL.get());
             }
         } else if (args.length == 2 && args[0].trim().equals("-r")) { // Diamond模式
+            ConfigService cs = ConfigService.builder().configServerAddress(args[1].trim()).build();
             while (RUNNING.get()) {
-                ConfigService cs = ConfigService.builder().configServerAddress(args[1].trim()).build();
                 cs.updateConfigAndSendEvent(AGENT_VERSION);
                 if (cs.getConfig() != null) {
                     if (cs.getConfig().getStatus() == 1) {

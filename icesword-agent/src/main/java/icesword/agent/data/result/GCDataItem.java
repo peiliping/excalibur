@@ -15,6 +15,14 @@ public class GCDataItem extends IData {
 
     private Double            cost_ms;
 
+    private Double            cost_ms_p75;
+
+    private Double            cost_ms_p95;
+
+    private Double            cost_ms_min;
+
+    private Double            cost_ms_max;
+
     private long              timestamp;
 
     private String            process_signal;

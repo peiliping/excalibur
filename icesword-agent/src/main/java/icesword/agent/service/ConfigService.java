@@ -55,6 +55,8 @@ public class ConfigService {
         EventService.cleanLastOne();
     }
 
+
+    // ===========================================
     public void sendData() {
         try {
             DataService.oOOo();

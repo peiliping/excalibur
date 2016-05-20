@@ -13,8 +13,8 @@ public class JstatPlusOnline extends JstatPlus {
 
     private ConfigService configService;
 
-    public JstatPlusOnline(CommandLine commandLine) {
-        super(commandLine);
+    public JstatPlusOnline(CommandLine commandLine, int intervel) {
+        super(commandLine, intervel);
         String address = commandLine.getOptionValue("r");
         this.configService = ConfigService.builder().address(address).build();
     }
@@ -27,7 +27,7 @@ public class JstatPlusOnline extends JstatPlus {
             if (config.getStatus() == 1) {
                 coordinateIntervel.set(config.getPeriod());
                 List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(jstatPool, null);
-                jstatPool.addJVMs(jvmList, super.monitorIntervel * 2);
+                jstatPool.addJVMs(jvmList, monitorIntervel);
             } else if (config.getStatus() == 0) {
                 jstatPool.killAllAttach();
             } else if (config.getStatus() == -1) {

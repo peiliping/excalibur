@@ -18,7 +18,15 @@ public abstract class JstatLogger {
     }
 
     public void stopLogging() {
-        active = false;
+        this.active = false;
+    }
+
+    protected void sleep() {
+        try {
+            Thread.sleep(sampleInterval);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public abstract void logSamples(OutputFormatter formatter) throws MonitorException;

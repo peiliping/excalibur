@@ -27,10 +27,7 @@ public class JstatLoggerConsole extends JstatLogger {
         while (active) {
             String row = formatter.getRow();
             System.out.println(item.pid + DELIMITER + row);
-            try {
-                Thread.sleep(sampleInterval);
-            } catch (Exception e) {
-            };
+            sleep();
         }
     }
 }

@@ -9,7 +9,7 @@ import org.apache.commons.cli.CommandLine;
 
 public abstract class JstatPlus implements Runnable {
 
-    protected long                monitorIntervel    = 1000;
+    protected int                 monitorIntervel    = 1000;
 
     protected AtomicBoolean       running            = new AtomicBoolean(false);
 
@@ -19,8 +19,9 @@ public abstract class JstatPlus implements Runnable {
 
     protected CommandLine         commandLine;
 
-    public JstatPlus(CommandLine commandLine) {
+    public JstatPlus(CommandLine commandLine, int monitorIntervel) {
         this.commandLine = commandLine;
+        this.monitorIntervel = monitorIntervel;
         this.running.set(true);
     }
 

@@ -3,6 +3,7 @@ package icesword.agent.service;
 import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.process.JvmItem;
+import icesword.agent.jstat.JstatLogger;
 import icesword.agent.jstat.JstatLoggerRemote;
 import icesword.agent.util.Mode;
 
@@ -21,30 +22,26 @@ import sun.tools.jstat.OptionFormat;
 import sun.tools.jstat.OptionOutputFormatterEx;
 import sun.tools.jstat.OutputFormatter;
 
-import com.google.common.base.Preconditions;
-
 @Builder
 public class JstatWorker implements Runnable {
 
-    private long              interval;
+    private int         interval;
 
-    private JvmItem           item;
+    private JvmItem     item;
 
-    private JstatLoggerRemote logger;
+    private JstatLogger logger;
 
     @Override
     public void run() {
         try {
             JstatArguments arguments = new JstatArguments(new String[] {"-gc" + item.vmVersion, String.valueOf(item.pid), String.valueOf(interval)});
             final VmIdentifier vmId = arguments.vmId();
-            int interval = arguments.sampleInterval();
             final MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(vmId);
             MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
             List<Monitor> ageTable = monitoredVm.findByPattern("sun.gc.generation.0.agetable.bytes");
             Monitor desiredSurvivorSize = monitoredVm.findByName("sun.gc.policy.desiredSurvivorSize");
             logger = new JstatLoggerRemote(item, interval, ageTable, desiredSurvivorSize);
             OutputFormatter formatter = null;
-            Preconditions.checkArgument(arguments.isSpecialOption());
             OptionFormat format = arguments.optionFormat();
             formatter = new OptionOutputFormatterEx(monitoredVm, format, Startup.MODE == Mode.ON_LINE);
             Runtime.getRuntime().addShutdownHook(new Thread() {

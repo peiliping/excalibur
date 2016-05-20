@@ -9,14 +9,14 @@ import org.apache.commons.cli.CommandLine;
 
 public class JstatPlusOffline extends JstatPlus {
 
-    public JstatPlusOffline(CommandLine commandLine) {
-        super(commandLine);
+    public JstatPlusOffline(CommandLine commandLine, int intervel) {
+        super(commandLine, intervel);
     }
 
     @Override
     public void fly() {
         List<JvmItem> jvmList = JpsMonitorService.findWorkerJVM(jstatPool, null);
-        jstatPool.addJVMs(jvmList, super.monitorIntervel);
+        jstatPool.addJVMs(jvmList, monitorIntervel);
     }
 
 }

@@ -32,7 +32,7 @@ public class JstatMonitorService {
         }
     }
 
-    public synchronized void addJVMs(List<JvmItem> jvms, long interval) {
+    public synchronized void addJVMs(List<JvmItem> jvms, int interval) {
         for (JvmItem item : jvms) {
             if (!processing.containsKey(item.pid)) {
                 JstatWorker worker = JstatWorker.builder().item(item).interval(interval).build();

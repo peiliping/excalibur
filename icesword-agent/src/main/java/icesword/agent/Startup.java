@@ -24,9 +24,9 @@ public class Startup {
         MODE = Mode.getMode(commandLine.getOptionValue('m'));
 
         if (MODE == Mode.OFF_LINE) { // 单机模式
-            jstat = new JstatPlusOffline(commandLine);
+            jstat = new JstatPlusOffline(commandLine, 1000 * 1);
         } else if (MODE == Mode.ON_LINE) { // Diamond模式
-            jstat = new JstatPlusOnline(commandLine);
+            jstat = new JstatPlusOnline(commandLine, 1000 * 2);
         }
 
         jstat.run();

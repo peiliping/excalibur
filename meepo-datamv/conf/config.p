@@ -1,0 +1,17 @@
+sourcetablename=metric_data_entity_v2
+targettablename=metric_data_entity_1
+primarykeyname=id
+readerstepsize=1000
+writerstepsize=10000
+sourcecolumsnames=id,data_version,salt,application_id,time_scope,metric_type_id,metric_id,time,agent_run_id,uuid,num1,num2,num3,num4,num5,num6,timestamp,pt,day
+targetcolumsnames=id,data_version,salt,application_id,time_scope,metric_type_id,metric_id,time,agent_run_id,uuid,num1,num2,num3,num4,num5,num6,timestamp,pt,day
+#start=
+#end=
+#syncMode
+#syncDelay
+#syncSuicide
+buffersize=131072
+readersnum=1
+writersnum=4
+#insertOrLoadData
+#pluginName

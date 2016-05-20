@@ -94,11 +94,15 @@ public class NetTools {
         return new HttpResult(false, "Try my best,but failed![" + url + "]");
     }
 
-    public static HttpResult httpPost(String url, String params) {
-        return httpPost(url, "utf-8", params);
+    public static HttpResult httpPost(String url, byte[] params) {
+        return httpPost(url, "utf-8", null, params);
     }
 
-    public static HttpResult httpPost(String url, String encoding, String params) {
+    public static HttpResult httpPost(String url, String params) {
+        return httpPost(url, "utf-8", params, null);
+    }
+
+    public static HttpResult httpPost(String url, String encoding, String paramsString, byte[] params) {
         int trytimes = 3;
         while (trytimes > 0) {
             HttpURLConnection connection = null;
@@ -109,10 +113,13 @@ public class NetTools {
                 connection.setConnectTimeout(100);
                 connection.setDoOutput(true);
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(params);
+                if (paramsString == null) {
+                    wr.write(params);
+                } else {
+                    wr.writeBytes(paramsString);
+                }
                 wr.flush();
                 wr.close();
-                // connection.connect();
                 int respCode = connection.getResponseCode();
                 String resp = null;
                 if (HttpURLConnection.HTTP_OK == respCode) {

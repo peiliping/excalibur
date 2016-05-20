@@ -66,8 +66,7 @@ public class ConfigService {
         if (rd.getData().size() > 0) {
             buildMeta(rd.getMeta());
             try {
-                String paramsM = "data=" + CompressUtil.compress(rd);
-                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, paramsM);
+                NetTools.httpPost(PROTOCAL + configServerAddress + DATA_PATH, CompressUtil.compress(rd));
             } catch (Exception e) {
                 e.printStackTrace();
             }

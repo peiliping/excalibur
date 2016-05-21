@@ -28,7 +28,7 @@ public class DataService {
     public static synchronized void addData(JvmItem jvmItem, JstatItem jstatItem) {
         int p = Long.valueOf((CURRENT_POSITION.get() % 2)).intValue();
         if (CACHE.containsKey(jvmItem.pid)) {
-            JstatItem now = jstatItem.compare(CACHE.get(jvmItem.pid));
+            JstatItem now = jstatItem.delta(CACHE.get(jvmItem.pid));
             now.toIDataPool(MEMORY_DATA_POOL.get(p), GC_DATA_POOL.get(p), AGE_DATA_POOL.get(p));
         }
         CACHE.put(jvmItem.pid, jstatItem);

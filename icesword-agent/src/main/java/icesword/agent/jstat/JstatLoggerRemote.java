@@ -32,7 +32,7 @@ public class JstatLoggerRemote extends JstatLogger {
         while (active) {
             try {
                 String row = formatter.getRow();
-                DataService.addData(item, new JstatItem(row, item, ageTable, desiredSurvivorSize));
+                DataService.addData(item, new JstatItem(item, row, ageTable, desiredSurvivorSize));
             } catch (Exception e) {
                 e.printStackTrace();
             }

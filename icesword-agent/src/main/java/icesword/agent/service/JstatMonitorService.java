@@ -27,7 +27,7 @@ public class JstatMonitorService {
             Map.Entry<Integer, Pair<Future<?>, JstatWorker>> one = it.next();
             if (one.getValue().getLeft().isCancelled() || one.getValue().getLeft().isDone()) {
                 it.remove();
-                DataService.cleanOneCache(one.getKey());
+                DataService.cleanCache(one.getKey());
             }
         }
     }

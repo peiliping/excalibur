@@ -7,14 +7,14 @@ import lombok.Setter;
 @Setter
 public class Event {
 
-    private int    statusCode; // 0 = error 1 = normal
+    private int    status;   // 0 = error 1 = normal
 
     private String msg;
 
     private long   timestamp;
 
     public Event(int status, String msg) {
-        this.statusCode = status;
+        this.status = status;
         this.msg = msg;
         this.timestamp = System.currentTimeMillis();
     }

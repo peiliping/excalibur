@@ -13,13 +13,10 @@ public abstract class JstatLogger {
 
     protected MonitoredVm      monitoredVm;
 
-    protected OptionFormat     format;
-
     protected OutputFormatter  formatter;
 
     public JstatLogger(JvmItem item, OptionFormat format, MonitoredVm monitoredVm) {
         this.item = item;
-        this.format = format;
         this.monitoredVm = monitoredVm;
     }
 

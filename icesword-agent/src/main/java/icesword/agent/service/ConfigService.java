@@ -3,11 +3,9 @@ package icesword.agent.service;
 import icesword.agent.Startup;
 import icesword.agent.data.process.Config;
 import icesword.agent.data.process.Event;
-import icesword.agent.data.result.Meta;
 import icesword.agent.data.result.ResultData;
 import icesword.agent.util.NetTools;
 import icesword.agent.util.NetTools.HttpResult;
-import icesword.agent.util.Triple;
 
 import java.util.List;
 
@@ -55,35 +53,19 @@ public class ConfigService {
         EventService.cleanLastOne();
     }
 
-
-    // ===========================================
     public void sendData() {
         try {
             DataService.oOOo();
-            Triple<ResultData, ResultData, ResultData> result = DataService.getLastOne();
-            sendData(result.getLeft());
-            sendData(result.getMiddle());
-            sendData(result.getRight());
+            List<ResultData> result = DataService.getLastOne();
+            for (ResultData rd : result) {
+                rd.updateMeta(config);
+                if (rd.getData().size() > 0) {
+                    NetTools.httpPost(PROTOCAL + address + DATA_PATH, NetTools.compress(rd));
+                }
+            }
             DataService.cleanLastOne();
         } catch (Exception ec) {
             ec.printStackTrace();
         }
-    }
-
-    private void sendData(ResultData rd) {
-        if (rd.getData().size() > 0) {
-            buildMeta(rd.getMeta());
-            try {
-                NetTools.httpPost(PROTOCAL + address + DATA_PATH, NetTools.compress(rd));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void buildMeta(Meta meta) {
-        meta.app_group_id = config.app_group_id;
-        meta.app_id = config.app_id;
-        meta.identifier = config.identifier;
     }
 }

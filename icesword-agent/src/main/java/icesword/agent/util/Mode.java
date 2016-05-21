@@ -2,12 +2,19 @@ package icesword.agent.util;
 
 public enum Mode {
 
-    OFF_LINE("offline"), ON_LINE("online");
+    OFF_LINE("offline", false), ON_LINE("online", true);
 
-    private String name;
+    private String  name;
 
-    Mode(String name) {
+    private boolean remoteMsg;
+
+    public boolean isRemoteMsg() {
+        return remoteMsg;
+    }
+
+    Mode(String name, boolean remoteMsg) {
         this.name = name;
+        this.remoteMsg = remoteMsg;
     }
 
     public static Mode getMode(String name) {

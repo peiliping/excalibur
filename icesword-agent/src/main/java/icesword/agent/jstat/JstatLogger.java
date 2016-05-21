@@ -1,7 +1,8 @@
 package icesword.agent.jstat;
 
 import icesword.agent.data.process.JvmItem;
-import sun.jvmstat.monitor.MonitorException;
+import sun.jvmstat.monitor.MonitoredVm;
+import sun.tools.jstat.OptionFormat;
 import sun.tools.jstat.OutputFormatter;
 
 public abstract class JstatLogger {
@@ -10,11 +11,16 @@ public abstract class JstatLogger {
 
     protected JvmItem          item;
 
-    protected long             sampleInterval;
+    protected MonitoredVm      monitoredVm;
 
-    public JstatLogger(JvmItem item, long sampleInterval) {
+    protected OptionFormat     format;
+
+    protected OutputFormatter  formatter;
+
+    public JstatLogger(JvmItem item, OptionFormat format, MonitoredVm monitoredVm) {
         this.item = item;
-        this.sampleInterval = sampleInterval;
+        this.format = format;
+        this.monitoredVm = monitoredVm;
     }
 
     public void stopLogging() {
@@ -23,12 +29,12 @@ public abstract class JstatLogger {
 
     protected void sleep() {
         try {
-            Thread.sleep(sampleInterval);
+            Thread.sleep(monitoredVm.getInterval());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public abstract void logSamples(OutputFormatter formatter) throws MonitorException;
+    public abstract void logSamples();
 
 }

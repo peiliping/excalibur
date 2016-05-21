@@ -4,13 +4,10 @@ import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.process.JvmItem;
 import icesword.agent.jstat.JstatLogger;
+import icesword.agent.jstat.JstatLoggerConsole;
 import icesword.agent.jstat.JstatLoggerRemote;
 import icesword.agent.util.Mode;
-
-import java.util.List;
-
 import lombok.Builder;
-import sun.jvmstat.monitor.Monitor;
 import sun.jvmstat.monitor.MonitoredHost;
 import sun.jvmstat.monitor.MonitoredVm;
 import sun.jvmstat.monitor.VmIdentifier;
@@ -19,8 +16,6 @@ import sun.jvmstat.monitor.event.HostListener;
 import sun.jvmstat.monitor.event.VmStatusChangeEvent;
 import sun.tools.jstat.JstatArguments;
 import sun.tools.jstat.OptionFormat;
-import sun.tools.jstat.OptionOutputFormatterEx;
-import sun.tools.jstat.OutputFormatter;
 
 @Builder
 public class JstatWorker implements Runnable {
@@ -34,16 +29,17 @@ public class JstatWorker implements Runnable {
     @Override
     public void run() {
         try {
-            JstatArguments arguments = new JstatArguments(new String[] {"-gc" + item.vmVersion, String.valueOf(item.pid), String.valueOf(interval)});
+            final JstatArguments arguments = new JstatArguments(new String[] {"-gc" + item.vmVersion, String.valueOf(item.pid), String.valueOf(interval)});
+            final OptionFormat format = arguments.optionFormat();
             final VmIdentifier vmId = arguments.vmId();
             final MonitoredHost monitoredHost = MonitoredHost.getMonitoredHost(vmId);
-            MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
-            List<Monitor> ageTable = monitoredVm.findByPattern("sun.gc.generation.0.agetable.bytes");
-            Monitor desiredSurvivorSize = monitoredVm.findByName("sun.gc.policy.desiredSurvivorSize");
-            logger = new JstatLoggerRemote(item, interval, ageTable, desiredSurvivorSize);
-            OutputFormatter formatter = null;
-            OptionFormat format = arguments.optionFormat();
-            formatter = new OptionOutputFormatterEx(monitoredVm, format, Startup.MODE == Mode.ON_LINE);
+            final MonitoredVm monitoredVm = monitoredHost.getMonitoredVm(vmId, interval);
+
+            if (Startup.MODE == Mode.ON_LINE)
+                logger = new JstatLoggerRemote(item, format, monitoredVm);
+            if (Startup.MODE == Mode.OFF_LINE)
+                logger = new JstatLoggerConsole(item, format, monitoredVm);
+
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     logger.stopLogging();
@@ -68,8 +64,10 @@ public class JstatWorker implements Runnable {
             if (vmId.getLocalVmId() != 0) {
                 monitoredHost.addHostListener(terminator);
             }
+
             EventService.addEvent(new Event(1, "Monitor " + item.mainClass));
-            logger.logSamples(formatter);
+            logger.logSamples();
+
             if (terminator != null) {
                 monitoredHost.removeHostListener(terminator);
             }

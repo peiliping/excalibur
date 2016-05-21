@@ -2,7 +2,6 @@ package icesword.agent.service;
 
 import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
-import icesword.agent.util.Mode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,8 @@ public class EventService {
 
     private static List<List<Event>> DATA_POOL        = Lists.newArrayList();
 
+    private static final int         FULL_SIZE        = 100;
+
     static {
         DATA_POOL.add(new ArrayList<Event>());
         DATA_POOL.add(new ArrayList<Event>());
@@ -26,11 +27,11 @@ public class EventService {
     }
 
     public static synchronized void addEvent(Event e) {
-        if (Startup.MODE == Mode.OFF_LINE) {
+        if (!Startup.MODE.isRemoteMsg()) {
             return;
         }
         int p = Long.valueOf((CURRENT_POSITION.get() % 2)).intValue();
-        if (DATA_POOL.get(p).size() > 100) {
+        if (DATA_POOL.get(p).size() > FULL_SIZE) {
             DATA_POOL.get(p).clear();
         }
         DATA_POOL.get(p).add(e);

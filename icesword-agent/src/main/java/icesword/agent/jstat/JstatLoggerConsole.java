@@ -5,12 +5,19 @@ import icesword.agent.data.process.JvmItem;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import sun.jvmstat.monitor.MonitorException;
-import sun.tools.jstat.OutputFormatter;
+import sun.jvmstat.monitor.MonitoredVm;
+import sun.tools.jstat.OptionFormat;
+import sun.tools.jstat.OptionOutputFormatterEx;
 
 public class JstatLoggerConsole extends JstatLogger {
 
-    public JstatLoggerConsole(JvmItem item, long sampleInterval) {
-        super(item, sampleInterval);
+    public JstatLoggerConsole(JvmItem item, OptionFormat format, MonitoredVm monitoredVm) {
+        super(item, format, monitoredVm);
+        try {
+            this.formatter = new OptionOutputFormatterEx(monitoredVm, format, false);
+        } catch (MonitorException e) {
+            e.printStackTrace();
+        }
     }
 
     private static AtomicBoolean printedHeader = new AtomicBoolean(false);
@@ -18,16 +25,20 @@ public class JstatLoggerConsole extends JstatLogger {
     private static final String  DELIMITER     = "\t";
 
     @Override
-    public void logSamples(OutputFormatter formatter) throws MonitorException {
+    public void logSamples() {
+        try {
+            if (!printedHeader.get() && printedHeader.compareAndSet(false, true)) {
+                System.out.println("PID" + DELIMITER + formatter.getHeader());
+            }
 
-        if (!printedHeader.get() && printedHeader.compareAndSet(false, true)) {
-            System.out.println("PID" + DELIMITER + formatter.getHeader());
-        }
-
-        while (active) {
-            String row = formatter.getRow();
-            System.out.println(item.pid + DELIMITER + row);
-            sleep();
+            while (active) {
+                String row;
+                row = formatter.getRow();
+                System.out.println(item.pid + DELIMITER + row);
+                sleep();
+            }
+        } catch (MonitorException e) {
+            e.printStackTrace();
         }
     }
 }

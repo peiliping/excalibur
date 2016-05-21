@@ -1,11 +1,9 @@
-package icesword.agent.service;
+package icesword.agent.jstat;
 
 import icesword.agent.Startup;
 import icesword.agent.data.process.Event;
 import icesword.agent.data.process.JvmItem;
-import icesword.agent.jstat.JstatLogger;
-import icesword.agent.jstat.JstatLoggerConsole;
-import icesword.agent.jstat.JstatLoggerRemote;
+import icesword.agent.service.EventService;
 import icesword.agent.util.Mode;
 import lombok.Builder;
 import sun.jvmstat.monitor.MonitoredHost;

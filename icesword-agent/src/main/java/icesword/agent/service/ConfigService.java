@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSON;
 @Builder
 public class ConfigService {
 
-    private static final String CLIENT_IP    = "10.44.23.9"; // NetTools.getLocalIP();
+    private static final String CLIENT_IP    = NetTools.getLocalIP();
 
     private static final String PROTOCAL     = "http://";
 

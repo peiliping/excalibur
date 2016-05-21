@@ -1,6 +1,7 @@
 package icesword.agent.service;
 
 import icesword.agent.data.process.JvmItem;
+import icesword.agent.jstat.JstatWorker;
 import icesword.agent.util.Pair;
 
 import java.util.Iterator;

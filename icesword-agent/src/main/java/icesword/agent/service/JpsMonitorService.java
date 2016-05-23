@@ -46,8 +46,6 @@ public class JpsMonitorService {
             return false;
         if (jvmItem.mainClass.contains("icesword"))
             return false;
-        if (jvmItem.mainClass.contains("jstat_plus.jar"))
-            return false;
         if (filterWord != null) {
             return jvmItem.mainClass.contains(filterWord);
         }

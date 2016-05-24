@@ -38,7 +38,7 @@ public class ConfigService {
         List<Event> events = EventService.getLastOne();
 
         String params = null;
-        params = NetTools.buildParams(params, "agent_ip", CLIENT_IP);
+        params = NetTools.buildParams(params, "agent_ip", Startup.DEBUG ? "127.0.0.1" : CLIENT_IP);
         params = NetTools.buildParams(params, "agent_version", Startup.AGENT_VERSION);
         params = NetTools.buildParams(params, "health_info", JSON.toJSONString(events));
 
@@ -49,7 +49,8 @@ public class ConfigService {
         } else {
             EventService.addEvent(new Event(0, "Update Config Error ."));
         }
-
+        if (Startup.DEBUG)
+            System.out.println(hr.content);
         EventService.cleanLastOne();
     }
 
@@ -60,6 +61,8 @@ public class ConfigService {
             for (ResultData rd : result) {
                 rd.updateMeta(config);
                 if (rd.getData().size() > 0) {
+                    if (Startup.DEBUG)
+                        System.out.println(JSON.toJSONString(rd.getMeta()));
                     NetTools.httpPost(PROTOCAL + address + DATA_PATH, NetTools.compress(rd));
                 }
             }

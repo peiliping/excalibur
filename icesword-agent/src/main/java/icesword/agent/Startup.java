@@ -37,5 +37,6 @@ public class Startup {
         }
 
         jstat.run();
+        System.exit(0);
     }
 }

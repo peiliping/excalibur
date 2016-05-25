@@ -52,4 +52,12 @@ public class JstatMonitorService {
             }
         }
     }
+
+    public synchronized void close() {
+        try {
+            executor.shutdownNow();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

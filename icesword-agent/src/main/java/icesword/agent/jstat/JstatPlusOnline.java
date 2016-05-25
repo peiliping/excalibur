@@ -33,6 +33,7 @@ public class JstatPlusOnline extends JstatPlus {
             } else if (config.getStatus() == -1) {
                 jstatPool.killAllAttach();
                 running.set(false);
+                jstatPool.close();
             }
         }
         configService.sendData();

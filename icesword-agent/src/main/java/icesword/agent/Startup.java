@@ -21,7 +21,7 @@ public class Startup {
 
         Options options =
                 (new Options()).addOption("m", "mode", true, "offline or online").addOption("r", "remoteAddress", true, "Config Server Ip .")
-                        .addOption("d", "debug", false, "Debug");
+                        .addOption("d", "debug", true, "Debug");
         CommandLine commandLine = (new DefaultParser()).parse(options, args);
 
         String debug = commandLine.getOptionValue('d');

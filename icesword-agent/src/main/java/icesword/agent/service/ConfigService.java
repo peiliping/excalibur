@@ -43,14 +43,15 @@ public class ConfigService {
         params = NetTools.buildParams(params, "health_info", JSON.toJSONString(events));
 
         HttpResult hr = NetTools.httpPost(PROTOCAL + address + CONNECT_PATH, params);
+        if (Startup.DEBUG)
+            System.out.println(hr.content);
+
         if (hr.success) {
             config = JSON.parseObject(hr.content, Config.class);
             config.period = config.period * 1000;
         } else {
             EventService.addEvent(new Event(0, "Update Config Error ."));
         }
-        if (Startup.DEBUG)
-            System.out.println(hr.content);
         EventService.cleanLastOne();
     }
 

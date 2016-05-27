@@ -7,12 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.sun.tools.attach.VirtualMachine;
-
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredHost;
 import sun.jvmstat.monitor.MonitoredVm;
 import sun.jvmstat.monitor.MonitoredVmUtil;
+import sun.jvmstat.monitor.StringMonitor;
 import sun.jvmstat.monitor.VmIdentifier;
 import sun.tools.jps.Arguments;
 
@@ -29,7 +28,6 @@ public class JpsMonitorService {
                 JvmItem jvmItem = new JvmItem(((Integer) jvm.next()).intValue());
                 buildJvmItem(monitoredHost, jvmItem);
                 if (filterJvm(jvmItem, filterWord) && !jsm.isExistPid(jvmItem.pid)) {
-                    getJVMVersion(jvmItem);
                     if (jvmItem.status) {
                         result.add(jvmItem);
                     }
@@ -83,10 +81,15 @@ public class JpsMonitorService {
                     jvmItem.vmFlags = jvmFlags;
                 }
             }
+            errorString = "--jvm version unavailable";
+            jvmItem.vmVersion = getJVMVersion(vm);
+
             errorString = " -- detach failed";
             monitoredHost.detach(vm);
+            
             errorString = null;
-            jvmItem.simpleDesc();
+            jvmItem.simpleDesc();            
+            
         } catch (Exception e) {
             e.printStackTrace();
             jvmItem.errorString = errorString;
@@ -94,16 +97,8 @@ public class JpsMonitorService {
         }
     }
 
-    public static void getJVMVersion(JvmItem jvmItem) {
-        try {
-            VirtualMachine vm = VirtualMachine.attach("" + jvmItem.pid);
-            String r = (vm.getSystemProperties().getProperty("java.vm.specification.version"));
-            vm.detach();
-            jvmItem.vmVersion = r.trim();
-        } catch (Exception e) {
-            e.printStackTrace();
-            jvmItem.status = false;
-            jvmItem.errorString = "vm version information unavailable";
-        }
+    public static String getJVMVersion(MonitoredVm vm) throws MonitorException {
+        StringMonitor ver = (StringMonitor) vm.findByName("java.property.java.vm.specification.version");
+        return (ver == null) ? "Unknown" : ver.stringValue();
     }
 }

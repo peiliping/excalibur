@@ -33,16 +33,22 @@ public class NetTools {
             Enumeration<InetAddress> inetAddress = nInterfaces.nextElement().getInetAddresses();
             while (inetAddress.hasMoreElements()) {
                 InetAddress address = inetAddress.nextElement();
-                if (!address.isSiteLocalAddress() && !address.isLoopbackAddress() && address.getHostAddress().indexOf(":") == -1) {
+                if (!address.isSiteLocalAddress() && !address.isLoopbackAddress() && address.getHostAddress().indexOf(":") == -1 && isInnerNet(address.getHostAddress())) {
                     netIP = address.getHostAddress();
                     finded = true;
                     break;
-                } else if (address.isSiteLocalAddress() && !address.isLoopbackAddress() && address.getHostAddress().indexOf(":") == -1) {
+                } else if (address.isSiteLocalAddress() && !address.isLoopbackAddress() && address.getHostAddress().indexOf(":") == -1 && isInnerNet(address.getHostAddress())) {
                     localIP = address.getHostAddress();
                 }
             }
         }
         return (netIP != null && !"".equals(netIP)) ? netIP : localIP;
+    }
+
+    public static boolean isInnerNet(String v) {
+        if (v.startsWith("10.") || v.startsWith("172.") || v.startsWith("192.168"))
+            return true;
+        return false;
     }
 
     public static String toString(InputStream input, String encoding) throws IOException {

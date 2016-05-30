@@ -17,15 +17,20 @@ public class Startup {
 
     public static boolean      DEBUG         = false;
 
+    public static String       DEBUG_IP      = null;
+
     public static void main(String[] args) throws Exception {
 
         Options options =
-                (new Options()).addOption("m", "mode", true, "offline or online").addOption("r", "remoteAddress", true, "Config Server Ip .")
-                        .addOption("d", "debug", false, "Debug");
+                (new Options()).addOption("m", "mode", true, "offline or online").addOption("r", "remoteAddress", true, "config Server Ip .")
+                        .addOption("d", "debug", false, "debug").addOption("p", "debugip", true, "the ip 4 debug");
         CommandLine commandLine = (new DefaultParser()).parse(options, args);
 
         Boolean debug = commandLine.hasOption('d');
         DEBUG = (debug != null && Boolean.valueOf(debug));
+
+        String debugIp = commandLine.getOptionValue("p");
+        DEBUG_IP = (debugIp != null ? debugIp : DEBUG_IP);
 
         JstatPlus jstat = null;
         MODE = Mode.getMode(commandLine.getOptionValue('m'));

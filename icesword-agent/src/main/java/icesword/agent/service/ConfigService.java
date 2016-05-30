@@ -38,7 +38,7 @@ public class ConfigService {
         List<Event> events = EventService.getLastOne();
 
         String params = null;
-        params = NetTools.buildParams(params, "agent_ip", Startup.DEBUG ? "10.173.33.95" : CLIENT_IP);
+        params = NetTools.buildParams(params, "agent_ip", (!Startup.DEBUG || Startup.DEBUG_IP == null) ? CLIENT_IP : Startup.DEBUG_IP);
         params = NetTools.buildParams(params, "agent_version", Startup.AGENT_VERSION);
         params = NetTools.buildParams(params, "health_info", JSON.toJSONString(events));
 

@@ -24,7 +24,7 @@ public class Startup {
                         .addOption("d", "debug", false, "Debug");
         CommandLine commandLine = (new DefaultParser()).parse(options, args);
 
-        String debug = commandLine.getOptionValue('d');
+        Boolean debug = commandLine.hasOption('d');
         DEBUG = (debug != null && Boolean.valueOf(debug));
 
         JstatPlus jstat = null;

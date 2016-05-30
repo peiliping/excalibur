@@ -38,13 +38,16 @@ public class ConfigService {
         List<Event> events = EventService.getLastOne();
 
         String params = null;
-        params = NetTools.buildParams(params, "agent_ip", Startup.DEBUG ? "127.0.0.1" : CLIENT_IP);
+        params = NetTools.buildParams(params, "agent_ip", Startup.DEBUG ? "10.173.33.95" : CLIENT_IP);
         params = NetTools.buildParams(params, "agent_version", Startup.AGENT_VERSION);
         params = NetTools.buildParams(params, "health_info", JSON.toJSONString(events));
 
         HttpResult hr = NetTools.httpPost(PROTOCAL + address + CONNECT_PATH, params);
-        if (Startup.DEBUG)
+
+        if (Startup.DEBUG) {
+            System.out.println(params);
             System.out.println(hr.content);
+        }
 
         if (hr.success) {
             config = JSON.parseObject(hr.content, Config.class);

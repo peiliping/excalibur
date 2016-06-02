@@ -19,14 +19,31 @@
 	<aop:aspectj-autoproxy />
 	<context:component-scan base-package="phoenix" />
 
-	<bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy"
-		destroy-method="close" />
+	<!-- <bean id="phoenixDS" class="phoenix.datasource.DataSourceProxy" destroy-method="close" 
+		/> -->
 
-	<bean id="dataSource" class="jakiro.DynamicDataSource"
+	<bean id="phoenixDS"
+		class="phoenix.datasource.davincicode.datasource.DataSourceUnit"
+		destroy-method="close">
+		<property name="davinciCode" value="ABC" />
+	</bean>
+
+	<bean id="dataSourceManager" class="phoenix.datasource.davincicode.DataSourceManager"
+		destroy-method="close">
+		<property name="configServerAddress" value="127.0.0.1/connect" />
+		<property name="manage">
+			<map key-type="java.lang.String">
+				<entry key="ABC" value-ref="phoenixDS" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="phoenix.datasource.VDynamicDataSource"
 		destroy-method="close">
 		<property name="dynamicDataSourceName" value="DS" />
 		<property name="defaultAutoCommit" value="true" />
 		<property name="defaultTargetDataSource" ref="phoenixDS" />
+		<property name="condition" ref="dataSourceManager" />
 		<property name="targetDataSources">
 			<map key-type="java.lang.String">
 				<entry key="main" value-ref="phoenixDS" />
@@ -39,26 +56,11 @@
 		<property name="mapperLocations" value="classpath*:mapper/*.xml" />
 		<property name="configLocation" value="configuration.xml" />
 		<property name="typeAliasesPackage" value="phoenix.dataObject" />
-		<property name="plugins">
-			<array>
-				<bean class="com.oneapm.operation.monitor.aop.MybatisAspect">
-					<property name="monitorAspect" ref="monitorAspect" />
-					<property name="monitorAllSql" value="true" />
-				</bean>
-			</array>
-		</property>
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="phoenix.dao" />
 		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
-	</bean>
-
-	<bean id="monitorAspect" class="com.oneapm.operation.monitor.aop.MonitorAspect">
-		<property name="groupName" value="PE" />
-		<property name="appName" value="Phoenix" />
-		<property name="meterLoggerName" value="meter" />
-		<property name="timerLoggerName" value="timer" />
 	</bean>
 
 </beans>

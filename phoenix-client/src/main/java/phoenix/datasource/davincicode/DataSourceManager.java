@@ -69,6 +69,7 @@ public class DataSourceManager implements InitializingBean {
 
 	private void updateConfig(boolean init) {
 		HttpResult result = NetTools.httpPost(PROTOCAL + this.configServerAddress, buildParams());
+		System.out.println(buildParams());
 		Validate.isTrue(result.success);
 		Map<String, ConfigItem> tc = JSON.parseObject(result.content, new TypeReference<Map<String, ConfigItem>>() {
 		});
@@ -82,11 +83,15 @@ public class DataSourceManager implements InitializingBean {
 	}
 
 	private String buildParams() {
-		List<Param> result = Lists.newArrayList();
+		Map<String, Object> result = Maps.newHashMap();
+		List<Param> params = Lists.newArrayList();
 		for (Map.Entry<String, DataSourceUnit> me : manage.entrySet()) {
 			long version = configs.containsKey(me.getKey()) ? configs.get(me.getKey()).getVersion() : 0;
-			result.add(Param.builder().key(me.getKey()).version(version).build());
+			params.add(Param.builder().instanceIp(me.getValue().getInstanceIp()).dbName(me.getValue().getDbName())
+					.privilege(me.getValue().getPrivilege()).version(version).build());
 		}
+		result.put("ip", NetTools.getLocalIP());
+		result.put("params", params);
 		return JSON.toJSONString(result);
 	}
 

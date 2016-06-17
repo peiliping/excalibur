@@ -20,9 +20,19 @@ public class DataSourceUnit extends LazyConnectionDataSourceProxy {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DataSourceUnit.class);
 
+	private String davinciCode;
+
 	@Setter
 	@Getter
-	private String davinciCode;
+	private String instanceIp;
+
+	@Setter
+	@Getter
+	private String dbName;
+
+	@Setter
+	@Getter
+	private String privilege;
 
 	private ConfigItem configItem;
 
@@ -43,6 +53,7 @@ public class DataSourceUnit extends LazyConnectionDataSourceProxy {
 		try {
 			setTargetDataSource(DruidDataSourceFactory.createDataSource(buildProperties(ci)));
 			super.afterPropertiesSet();
+			getTargetDataSource().getConnection().isValid(1000);
 			this.configItem = ci;
 		} catch (Exception e) {
 			LOG.error("DataSourceUnit Handle Event Error : ", e);
@@ -62,7 +73,7 @@ public class DataSourceUnit extends LazyConnectionDataSourceProxy {
 
 	@Override
 	public void afterPropertiesSet() {
-		// lazy
+		this.davinciCode = instanceIp + "|" + dbName + "|" + privilege;
 	}
 
 }

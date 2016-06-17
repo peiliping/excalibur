@@ -9,7 +9,11 @@ import lombok.Setter;
 @Builder
 public class Param {
 
-	private String key;
+	private String instanceIp;
+
+	private String dbName;
+
+	private String privilege;
 
 	private long version;
 

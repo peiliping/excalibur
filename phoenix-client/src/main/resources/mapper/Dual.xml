@@ -3,7 +3,7 @@
 <mapper namespace="phoenix.dao.DualDao">
 
 	<select id="query" parameterType="java.util.Map" resultType="string">
-		SELECT 'x' FROM dual
+		SELECT count(1) FROM test.metric_data_entity_pt1m_2
 	</select>
 
 </mapper>

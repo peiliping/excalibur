@@ -86,6 +86,7 @@ public class DruidMonitorFilter extends FilterEventAdapter {
 		statement.setLastExecuteTimeNano();
 		double span = statement.getLastExecuteTimeNano() / 1000000.0d;
 		if (LOG.isInfoEnabled()) {
+			System.out.println(statement.getRawObject().getClass().getSimpleName());
 			LOG.info("Statement : " + statement.getLastExecuteType() + " cost : " + span + " sql : " + sql + " name : "
 					+ name);
 		}

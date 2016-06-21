@@ -3,7 +3,14 @@
 <mapper namespace="phoenix.dao.DualDao">
 
 	<select id="query" parameterType="java.util.Map" resultType="string">
-		SELECT count(1) FROM test.metric_data_entity_pt1m_2
+		SELECT count(1) FROM test.metric_data_entity_pt1m_2 where
+		metric_data_id > #{id}
 	</select>
+
+	<select id="query" parameterType="java.util.Map" resultType="string">
+		update test.metric_data_entity_pt1m_2 where
+		metric_data_id > #{id}
+	</select>
+
 
 </mapper>

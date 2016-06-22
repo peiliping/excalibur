@@ -1,4 +1,4 @@
-url=jdbc:mysql://10.128.6.168:3306/test?useUnicode=true&amp;characterEncoding=UTF-8
+url=jdbc:mysql://10.128.6.168:3306/test?rewriteBatchedStatements=true&amp;useUnicode=true&amp;characterEncoding=UTF-8
 driverClassName=com.mysql.jdbc.Driver
 username=dou
 password=123456

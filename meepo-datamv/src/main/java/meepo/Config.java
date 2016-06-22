@@ -34,7 +34,7 @@ public class Config {
 	private int readerStepSize;
 	private int readersNum;
 	private String sourceColumnsNames;
-	private Map<String, Integer> sourceColumnsType = Maps.newHashMap();
+	private Map<String, Integer> sourceColumnsType = Maps.newIdentityHashMap();
 	private List<String> sourceColumnsArray = Lists.newArrayList();
 	private String sourceFilterSQL;
 
@@ -46,7 +46,7 @@ public class Config {
 	private int writerStepSize;
 	private int writersNum;
 	private String targetColumnsNames;
-	private Map<String, Integer> targetColumnsType = Maps.newHashMap();;
+	private Map<String, Integer> targetColumnsType = Maps.newIdentityHashMap();
 	private List<String> targetColumnsArray = Lists.newArrayList();
 
 	// ----------------------------------------------------------------------

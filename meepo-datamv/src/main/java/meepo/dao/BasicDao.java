@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +12,12 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class BasicDao {
 
@@ -32,22 +34,26 @@ public class BasicDao {
 		});
 	}
 
-	public static Pair<List<String>, Map<String, Integer>> parserSchema(DataSource ds, String tableName,
-			String columsNames) {
+	public static Triple<List<String>, List<Integer>, Map<String, Integer>> parserSchema(DataSource ds,
+			String tableName, String columsNames) {
 		String sql = "SELECT " + columsNames + " FROM " + tableName + " LIMIT 1";
-		return excuteQuery(ds, sql, new ResultSetICallable<Pair<List<String>, Map<String, Integer>>>() {
-			@Override
-			public Pair<List<String>, Map<String, Integer>> handleResultSet(ResultSet r) throws Exception {
-				Map<String, Integer> map = new HashMap<String, Integer>();
-				List<String> array = new ArrayList<String>();
-				Validate.isTrue(r.getMetaData().getColumnCount() > 0);
-				for (int i = 1; i <= r.getMetaData().getColumnCount(); i++) {
-					map.put(r.getMetaData().getColumnName(i), r.getMetaData().getColumnType(i));
-					array.add(r.getMetaData().getColumnName(i));
-				}
-				return Pair.of(array, map);
-			}
-		});
+		return excuteQuery(ds, sql,
+				new ResultSetICallable<Triple<List<String>, List<Integer>, Map<String, Integer>>>() {
+					@Override
+					public Triple<List<String>, List<Integer>, Map<String, Integer>> handleResultSet(ResultSet r)
+							throws Exception {
+						Map<String, Integer> map = Maps.newHashMap();
+						List<String> colsArray = Lists.newArrayList();
+						List<Integer> typesArray = Lists.newArrayList();
+						Validate.isTrue(r.getMetaData().getColumnCount() > 0);
+						for (int i = 1; i <= r.getMetaData().getColumnCount(); i++) {
+							map.put(r.getMetaData().getColumnName(i), r.getMetaData().getColumnType(i));
+							colsArray.add(r.getMetaData().getColumnName(i));
+							typesArray.add(r.getMetaData().getColumnType(i));
+						}
+						return Triple.of(colsArray, typesArray, map);
+					}
+				});
 	}
 
 	public static <E> boolean excuteBatchAdd(DataSource ds, String sql, ICallable<E> cal) {

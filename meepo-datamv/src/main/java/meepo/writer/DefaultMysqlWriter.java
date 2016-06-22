@@ -36,8 +36,7 @@ public class DefaultMysqlWriter extends IWorker {
 			public void handleParams(PreparedStatement p) throws Exception {
 				for (Object[] data : datas) {
 					for (int i = 0; i < data.length; i++) {
-						p.setObject(i + 1, data[i],
-								config.getTargetColumnsType().get(config.getTargetColumnsArray().get(i)));
+						p.setObject(i + 1, data[i], config.getTargetTypesArray().get(i));
 					}
 					p.addBatch();
 				}

@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,8 @@ public class Config {
 	private int readersNum;
 	private String sourceColumnsNames;
 	private Map<String, Integer> sourceColumnsType = Maps.newIdentityHashMap();
-	private List<String> sourceColumnsArray = Lists.newArrayList();
+	private transient List<String> sourceColumnsArray = Lists.newArrayList();
+	private transient List<Integer> sourceTypesArray = Lists.newArrayList();
 	private String sourceFilterSQL;
 
 	// ----------------------------------------------------------------------
@@ -47,7 +49,8 @@ public class Config {
 	private int writersNum;
 	private String targetColumnsNames;
 	private Map<String, Integer> targetColumnsType = Maps.newIdentityHashMap();
-	private List<String> targetColumnsArray = Lists.newArrayList();
+	private transient List<String> targetColumnsArray = Lists.newArrayList();
+	private transient List<Integer> targetTypesArray = Lists.newArrayList();
 
 	// ----------------------------------------------------------------------
 
@@ -71,7 +74,7 @@ public class Config {
 		this.primaryKeyName = ps.getProperty("primaryKeyName", "id");
 		this.readerStepSize = Integer.valueOf(ps.getProperty("readerStepSize", "100"));
 		this.readersNum = Integer.valueOf(ps.getProperty("readersNum", "1"));
-		this.sourceFilterSQL = ps.getProperty("sourceFilterSQL" , "");
+		this.sourceFilterSQL = ps.getProperty("sourceFilterSQL", "");
 		this.targetMode = Mode.valueOf(ps.getProperty("targetMode", Mode.SIMPLEWRITER.name()));
 		this.writerStepSize = Integer.valueOf(ps.getProperty("writerStepSize", "100"));
 		this.writersNum = Integer.valueOf(ps.getProperty("writersNum", "1"));
@@ -104,16 +107,19 @@ public class Config {
 			}
 		}
 		// handle Columns
-		handleColumns(sourceDataSource, sourceTableName, sourceColumnsNames, sourceColumnsType, sourceColumnsArray);
-		handleColumns(targetDataSource, targetTableName, targetColumnsNames, targetColumnsType, targetColumnsArray);
+		handleColumns(sourceDataSource, sourceTableName, sourceColumnsNames, sourceColumnsType, sourceColumnsArray,
+				sourceTypesArray);
+		handleColumns(targetDataSource, targetTableName, targetColumnsNames, targetColumnsType, targetColumnsArray,
+				targetTypesArray);
 		return this;
 	}
 
 	private void handleColumns(DataSource ds, String tableName, String cols, Map<String, Integer> columnsType,
-			List<String> columns) {
-		Pair<List<String>, Map<String, Integer>> result = BasicDao.parserSchema(ds, tableName, cols);
+			List<String> columns, List<Integer> types) {
+		Triple<List<String>, List<Integer>, Map<String, Integer>> result = BasicDao.parserSchema(ds, tableName, cols);
 		columns.addAll(result.getLeft());
 		columnsType.putAll(result.getRight());
+		types.addAll(result.getMiddle());
 	}
 
 	public Config printConfig() {

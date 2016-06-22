@@ -30,7 +30,7 @@ public class DefaultMysqlWriter extends IWorker {
 		}
 	}
 
-	private boolean sendData(List<Object[]> datas) {
+	private boolean sendData(final List<Object[]> datas) {
 		return BasicDao.excuteBatchAdd(config.getTargetDataSource(), SQL, new ParamsICallable<Object>() {
 			@Override
 			public void handleParams(PreparedStatement p) throws Exception {

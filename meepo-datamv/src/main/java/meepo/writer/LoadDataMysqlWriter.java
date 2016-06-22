@@ -30,7 +30,7 @@ public class LoadDataMysqlWriter extends IWorker {
 		}
 	}
 
-	private boolean sendData(List<Object[]> datas) {
+	private boolean sendData(final List<Object[]> datas) {
 		StringBuilder builder = new StringBuilder();
 		for (Object[] o : datas) {
 			for (int i = 0; i < o.length; i++) {

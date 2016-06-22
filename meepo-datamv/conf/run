@@ -1,1 +1,0 @@
-java -Xms4g -Xmx4g -server -XX:SurvivorRatio=4 -XX:NewRatio=2 -XX:PermSize=64m -XX:+UseConcMarkSweepGC -XX:+DisableExplicitGC -XX:CMSMaxAbortablePrecleanTime=5000 -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+UseCMSCompactAtFullCollection -jar mv.jar source.p target.p config.p

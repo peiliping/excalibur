@@ -1,11 +1,10 @@
-url=jdbc:mysql://10.128.9.80:3306/test?useUnicode=true&amp;characterEncoding=UTF-8
+url=jdbc:mysql://10.128.6.168:3306/test?useUnicode=true&amp;characterEncoding=UTF-8
 driverClassName=com.mysql.jdbc.Driver
-username=root
-password=oneapm
-initialSize=100
-minIdle=100
-maxActive=5000
-maxWait=5000
+username=dou
+password=123456
+initialSize=3
+minIdle=1
+maxActive=10
 defaultAutoCommit=true
 timeBetweenEvictionRunsMillis=300000
 minEvictableIdleTimeMillis=300000
@@ -18,4 +17,3 @@ maxPoolPreparedStatementPerConnectionSize=20
 removeAbandoned=true
 removeAbandonedTimeout=1200
 logAbandoned=true
-

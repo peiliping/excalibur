@@ -2,6 +2,6 @@ package meepo.storage;
 
 public interface IPlugin<E> {
 
-    public E plugin(E e);
+	public E convert(E e);
 
 }

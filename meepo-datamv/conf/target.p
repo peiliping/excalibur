@@ -1,15 +1,14 @@
-url=jdbc:vertica://10.128.9.70:5433/ai_hive
-driverClassName=com.vertica.jdbc.Driver
-username=vertica
-password=ai_hive
-initialSize=100
-minIdle=100
-maxActive=5000
-maxWait=5000
+url=jdbc:mysql://10.128.6.168:3306/test?useUnicode=true&amp;characterEncoding=UTF-8
+driverClassName=com.mysql.jdbc.Driver
+username=dou
+password=123456
+initialSize=3
+minIdle=1
+maxActive=10
 defaultAutoCommit=true
 timeBetweenEvictionRunsMillis=300000
 minEvictableIdleTimeMillis=300000
-validationQuery=SELECT 'x'
+validationQuery=SELECT 'x' FROME DUAL
 testWhileIdle=true
 testOnBorrow=false
 testOnReturn=false

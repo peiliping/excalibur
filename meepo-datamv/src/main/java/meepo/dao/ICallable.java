@@ -9,5 +9,4 @@ public abstract class ICallable<V> {
 
     public abstract V handleResultSet(ResultSet r) throws Exception;
 
-
 }

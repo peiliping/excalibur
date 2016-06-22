@@ -2,9 +2,7 @@ package meepo;
 
 public class AppTest {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
-        Main.main("/home/peiliping/下载/source", "/home/peiliping/下载/source", "/home/peiliping/下载/meepo-config");
-
-    }
+	}
 }

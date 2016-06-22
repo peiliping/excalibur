@@ -1,85 +1,57 @@
 package meepo.writer;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.List;
-
-import javax.sql.DataSource;
 
 import meepo.Config;
 import meepo.dao.BasicDao;
-import meepo.dao.ICallable;
+import meepo.dao.ParamsICallable;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
 
 public class DefaultMysqlWriter extends IWorker {
 
-    private final IStorage<Object[]> buffer;
+	public DefaultMysqlWriter(IStorage<Object[]> buffer, Config config, int index) {
+		super(buffer, config, index);
+	}
 
-    private final Config             config;
+	@Override
+	public void work() {
+		final List<Object[]> datas = buffer.get(config.getWriterStepSize());
+		if (datas.isEmpty())
+			return;
 
-    private final DataSource         target;
+		long t = 0;
+		while (!sendData(datas)) {
+			try {
+				Thread.sleep(100 * t++);
+			} catch (InterruptedException e) {
+			}
+		}
+	}
 
-    private String                   SQL;
+	private boolean sendData(List<Object[]> datas) {
+		return BasicDao.excuteBatchAdd(config.getTargetDataSource(), SQL, new ParamsICallable<Object>() {
+			@Override
+			public void handleParams(PreparedStatement p) throws Exception {
+				for (Object[] data : datas) {
+					for (int i = 0; i < data.length; i++) {
+						p.setObject(i + 1, data[i],
+								config.getTargetColumnsType().get(config.getTargetColumnsArray().get(i)));
+					}
+					p.addBatch();
+				}
+			}
+		});
+	}
 
-    public DefaultMysqlWriter(IStorage<Object[]> buffer, Config config, DataSource target) {
-        this.buffer = buffer;
-        this.config = config;
-        this.target = target;
-        this.SQL = buildSQL();
-    }
-
-    @Override
-    public void work() {
-        executeWrite();
-    }
-
-    private String buildSQL() {
-        String v = "?";
-        for (int i = 1; i < config.getTargetColumsArray().size(); i++) {
-            v = v + ",?";
-        }
-        return "INSERT INTO " + config.getTargetTableName() + " (" + config.getTargetColumsNames() + ") VALUES ( " + v + ")";
-    }
-
-    private void executeWrite() {
-        final List<Object[]> datas = buffer.get(config.getWriterStepSize());
-        if (datas.isEmpty())
-            return;
-        boolean s = BasicDao.excuteBatchAdd(target, SQL, new ICallable<Object>() {
-            @Override
-            public Object handleResultSet(ResultSet r) throws Exception {
-                return null;
-            }
-
-            @Override
-            public void handleParams(PreparedStatement p) throws Exception {
-                for (Object[] data : datas) {
-                    for (int i = 0; i < data.length; i++) {
-                        p.setObject(i + 1, data[i], config.getTargetColumsType().get(config.getTargetColumsArray().get(i)));
-                    }
-                    p.addBatch();
-                }
-            }
-        });
-
-        if (!s) {
-            for (final Object[] o : datas) {
-                BasicDao.excuteBatchAdd(target, SQL, new ICallable<Object>() {
-                    @Override
-                    public Object handleResultSet(ResultSet r) throws Exception {
-                        return null;
-                    }
-
-                    @Override
-                    public void handleParams(PreparedStatement p) throws Exception {
-                        for (int i = 0; i < o.length; i++) {
-                            p.setObject(i + 1, o[i], config.getTargetColumsType().get(config.getTargetColumsArray().get(i)));
-                        }
-                        p.addBatch();
-                    }
-                });
-            }
-        }
-    }
+	@Override
+	protected String buildSQL() {
+		String v = "?";
+		for (int i = 1; i < config.getTargetColumnsArray().size(); i++) {
+			v = v + ",?";
+		}
+		return "INSERT INTO " + config.getTargetTableName() + " (" + config.getTargetColumnsNames() + ") VALUES ( " + v
+				+ ")";
+	}
 }

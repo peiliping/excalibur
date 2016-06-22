@@ -3,124 +3,121 @@ package meepo;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.sql.DataSource;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import lombok.Getter;
+import lombok.Setter;
+import meepo.dao.BasicDao;
+import meepo.tools.Mode;
+
+@Setter
+@Getter
 public class Config {
 
-    @Setter
-    @Getter
-    private String               sourceTableName;
-    @Setter
-    @Getter
-    private String               targetTableName;
-    @Setter
-    @Getter
-    private String               primaryKeyName;
-    @Setter
-    @Getter
-    private int                  readerStepSize;
-    @Setter
-    @Getter
-    private int                  writerStepSize;
-    @Setter
-    @Getter
-    private String               sourceColumsNames;
-    @Setter
-    @Getter
-    private String               targetColumsNames;
-    @Setter
-    @Getter
-    private Map<String, Integer> sourceColumsType;
-    @Setter
-    @Getter
-    private List<String>         sourceColumsArray;
-    @Setter
-    @Getter
-    private Map<String, Integer> targetColumsType;
-    @Setter
-    @Getter
-    private List<String>         targetColumsArray;
-    @Setter
-    @Getter
-    private AtomicLong           start;            // start为实际最小值-1
-    @Setter
-    @Getter
-    private AtomicLong           end;              // end为实际最大值 如果val = -1则是sync模式
-    @Setter
-    @Getter
-    private boolean              syncMode;
-    @Setter
-    @Getter
-    private long                 syncDelay;
-    @Setter
-    @Getter
-    private boolean              syncSuicide;
-    @Setter
-    @Getter
-    private int                  bufferSize;
-    @Setter
-    @Getter
-    private int                  readersNum;
-    @Setter
-    @Getter
-    private int                  writersNum;
-    @Setter
-    @Getter
-    private boolean              insertOrLoadData;
-    @Setter
-    @Getter
-    private String               pluginName;
+	private static final Logger LOG = LoggerFactory.getLogger(Config.class);
 
-    public Config(Properties ps) {
-        // ==================Required Config Item===================
-        this.sourceTableName = ps.getProperty("sourcetablename");
-        this.targetTableName = ps.getProperty("targettablename");
-        this.sourceColumsNames = ps.getProperty("sourcecolumsnames");
-        this.targetColumsNames = ps.getProperty("targetcolumsnames");
-        Validate.notNull(this.sourceTableName);
-        Validate.notNull(this.targetTableName);
-        Validate.notNull(this.sourceColumsNames);
-        Validate.notNull(this.targetColumsNames);
-        // =========================================================
-        this.primaryKeyName = ps.getProperty("primarykeyname", "id");
-        this.bufferSize = Integer.valueOf(ps.getProperty("buffersize", "1024"));
-        this.readerStepSize = Integer.valueOf(ps.getProperty("readerstepsize", "100"));
-        this.writerStepSize = Integer.valueOf(ps.getProperty("writerstepsize", "100"));
-        this.start = ps.getProperty("start") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("start")));
-        this.end = ps.getProperty("end") == null ? null : new AtomicLong(Long.valueOf(ps.getProperty("end")));
-        this.readersNum = Integer.valueOf(ps.getProperty("readersnum", "1"));
-        this.writersNum = Integer.valueOf(ps.getProperty("writersnum", "1"));
-        this.syncMode = Boolean.valueOf(ps.getProperty("syncmode", "false"));
-        if (this.syncMode) {
-            this.readersNum = 1;
-            this.end = new AtomicLong(-1);
-        }
-        this.syncDelay = Long.valueOf(ps.getProperty("syncdelay", "10"));
-        this.syncSuicide = Boolean.valueOf(ps.getProperty("syncsuicide", "false"));
-        this.insertOrLoadData = Boolean.valueOf(ps.getProperty("insertorloaddata", "true"));
-        this.pluginName = String.valueOf(ps.getProperty("pluginName", ""));
-    }
+	private Mode sourceMode;
+	private transient DataSource sourceDataSource;
+	private String sourceTableName;
+	private String primaryKeyName;
+	private int readerStepSize;
+	private int readersNum;
+	private String sourceColumnsNames;
+	private Map<String, Integer> sourceColumnsType = Maps.newHashMap();
+	private List<String> sourceColumnsArray = Lists.newArrayList();
+	private String sourceFilterSQL;
 
-    public void initStartEnd(Pair<Long, Long> ps) {
-        if (syncMode) {
-            if (this.start == null)
-                this.start = new AtomicLong(ps.getRight());
-        } else {
-            if (this.start == null)
-                this.start = new AtomicLong(ps.getLeft());
-            if (this.end == null)
-                this.end = new AtomicLong(ps.getRight());
-        }
-    }
+	// ----------------------------------------------------------------------
 
-    public boolean needAutoInitStartEnd() {
-        return start == null || end == null;
-    }
+	private Mode targetMode;
+	private transient DataSource targetDataSource;
+	private String targetTableName;
+	private int writerStepSize;
+	private int writersNum;
+	private String targetColumnsNames;
+	private Map<String, Integer> targetColumnsType = Maps.newHashMap();;
+	private List<String> targetColumnsArray = Lists.newArrayList();
 
+	// ----------------------------------------------------------------------
+
+	private int bufferSize;
+	private Long start; // start为实际最小值-1
+	private Long end; // end为实际最大值
+	private Class<?> pluginClass;
+
+	public Config(Properties ps) throws Exception {
+		// ==================Required Config Item===================
+		this.sourceTableName = ps.getProperty("sourceTableName");
+		this.targetTableName = ps.getProperty("targetTableName");
+		this.sourceColumnsNames = ps.getProperty("sourceColumnsNames");
+		this.targetColumnsNames = ps.getProperty("targetColumnsNames");
+		Validate.notNull(this.sourceTableName);
+		Validate.notNull(this.targetTableName);
+		Validate.notNull(this.sourceColumnsNames);
+		Validate.notNull(this.targetColumnsNames);
+		// =========================================================
+		this.sourceMode = Mode.valueOf(ps.getProperty("sourceMode", Mode.SIMPLEREADER.name()));
+		this.primaryKeyName = ps.getProperty("primaryKeyName", "id");
+		this.readerStepSize = Integer.valueOf(ps.getProperty("readerStepSize", "100"));
+		this.readersNum = Integer.valueOf(ps.getProperty("readersNum", "1"));
+		this.sourceFilterSQL = ps.getProperty("sourceFilterSQL" , "");
+		this.targetMode = Mode.valueOf(ps.getProperty("targetMode", Mode.SIMPLEWRITER.name()));
+		this.writerStepSize = Integer.valueOf(ps.getProperty("writerStepSize", "100"));
+		this.writersNum = Integer.valueOf(ps.getProperty("writersNum", "1"));
+
+		this.bufferSize = Integer.valueOf(ps.getProperty("bufferSize", "8192"));
+		this.start = ps.getProperty("start") == null ? null : Long.valueOf(ps.getProperty("start"));
+		this.end = ps.getProperty("end") == null ? null : Long.valueOf(ps.getProperty("end"));
+
+		if (this.sourceMode == Mode.SYNCREADER) {
+			Validate.isTrue(this.readersNum == 1, "Mode Sync ReadersNum Must Be 1 .");
+			this.end = Long.MAX_VALUE;
+		}
+
+		this.pluginClass = ps.getProperty("pluginClass") == null ? null : Class.forName(ps.getProperty("pluginClass"));
+	}
+
+	public Config init() {
+		// handle Start & End
+		if (this.start == null || this.end == null) {
+			Pair<Long, Long> ps = BasicDao.autoGetStartEndPoint(this.sourceDataSource, this.sourceTableName,
+					this.primaryKeyName);
+			if (this.sourceMode == Mode.SYNCREADER) {
+				if (this.start == null)
+					this.start = ps.getRight();
+			} else {
+				if (this.start == null)
+					this.start = ps.getLeft();
+				if (this.end == null)
+					this.end = ps.getRight();
+			}
+		}
+		// handle Columns
+		handleColumns(sourceDataSource, sourceTableName, sourceColumnsNames, sourceColumnsType, sourceColumnsArray);
+		handleColumns(targetDataSource, targetTableName, targetColumnsNames, targetColumnsType, targetColumnsArray);
+		return this;
+	}
+
+	private void handleColumns(DataSource ds, String tableName, String cols, Map<String, Integer> columnsType,
+			List<String> columns) {
+		Pair<List<String>, Map<String, Integer>> result = BasicDao.parserSchema(ds, tableName, cols);
+		columns.addAll(result.getLeft());
+		columnsType.putAll(result.getRight());
+	}
+
+	public Config printConfig() {
+		LOG.info("  Config JSON : " + JSON.toJSONString(this, SerializerFeature.PrettyFormat));
+		return this;
+	}
 }

@@ -7,8 +7,9 @@ sourceColumnsNames=id,col1,col2,col3
 #readersNum=1
 #start=[AUTO]
 #end=[AUTO]
+#endDelay=0
 
-#targetMode=SIMPLEWRITER,LOADDATAWRITER,NULLWRITER
+#targetMode=SIMPLEWRITER,REPLACEWRITER,LOADDATAWRITER,NULLWRITER
 targetTableName=test_2
 targetColumnsNames=id,col1,col2,col3
 #writerStepSize=100

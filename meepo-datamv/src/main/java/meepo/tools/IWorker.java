@@ -8,13 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import meepo.Config;
-import meepo.reader.DefaultMysqlReader;
-import meepo.reader.SyncMysqlReader;
 import meepo.storage.IStorage;
-import meepo.writer.DefaultMysqlWriter;
-import meepo.writer.LoadDataMysqlWriter;
-import meepo.writer.NullWriter;
-import meepo.writer.ReplaceMysqlWriter;
 
 public abstract class IWorker implements Runnable {
 
@@ -54,18 +48,12 @@ public abstract class IWorker implements Runnable {
 
 	public static IWorker create(Mode md, IStorage<Object[]> buffer, Config config, int index) {
 		IWorker w = null;
-		if (md == Mode.SIMPLEREADER)
-			w = new DefaultMysqlReader(buffer, config, index);
-		if (md == Mode.SYNCREADER)
-			w = new SyncMysqlReader(buffer, config, index);
-		if (md == Mode.SIMPLEWRITER)
-			w = new DefaultMysqlWriter(buffer, config, index);
-		if (md == Mode.REPLACEWRITER)
-			w = new ReplaceMysqlWriter(buffer, config, index);
-		if (md == Mode.LOADDATAWRITER)
-			w = new LoadDataMysqlWriter(buffer, config, index);
-		if (md == Mode.NULLWRITER)
-			w = new NullWriter(buffer, config, index);
+		try {
+			w = (IWorker) md.clazz.getDeclaredConstructor(IStorage.class, Config.class, int.class).newInstance(buffer,
+					config, index);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return w;
 	}
 

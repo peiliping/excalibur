@@ -14,7 +14,7 @@ public abstract class IWorker implements Runnable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(IWorker.class);
 
-	protected volatile boolean RUN = true;
+	protected boolean RUN = true;
 
 	protected IStorage<Object[]> buffer;
 

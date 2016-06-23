@@ -14,6 +14,7 @@ import meepo.storage.IStorage;
 import meepo.writer.DefaultMysqlWriter;
 import meepo.writer.LoadDataMysqlWriter;
 import meepo.writer.NullWriter;
+import meepo.writer.ReplaceMysqlWriter;
 
 public abstract class IWorker implements Runnable {
 
@@ -59,6 +60,8 @@ public abstract class IWorker implements Runnable {
 			w = new SyncMysqlReader(buffer, config, index);
 		if (md == Mode.SIMPLEWRITER)
 			w = new DefaultMysqlWriter(buffer, config, index);
+		if (md == Mode.REPLACEWRITER)
+			w = new ReplaceMysqlWriter(buffer, config, index);
 		if (md == Mode.LOADDATAWRITER)
 			w = new LoadDataMysqlWriter(buffer, config, index);
 		if (md == Mode.NULLWRITER)

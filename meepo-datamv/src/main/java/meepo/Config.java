@@ -57,6 +57,7 @@ public class Config {
 	private int bufferSize;
 	private Long start; // start为实际最小值-1
 	private Long end; // end为实际最大值
+	private Long endDelay; // 用于sync 控制时间的参数
 	private Class<?> pluginClass;
 
 	public Config(Properties ps) throws Exception {
@@ -82,6 +83,7 @@ public class Config {
 		this.bufferSize = Integer.valueOf(ps.getProperty("bufferSize", "8192"));
 		this.start = ps.getProperty("start") == null ? null : Long.valueOf(ps.getProperty("start"));
 		this.end = ps.getProperty("end") == null ? null : Long.valueOf(ps.getProperty("end"));
+		this.endDelay = ps.getProperty("endDelay") == null ? null : Long.valueOf(ps.getProperty("endDelay"));
 
 		if (this.sourceMode == Mode.SYNCREADER) {
 			Validate.isTrue(this.readersNum == 1, "Mode Sync ReadersNum Must Be 1 .");

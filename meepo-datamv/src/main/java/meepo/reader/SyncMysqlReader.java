@@ -24,7 +24,7 @@ public class SyncMysqlReader extends IWorker {
 	public void work() {
 		Pair<Long, Long> p = BasicDao.autoGetStartEndPoint(config.getSourceDataSource(), config.getSourceTableName(),
 				config.getPrimaryKeyName());
-		long thisLoopEndPoint = p.getRight();
+		long thisLoopEndPoint = (config.getEndDelay() == null ? p.getRight() : p.getRight() - config.getEndDelay());
 		while (currentPos < thisLoopEndPoint) {
 			long theEnd = (thisLoopEndPoint - currentPos >= config.getReaderStepSize())
 					? currentPos + config.getReaderStepSize() : thisLoopEndPoint;

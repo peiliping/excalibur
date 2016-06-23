@@ -13,6 +13,7 @@ import meepo.reader.SyncMysqlReader;
 import meepo.storage.IStorage;
 import meepo.writer.DefaultMysqlWriter;
 import meepo.writer.LoadDataMysqlWriter;
+import meepo.writer.NullWriter;
 
 public abstract class IWorker implements Runnable {
 
@@ -60,6 +61,8 @@ public abstract class IWorker implements Runnable {
 			w = new DefaultMysqlWriter(buffer, config, index);
 		if (md == Mode.LOADDATAWRITER)
 			w = new LoadDataMysqlWriter(buffer, config, index);
+		if (md == Mode.NULLWRITER)
+			w = new NullWriter(buffer, config, index);
 		return w;
 	}
 

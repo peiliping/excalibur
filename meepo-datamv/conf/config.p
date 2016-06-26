@@ -2,7 +2,7 @@
 sourceTableName=test_1
 #primaryKeyName=id
 sourceColumnsNames=id,col1,col2,col3
-#sourceFilterSQL=
+#sourceExtraSQL=
 #readerStepSize=100
 #readersNum=1
 #start=[AUTO]

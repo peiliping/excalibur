@@ -43,7 +43,7 @@ public class SyncMysqlReader extends IWorker {
 	protected String buildSQL() {
 		return "SELECT " + config.getSourceColumnsNames() + " FROM " + config.getSourceTableName() + " WHERE "
 				+ config.getPrimaryKeyName() + " > ? AND " + config.getPrimaryKeyName() + " <= ? "
-				+ config.getSourceFilterSQL();
+				+ config.getSourceExtraSQL();
 	}
 
 	private boolean executeQuery(final long start, final long end) {

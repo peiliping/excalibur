@@ -38,7 +38,7 @@ public class Config {
 	private Map<String, Integer> sourceColumnsType = Maps.newIdentityHashMap();
 	private transient List<String> sourceColumnsArray = Lists.newArrayList();
 	private transient List<Integer> sourceTypesArray = Lists.newArrayList();
-	private String sourceFilterSQL;
+	private String sourceExtraSQL;
 
 	// ----------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ public class Config {
 		this.primaryKeyName = ps.getProperty("primaryKeyName", "id");
 		this.readerStepSize = Integer.valueOf(ps.getProperty("readerStepSize", "100"));
 		this.readersNum = Integer.valueOf(ps.getProperty("readersNum", "1"));
-		this.sourceFilterSQL = ps.getProperty("sourceFilterSQL", "");
+		this.sourceExtraSQL = ps.getProperty("sourceExtraSQL", "");
 		this.targetMode = Mode.valueOf(ps.getProperty("targetMode", Mode.SIMPLEWRITER.name()));
 		this.writerStepSize = Integer.valueOf(ps.getProperty("writerStepSize", "100"));
 		this.writersNum = Integer.valueOf(ps.getProperty("writersNum", "1"));

@@ -1,7 +1,15 @@
 package meepo.storage;
 
-public interface IPlugin<E> {
+import meepo.Config;
 
-	public E convert(E e);
+public abstract class IPlugin<E> {
+
+	public Config config;
+
+	public IPlugin(Config config) {
+		this.config = config;
+	}
+
+	public abstract E convert(E e);
 
 }

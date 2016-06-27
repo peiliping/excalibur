@@ -11,7 +11,7 @@ import meepo.tools.IWorker;
 
 public class DefaultMysqlReader extends IWorker {
 
-	private long currentPos = 0;
+	protected long currentPos = 0;
 
 	public DefaultMysqlReader(IStorage<Object[]> buffer, Config config, int index) {
 		super(buffer, config, index);
@@ -25,7 +25,7 @@ public class DefaultMysqlReader extends IWorker {
 			RUN = false;
 			return;
 		}
-		boolean status = executeQuery();
+		boolean status = executeQuery(currentPos, Math.min(currentPos + config.getReaderStepSize(), config.getEnd()));
 		if (status) {
 			currentPos += config.getReadersNum() * config.getReaderStepSize();
 		}
@@ -38,12 +38,12 @@ public class DefaultMysqlReader extends IWorker {
 				+ config.getSourceExtraSQL();
 	}
 
-	private boolean executeQuery() {
+	protected boolean executeQuery(final long start, final long end) {
 		Boolean result = BasicDao.excuteQuery(config.getSourceDataSource(), SQL, new ICallable<Boolean>() {
 			@Override
 			public void handleParams(PreparedStatement p) throws Exception {
-				p.setLong(1, currentPos);
-				p.setLong(2, Math.min(currentPos + config.getReaderStepSize(), config.getEnd()));
+				p.setLong(1, start);
+				p.setLong(2, end);
 			}
 
 			@Override

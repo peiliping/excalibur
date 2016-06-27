@@ -36,7 +36,8 @@ public class Agent {
 		this.storage = new RamRingBufferStorage<Object[]>(config.getBufferSize());
 		if (config.getPluginClass() != null) {
 			try {
-				this.storage.addPlugin((IPlugin<Object[]>) config.getPluginClass().newInstance());
+				this.storage.addPlugin(
+						(IPlugin<Object[]>) config.getPluginClass().getConstructor(Config.class).newInstance(config));
 			} catch (Exception e) {
 				LOG.error("Load Plugin Error :", e);
 			}

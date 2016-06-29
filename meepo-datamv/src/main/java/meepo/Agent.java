@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import lombok.Getter;
-import meepo.storage.IPlugin;
 import meepo.storage.IStorage;
 import meepo.storage.RamRingBufferStorage;
+import meepo.storage.plugin.IPlugin;
 import meepo.tools.IWorker;
 import meepo.tools.Mode;
 

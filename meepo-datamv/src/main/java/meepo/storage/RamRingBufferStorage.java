@@ -3,6 +3,7 @@ package meepo.storage;
 import java.util.List;
 
 import meepo.storage.RingBuffer.Mode;
+import meepo.storage.plugin.IPlugin;
 
 public class RamRingBufferStorage<E> implements IStorage<E> {
 

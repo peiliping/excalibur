@@ -2,6 +2,8 @@ package meepo.storage;
 
 import java.util.List;
 
+import meepo.storage.plugin.IPlugin;
+
 public interface IStorage<E> {
 
     public void add(E e);

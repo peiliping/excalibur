@@ -1,10 +1,10 @@
-package meepo.storage;
+package meepo.storage.plugin;
 
 import meepo.Config;
 
 public abstract class IPlugin<E> {
 
-	public Config config;
+	protected Config config;
 
 	public IPlugin(Config config) {
 		this.config = config;

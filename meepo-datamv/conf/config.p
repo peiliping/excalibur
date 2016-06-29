@@ -16,4 +16,4 @@ targetColumnsNames=id,col1,col2,col3
 #writersNum=1
 
 #bufferSize=8192
-#pluginClass=
+#pluginClass=meepo.storage.plugin.ParseColumnTypePlugin

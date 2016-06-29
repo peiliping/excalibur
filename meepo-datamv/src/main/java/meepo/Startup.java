@@ -12,6 +12,8 @@ import meepo.tools.PropertiesTool;
 
 public class Startup {
 
+	public static Agent agent;
+
 	private static final Logger LOG = LoggerFactory.getLogger(Startup.class);
 
 	private static Options OPTIONS = (new Options()).addOption("s", "sourceDataConfig", true, "Source DS Config Path")
@@ -27,7 +29,7 @@ public class Startup {
 		config.setTargetDataSource(PropertiesTool.createDataSource(cmd.getOptionValue("t")));
 		config.init().printConfig();
 
-		Agent agent = new Agent(config);
+		agent = new Agent(config);
 		LOG.info("========== Start" + new Date() + " ==========");
 		agent.run();
 
@@ -37,8 +39,10 @@ public class Startup {
 	private static void checkAlive(Agent agent) {
 		while (!agent.getFINISHED().get()) {
 			try {
-				Thread.sleep(1000 * 30);
+				long s = 15 * 1000;
+				Thread.sleep(s);
 				agent.printLog().checkFinished();
+				Thread.sleep(s);
 			} catch (InterruptedException e) {
 			}
 		}

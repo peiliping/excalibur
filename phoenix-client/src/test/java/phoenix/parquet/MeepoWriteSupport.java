@@ -12,7 +12,7 @@ import org.apache.parquet.schema.MessageType;
 
 import com.google.common.collect.Maps;
 
-public class MeepoWriteSupport extends WriteSupport<Object[]> {
+public class MeepoWriteSupport extends WriteSupport<String[]> {
 
 	private RecordConsumer recordConsumer;
 
@@ -36,34 +36,34 @@ public class MeepoWriteSupport extends WriteSupport<Object[]> {
 	}
 
 	@Override
-	public void write(Object[] record) {
+	public void write(String[] record) {
 		if (record.length != this.columns.size()) {
 			throw new ParquetEncodingException("Invalid input data. Expecting " + this.columns.size()
 					+ " columns. Input had " + record.length + " columns (" + this.columns + ") : " + record);
 		}
 		this.recordConsumer.startMessage();
 		for (int i = 0; i < this.columns.size(); i++) {
-			Object val = record[i];
+			String val = record[i];
 			if (val != null) {
 				this.recordConsumer.startField(columns.get(i).getPath()[0], i);
 				switch (columns.get(i).getType()) {
 				case BOOLEAN:
-					this.recordConsumer.addBoolean(Boolean.parseBoolean(val.toString()));
+					this.recordConsumer.addBoolean(Boolean.valueOf(val));
 					break;
 				case FLOAT:
-					this.recordConsumer.addFloat((Float) val);
+					this.recordConsumer.addFloat(Float.valueOf(val));
 					break;
 				case DOUBLE:
-					this.recordConsumer.addDouble((Double) val);
+					this.recordConsumer.addDouble(Double.valueOf(val));
 					break;
 				case INT32:
-					this.recordConsumer.addInteger((Integer) (val));
+					this.recordConsumer.addInteger(Integer.valueOf(val));
 					break;
 				case INT64:
-					this.recordConsumer.addLong((Long.valueOf(val.toString())));
+					this.recordConsumer.addLong((Long.valueOf(val)));
 					break;
 				case BINARY:
-					this.recordConsumer.addBinary(Binary.fromString((String) val));
+					this.recordConsumer.addBinary(Binary.fromString(val));
 					break;
 				default:
 					throw new ParquetEncodingException("Unsupported column type: " + this.columns.get(i).getType());
@@ -72,7 +72,6 @@ public class MeepoWriteSupport extends WriteSupport<Object[]> {
 			}
 		}
 		recordConsumer.endMessage();
-
 	}
 
 }

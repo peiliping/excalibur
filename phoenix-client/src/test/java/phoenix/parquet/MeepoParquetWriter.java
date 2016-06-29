@@ -7,7 +7,7 @@ import org.apache.parquet.hadoop.ParquetWriter;
 import org.apache.parquet.hadoop.metadata.CompressionCodecName;
 import org.apache.parquet.schema.MessageType;
 
-public class MeepoParquetWriter extends ParquetWriter<Object[]> {
+public class MeepoParquetWriter extends ParquetWriter<String[]> {
 
 	@SuppressWarnings("deprecation")
 	public MeepoParquetWriter(Path file, MessageType schema) throws IOException {

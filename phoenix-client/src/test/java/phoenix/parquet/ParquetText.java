@@ -26,9 +26,25 @@ public class ParquetText {
 		Paths.get(output).toFile().delete();
 		MessageType mt = MessageTypeParser
 				.parseMessageType(footers.get(0).getParquetMetadata().getFileMetaData().getSchema().toString());
+		
+		System.out.println(footers.get(0).getParquetMetadata().getFileMetaData().getSchema().toString());
+		
 		MeepoParquetWriter w = new MeepoParquetWriter(new Path(output), mt);
-		Object[] datas = { 1L, "ss", "dd", 1L, 1L, 1L, 1, "sss" };
-		w.write(datas);
+		String[] datas = { "1", "ss", "dd", "1", "1", "1", "1", "sss" };
+		long i = 0;
+		long l = System.currentTimeMillis();
+		while (i++ < 10000) {
+			if (i % 1000000 == 0) {
+				System.out.println(System.currentTimeMillis() - l);
+				l = System.currentTimeMillis();
+			}
+			datas[0] = i + "";
+			datas[3] = i + "";
+			datas[4] = i + "";
+			datas[5] = i + "";
+			datas[6] = i + "";
+			w.write(datas);
+		}
 		w.close();
 
 	}

@@ -38,6 +38,7 @@ public class ParquetWriter extends IWorker {
 
 		MAPPING.put(Types.BOOLEAN, PrimitiveTypeName.BOOLEAN);
 
+		MAPPING.put(Types.REAL, PrimitiveTypeName.FLOAT);
 		MAPPING.put(Types.FLOAT, PrimitiveTypeName.FLOAT);
 		MAPPING.put(Types.DOUBLE, PrimitiveTypeName.DOUBLE);
 
@@ -45,7 +46,6 @@ public class ParquetWriter extends IWorker {
 		MAPPING.put(Types.VARCHAR, PrimitiveTypeName.BINARY);
 		MAPPING.put(Types.LONGVARCHAR, PrimitiveTypeName.BINARY);
 
-		MAPPING.put(Types.REAL, PrimitiveTypeName.BINARY);
 	}
 
 	private ParquetWriterHelper writerHelper;
@@ -63,7 +63,9 @@ public class ParquetWriter extends IWorker {
 					types.add(new PrimitiveType(Repetition.OPTIONAL, MAPPING.get(item.getValue()), item.getKey()));
 				}
 			}
-			this.writerHelper = new ParquetWriterHelper(new Path(super.config.getParquetOutputPath()),
+			String path = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-"
+					+ System.currentTimeMillis()/1000 + ".parquet";
+			this.writerHelper = new ParquetWriterHelper(new Path(path),
 					new MessageType(config.getTargetTableName(), types));
 		} catch (IllegalArgumentException | IOException e) {
 			LOG.error("Init Writer Helper", e);
@@ -99,7 +101,7 @@ public class ParquetWriter extends IWorker {
 		for (Object[] data : datas) {
 			try {
 				writerHelper.write(data);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				LOG.error("ParquetWriter Write Data Error :", e);
 			}
 		}

@@ -46,7 +46,6 @@ public class Startup {
 			} catch (InterruptedException e) {
 			}
 		}
-		System.exit(0);
 	}
 
 }

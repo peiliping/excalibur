@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import meepo.Config;
-import meepo.Startup;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
 
@@ -45,7 +44,6 @@ public class ParquetWriter extends IWorker {
 		MAPPING.put(Types.CHAR, PrimitiveTypeName.BINARY);
 		MAPPING.put(Types.VARCHAR, PrimitiveTypeName.BINARY);
 		MAPPING.put(Types.LONGVARCHAR, PrimitiveTypeName.BINARY);
-
 	}
 
 	private ParquetWriterHelper writerHelper;
@@ -64,7 +62,7 @@ public class ParquetWriter extends IWorker {
 				}
 			}
 			String path = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-"
-					+ System.currentTimeMillis()/1000 + ".parquet";
+					+ System.currentTimeMillis() / 1000 + ".parquet";
 			this.writerHelper = new ParquetWriterHelper(new Path(path),
 					new MessageType(config.getTargetTableName(), types));
 		} catch (IllegalArgumentException | IOException e) {
@@ -74,16 +72,6 @@ public class ParquetWriter extends IWorker {
 
 	@Override
 	protected void work() {
-		if (Startup.agent.getFINISHED().get()) {
-			try {
-				this.writerHelper.close();
-				super.RUN = false;
-				return;
-			} catch (IOException e) {
-				LOG.error("Close Writer Helper", e);
-			}
-		}
-
 		final List<Object[]> datas = buffer.get(config.getWriterStepSize());
 		if (datas.isEmpty())
 			return;
@@ -109,8 +97,13 @@ public class ParquetWriter extends IWorker {
 	}
 
 	@Override
-	protected String buildSQL() {
-		return null;
+	protected void close() {
+		try {
+			this.writerHelper.close();
+			return;
+		} catch (IOException e) {
+			LOG.error("Close Writer Helper", e);
+		}
+		super.close();
 	}
-
 }

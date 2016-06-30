@@ -2,12 +2,11 @@ package meepo.tools;
 
 import java.util.Date;
 
-import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import meepo.Config;
+import meepo.Startup;
 import meepo.storage.IStorage;
 
 public abstract class IWorker implements Runnable {
@@ -19,8 +18,6 @@ public abstract class IWorker implements Runnable {
 	protected IStorage<Object[]> buffer;
 
 	protected Config config;
-
-	protected DataSource dataSource;
 
 	protected String SQL;
 
@@ -35,16 +32,28 @@ public abstract class IWorker implements Runnable {
 
 	@Override
 	public void run() {
-		LOG.info(this.getClass().getSimpleName() + "_" + index + " : Started . " + new Date());
-		while (RUN) {
+		start();
+		while (RUN && !Startup.agent.getFINISHED().get()) {
 			work();
 		}
+		close();
+	}
+
+	protected void start() {
+		RUN = true;
+		LOG.info(this.getClass().getSimpleName() + "_" + index + " : Started . " + new Date());
+	}
+
+	protected void close() {
+		RUN = false;
 		LOG.info(this.getClass().getSimpleName() + "_" + index + " : Finished . " + new Date());
 	}
 
 	protected abstract void work();
 
-	protected abstract String buildSQL();
+	protected String buildSQL() {
+		return null;
+	};
 
 	public static IWorker create(Mode md, IStorage<Object[]> buffer, Config config, int index) {
 		IWorker w = null;

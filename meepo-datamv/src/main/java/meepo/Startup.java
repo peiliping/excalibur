@@ -16,6 +16,8 @@ public class Startup {
 
 	private static final Logger LOG = LoggerFactory.getLogger(Startup.class);
 
+	private static final long SLEEP = 30 * 1000;
+
 	private static Options OPTIONS = (new Options()).addOption("s", "sourceDataConfig", true, "Source DS Config Path")
 			.addOption("t", "targetDataConfig", true, "Target DS Config Path")
 			.addOption("c", "mainConfig", true, "Main Config Path");
@@ -34,17 +36,25 @@ public class Startup {
 		agent.run();
 
 		checkAlive(agent);
+		close();
 	}
 
 	private static void checkAlive(Agent agent) {
 		while (!agent.getFINISHED().get()) {
 			try {
-				long s = 30 * 1000;
-				Thread.sleep(s);
+				Thread.sleep(SLEEP);
 				agent.printLog().checkFinished();
-				Thread.sleep(s);
+				Thread.sleep(SLEEP);
 			} catch (InterruptedException e) {
 			}
+		}
+	}
+
+	private static void close() {
+		try {
+			agent.killAll();
+			Thread.sleep(SLEEP);
+		} catch (Exception e) {
 		}
 	}
 

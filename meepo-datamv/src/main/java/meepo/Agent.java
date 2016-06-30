@@ -23,11 +23,11 @@ public class Agent {
 	private AtomicBoolean FINISHED = new AtomicBoolean(false);
 
 	private Config config;
-	@Getter
+
 	private IStorage<Object[]> storage;
-	@Getter
+
 	private ThreadPoolExecutor readersPool;
-	@Getter
+
 	private ThreadPoolExecutor writersPool;
 
 	@SuppressWarnings("unchecked")
@@ -66,6 +66,11 @@ public class Agent {
 			FINISHED.set(true);
 		}
 		return this;
+	}
+
+	public void killAll() {
+		readersPool.shutdown();
+		writersPool.shutdown();
 	}
 
 	public Agent printLog() {

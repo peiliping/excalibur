@@ -39,7 +39,7 @@ public class Startup {
 	private static void checkAlive(Agent agent) {
 		while (!agent.getFINISHED().get()) {
 			try {
-				long s = 15 * 1000;
+				long s = 30 * 1000;
 				Thread.sleep(s);
 				agent.printLog().checkFinished();
 				Thread.sleep(s);

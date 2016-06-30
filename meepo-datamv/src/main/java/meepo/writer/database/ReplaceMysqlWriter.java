@@ -1,4 +1,4 @@
-package meepo.writer;
+package meepo.writer.database;
 
 import meepo.Config;
 import meepo.storage.IStorage;

@@ -1,4 +1,4 @@
-package meepo.writer;
+package meepo.writer.database;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

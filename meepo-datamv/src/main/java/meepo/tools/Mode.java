@@ -2,10 +2,10 @@ package meepo.tools;
 
 import meepo.reader.DefaultMysqlReader;
 import meepo.reader.SyncMysqlReader;
-import meepo.writer.DefaultMysqlWriter;
-import meepo.writer.LoadDataMysqlWriter;
 import meepo.writer.NullWriter;
-import meepo.writer.ReplaceMysqlWriter;
+import meepo.writer.database.DefaultMysqlWriter;
+import meepo.writer.database.LoadDataMysqlWriter;
+import meepo.writer.database.ReplaceMysqlWriter;
 import meepo.writer.parquet.ParquetWriter;
 
 public enum Mode {

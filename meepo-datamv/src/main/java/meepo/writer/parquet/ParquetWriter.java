@@ -21,9 +21,9 @@ public class ParquetWriter extends IWorker {
 	public ParquetWriter(IStorage<Object[]> buffer, Config config, int index) {
 		super(buffer, config, index);
 		try {
-			this.writerHelper = new ParquetWriterHelper(new Path(""), null);// TODO
+			this.writerHelper = new ParquetWriterHelper(new Path(super.config.getParquetOutputPath()), null);// TODO
 		} catch (IllegalArgumentException | IOException e) {
-			// TODO LOG
+			LOG.error("Init Writer Helper", e);
 		}
 	}
 
@@ -35,7 +35,7 @@ public class ParquetWriter extends IWorker {
 				super.RUN = false;
 				return;
 			} catch (IOException e) {
-				// TODO LOG
+				LOG.error("Close Writer Helper", e);
 			}
 		}
 
@@ -57,7 +57,7 @@ public class ParquetWriter extends IWorker {
 			try {
 				writerHelper.write(data);
 			} catch (IOException e) {
-				// TODO
+				LOG.error("ParquetWriter Write Data Error :", e);
 			}
 		}
 		return true;

@@ -52,6 +52,8 @@ public class Config {
 	private transient List<String> targetColumnsArray = Lists.newArrayList();
 	private transient List<Integer> targetTypesArray = Lists.newArrayList();
 
+	private String parquetOutputPath;
+
 	// ----------------------------------------------------------------------
 
 	private int bufferSize;
@@ -79,6 +81,8 @@ public class Config {
 		this.targetMode = Mode.valueOf(ps.getProperty("targetMode", Mode.SIMPLEWRITER.name()));
 		this.writerStepSize = Integer.valueOf(ps.getProperty("writerStepSize", "100"));
 		this.writersNum = Integer.valueOf(ps.getProperty("writersNum", "1"));
+
+		this.parquetOutputPath = ps.getProperty("parquetOutputPath");
 
 		this.bufferSize = Integer.valueOf(ps.getProperty("bufferSize", "8192"));
 		this.start = ps.getProperty("start") == null ? null : Long.valueOf(ps.getProperty("start"));

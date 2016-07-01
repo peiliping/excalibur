@@ -124,8 +124,8 @@ public class Config {
 			List<String> columns, List<Integer> types) {
 		Triple<List<String>, List<Integer>, Map<String, Integer>> result = BasicDao.parserSchema(ds, tableName, cols);
 		columns.addAll(result.getLeft());
-		columnsType.putAll(result.getRight());
 		types.addAll(result.getMiddle());
+		columnsType.putAll(result.getRight());
 	}
 
 	public Config printConfig() {

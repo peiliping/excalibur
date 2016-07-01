@@ -56,13 +56,14 @@ public class ParquetWriter extends IWorker {
 		super(buffer, config, index);
 		try {
 			List<Type> types = Lists.newArrayList();
-			for (Map.Entry<String, Integer> item : config.getTargetColumnsType().entrySet()) {
-				Validate.notNull(MAPPING.get(item.getValue()));
-				if (MAPPING.get(item.getValue()) == PrimitiveTypeName.BINARY) {
-					types.add(new PrimitiveType(Repetition.OPTIONAL, PrimitiveTypeName.BINARY, item.getKey(),
-							OriginalType.UTF8));
+			for (String name : config.getTargetColumnsArray()) {
+				Integer type = config.getTargetColumnsType().get(name);
+				Validate.notNull(MAPPING.get(type));
+				if (MAPPING.get(type) == PrimitiveTypeName.BINARY) {
+					types.add(
+							new PrimitiveType(Repetition.OPTIONAL, PrimitiveTypeName.BINARY, name, OriginalType.UTF8));
 				} else {
-					types.add(new PrimitiveType(Repetition.OPTIONAL, MAPPING.get(item.getValue()), item.getKey()));
+					types.add(new PrimitiveType(Repetition.OPTIONAL, MAPPING.get(type), name));
 				}
 			}
 			outPutFilePath = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-"

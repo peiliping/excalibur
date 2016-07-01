@@ -1,6 +1,8 @@
 package meepo.writer.parquet;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.Types;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +12,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.OriginalType;
 import org.apache.parquet.schema.PrimitiveType;
-import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
+import org.apache.parquet.schema.Type;
 import org.apache.parquet.schema.Type.Repetition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,8 @@ public class ParquetWriter extends IWorker {
 	private static final Logger LOG = LoggerFactory.getLogger(ParquetWriter.class);
 
 	private static final Map<Integer, PrimitiveTypeName> MAPPING = Maps.newHashMap();
+
+	private String outPutFilePath;
 
 	static {
 		MAPPING.put(Types.TINYINT, PrimitiveTypeName.INT32);
@@ -61,9 +65,9 @@ public class ParquetWriter extends IWorker {
 					types.add(new PrimitiveType(Repetition.OPTIONAL, MAPPING.get(item.getValue()), item.getKey()));
 				}
 			}
-			String path = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-"
+			outPutFilePath = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-"
 					+ System.currentTimeMillis() / 1000 + ".parquet";
-			this.writerHelper = new ParquetWriterHelper(new Path(path),
+			this.writerHelper = new ParquetWriterHelper(new Path(outPutFilePath),
 					new MessageType(config.getTargetTableName(), types));
 		} catch (IllegalArgumentException | IOException e) {
 			LOG.error("Init Writer Helper", e);
@@ -100,6 +104,11 @@ public class ParquetWriter extends IWorker {
 	protected void close() {
 		try {
 			this.writerHelper.close();
+			String crcPath = (outPutFilePath + ".crc").replaceAll(config.getTargetTableName(),
+					"." + config.getTargetTableName());
+			File crc = Paths.get(crcPath).toFile();
+			if (crc.exists())
+				crc.delete();
 			return;
 		} catch (IOException e) {
 			LOG.error("Close Writer Helper", e);

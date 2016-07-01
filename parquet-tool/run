@@ -1,0 +1,1 @@
+java -Djava.ext.dirs=./lib: -jar parquet-tools-1.8.1.jar meta xxx.parquet

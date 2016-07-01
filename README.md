@@ -17,3 +17,5 @@ Java工具集合
 6) phantomlancer 扫描JavaBean，生成Avsc描述文件
 
 7) icesword-agent jstat增强工具
+
+8) parquet-tool解析Parquet文件

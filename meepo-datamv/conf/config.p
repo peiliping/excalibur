@@ -1,7 +1,7 @@
 #sourceMode=SIMPLEREADER,SYNCREADER
 sourceTableName=test_1
 #primaryKeyName=id
-sourceColumnsNames=id,col1,col2,col3
+#sourceColumnsNames=[AUTO] | id,col1,col2,col3
 #sourceExtraSQL=
 #readerStepSize=100
 #readersNum=1
@@ -11,9 +11,9 @@ sourceColumnsNames=id,col1,col2,col3
 
 #targetMode=SIMPLEWRITER,REPLACEWRITER,LOADDATAWRITER,NULLWRITER
 targetTableName=test_2
-targetColumnsNames=id,col1,col2,col3
+#targetColumnsNames=[AUTO] | id,col1,col2,col3
 #writerStepSize=100
 #writersNum=1
 
 #bufferSize=8192
-pluginClass=meepo.storage.plugin.ParseColumnTypePlugin
+#pluginClass=meepo.storage.plugin.ParseColumnTypePlugin

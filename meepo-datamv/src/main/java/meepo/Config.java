@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -22,54 +23,55 @@ import lombok.Setter;
 import meepo.dao.BasicDao;
 import meepo.tools.Mode;
 
-@Setter @Getter public class Config {
+@Setter
+@Getter
+public class Config {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Config.class);
+    private static final Logger     LOG                = LoggerFactory.getLogger(Config.class);
 
-    private           Mode       sourceMode;
-    private transient DataSource sourceDataSource;
-    private           String     sourceTableName;
-    private           String     primaryKeyName;
-    private           int        readerStepSize;
-    private           int        readersNum;
-    private           String     sourceColumnsNames;
-    private           Map<String, Integer> sourceColumnsType  = Maps.newIdentityHashMap();
-    private transient List<String>         sourceColumnsArray = Lists.newArrayList();
-    private transient List<Integer>        sourceTypesArray   = Lists.newArrayList();
-    private String sourceExtraSQL;
-
-    // ----------------------------------------------------------------------
-
-    private           Mode       targetMode;
-    private transient DataSource targetDataSource;
-    private           String     targetTableName;
-    private           int        writerStepSize;
-    private           int        writersNum;
-    private           String     targetColumnsNames;
-    private           Map<String, Integer> targetColumnsType  = Maps.newIdentityHashMap();
-    private transient List<String>         targetColumnsArray = Lists.newArrayList();
-    private transient List<Integer>        targetTypesArray   = Lists.newArrayList();
-
-    private String parquetOutputPath;
+    private Mode                    sourceMode;
+    private transient DataSource    sourceDataSource;
+    private String                  sourceTableName;
+    private String                  primaryKeyName;
+    private int                     readerStepSize;
+    private int                     readersNum;
+    private String                  sourceColumnsNames;
+    private Map<String, Integer>    sourceColumnsType  = Maps.newIdentityHashMap();
+    private transient List<String>  sourceColumnsArray = Lists.newArrayList();
+    private transient List<Integer> sourceTypesArray   = Lists.newArrayList();
+    private String                  sourceExtraSQL;
 
     // ----------------------------------------------------------------------
 
-    private int      bufferSize;
-    private Long     start; // start为实际最小值-1
-    private Long     end; // end为实际最大值
-    private Long     endDelay; // 用于sync 控制时间的参数
-    private Class<?> pluginClass;
+    private Mode                    targetMode;
+    private transient DataSource    targetDataSource;
+    private String                  targetTableName;
+    private int                     writerStepSize;
+    private int                     writersNum;
+    private String                  targetColumnsNames;
+    private Map<String, Integer>    targetColumnsType  = Maps.newIdentityHashMap();
+    private transient List<String>  targetColumnsArray = Lists.newArrayList();
+    private transient List<Integer> targetTypesArray   = Lists.newArrayList();
+
+    private String                  parquetOutputPath;
+
+    // ----------------------------------------------------------------------
+
+    private int                     bufferSize;
+    private Long                    start;                                                     // start为实际最小值-1
+    private Long                    end;                                                       // end为实际最大值
+    private Long                    endDelay;                                                  // 用于sync
+                                                                                               // 控制时间的参数
+    private Class<?>                pluginClass;
 
     public Config(Properties ps) throws Exception {
         // ==================Required Config Item===================
         this.sourceTableName = ps.getProperty("sourceTableName");
         this.targetTableName = ps.getProperty("targetTableName");
-        this.sourceColumnsNames = ps.getProperty("sourceColumnsNames");
-        this.targetColumnsNames = ps.getProperty("targetColumnsNames");
         Validate.notNull(this.sourceTableName);
         Validate.notNull(this.targetTableName);
-        Validate.notNull(this.sourceColumnsNames);
-        Validate.notNull(this.targetColumnsNames);
+        this.sourceColumnsNames = ps.getProperty("sourceColumnsNames", "*");
+        this.targetColumnsNames = ps.getProperty("targetColumnsNames", "*");
         // =========================================================
         this.sourceMode = Mode.valueOf(ps.getProperty("sourceMode", Mode.SIMPLEREADER.name()));
         this.primaryKeyName = ps.getProperty("primaryKeyName", "id");
@@ -111,7 +113,9 @@ import meepo.tools.Mode;
         }
         // handle Columns
         handleColumns(sourceDataSource, sourceTableName, sourceColumnsNames, sourceColumnsType, sourceColumnsArray, sourceTypesArray);
+        this.sourceColumnsNames = StringUtils.join(sourceColumnsArray, ",");
         handleColumns(targetDataSource, targetTableName, targetColumnsNames, targetColumnsType, targetColumnsArray, targetTypesArray);
+        this.targetColumnsNames = StringUtils.join(targetColumnsArray, ",");
         return this;
     }
 

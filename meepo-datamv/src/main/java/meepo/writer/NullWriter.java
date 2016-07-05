@@ -6,17 +6,15 @@ import meepo.tools.IWorker;
 
 public class NullWriter extends IWorker {
 
-	public NullWriter(IStorage<Object[]> buffer, Config config, int index) {
-		super(buffer, config, index);
-	}
+    public NullWriter(IStorage<Object[]> buffer, Config config, int index) {
+        super(buffer, config, index);
+    }
 
-	@Override
-	public void work() {
-		buffer.get(config.getWriterStepSize());
-	}
+    @Override public void work() {
+        buffer.get(config.getWriterStepSize());
+    }
 
-	@Override
-	protected String buildSQL() {
-		return null;
-	}
+    @Override protected String buildSQL() {
+        return null;
+    }
 }

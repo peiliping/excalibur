@@ -4,12 +4,12 @@ import meepo.Config;
 
 public abstract class IPlugin<E> {
 
-	protected Config config;
+    protected Config config;
 
-	public IPlugin(Config config) {
-		this.config = config;
-	}
+    public IPlugin(Config config) {
+        this.config = config;
+    }
 
-	public abstract E convert(E e);
+    public abstract E convert(E e);
 
 }

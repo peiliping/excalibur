@@ -10,20 +10,20 @@ import meepo.writer.parquet.ParquetWriter;
 
 public enum Mode {
 
-	SIMPLEREADER(DefaultMysqlReader.class),
-	SYNCREADER(SyncMysqlReader.class), 
-	
-	SIMPLEWRITER(DefaultMysqlWriter.class),
-	REPLACEWRITER(ReplaceMysqlWriter.class),
-	LOADDATAWRITER(LoadDataMysqlWriter.class),
-	
-	NULLWRITER(NullWriter.class),
-	
-	PARQUETWRITER(ParquetWriter.class);
+    SIMPLEREADER(DefaultMysqlReader.class),
+    SYNCREADER(SyncMysqlReader.class),
 
-	Class<?> clazz;
+    SIMPLEWRITER(DefaultMysqlWriter.class),
+    REPLACEWRITER(ReplaceMysqlWriter.class),
+    LOADDATAWRITER(LoadDataMysqlWriter.class),
 
-	Mode(Class<?> clazz) {
-		this.clazz = clazz;
-	}
+    NULLWRITER(NullWriter.class),
+
+    PARQUETWRITER(ParquetWriter.class);
+
+    Class<?> clazz;
+
+    Mode(Class<?> clazz) {
+        this.clazz = clazz;
+    }
 }

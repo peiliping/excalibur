@@ -1,0 +1,14 @@
+-XX:+UseCodeCacheFlushing
+-XX:InitialCodeCacheSize and -XX:ReservedCodeCacheSize
+-XX:+PrintCompilation
+
+-XX:+PrintGCApplicationStoppedTime -XX:+PrintGCApplicationConcurrentTime
+-XX:+PrintSafepointStatistics  -XX:PrintSafepointStatisticsCount=1
+
+JDK 1.8 CMS : 
+-Xms4g -Xmx4g -server -XX:SurvivorRatio=4 -XX:NewRatio=1 
+-XX:+UseConcMarkSweepGC -XX:+CMSScavengeBeforeRemark -XX:CMSMaxAbortablePrecleanTime=5000 -XX:CMSInitiatingOccupancyFraction=70 -XX:+CMSClassUnloadingEnabled -XX:+UseCMSCompactAtFullCollection 
+-XX:+DisableExplicitGC
+-XX:+UseCompressedOops 
+-verbose:gc -Xloggc:gc.log -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -XX:+CrashOnOutOfMemoryError
+

@@ -1,13 +1,13 @@
-package sinper.histogram;
+package sniper.histogram;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinper.histogram.reader.BaseReader;
-import sinper.histogram.reader.ParserReader;
-import sinper.histogram.reader.WindowHistogramReader;
+import sniper.histogram.reader.BaseReader;
+import sniper.histogram.reader.ParserReader;
+import sniper.histogram.reader.WindowHistogramReader;
 
 public class Startup {
 

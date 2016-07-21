@@ -1,10 +1,9 @@
-package sinper.histogram.service;
+package sniper.histogram.service;
 
 import org.HdrHistogram.Histogram;
-import sinper.histogram.dataObject.meta.BaseMeta;
-import sinper.histogram.dataObject.meta.Meta;
-import sinper.histogram.dataObject.meta.WindowBaseMeta;
-import sinper.histogram.dataObject.result.HistogramResult;
+import sniper.histogram.dataObject.meta.Meta;
+import sniper.histogram.dataObject.meta.WindowBaseMeta;
+import sniper.histogram.dataObject.result.HistogramResult;
 
 /**
  * Created by peiliping on 16-7-15.

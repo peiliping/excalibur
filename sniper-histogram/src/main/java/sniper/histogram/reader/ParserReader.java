@@ -1,10 +1,10 @@
-package sinper.histogram.reader;
+package sniper.histogram.reader;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 import org.HdrHistogram.Histogram;
-import sinper.histogram.dataObject.result.HistogramResult;
+import sniper.histogram.dataObject.result.HistogramResult;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;

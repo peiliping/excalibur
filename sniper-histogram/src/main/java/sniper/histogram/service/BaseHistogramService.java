@@ -1,4 +1,4 @@
-package sinper.histogram.service;
+package sniper.histogram.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Charsets;
@@ -8,9 +8,9 @@ import org.HdrHistogram.Histogram;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sinper.histogram.dataObject.meta.BaseMeta;
-import sinper.histogram.dataObject.meta.Meta;
-import sinper.histogram.dataObject.result.HistogramResult;
+import sniper.histogram.dataObject.meta.BaseMeta;
+import sniper.histogram.dataObject.meta.Meta;
+import sniper.histogram.dataObject.result.HistogramResult;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.File;

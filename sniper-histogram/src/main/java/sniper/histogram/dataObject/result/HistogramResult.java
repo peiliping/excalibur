@@ -1,13 +1,15 @@
-package phoenix.histogram;
+package sniper.histogram.dataObject.result;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Builder;
 
 /**
- * Created by peiliping on 16-7-14.
+ * Created by peiliping on 16-7-15.
  */
-@Getter @Setter @Builder public class HistogramResult {
+@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor public class HistogramResult {
 
     private String nameSpace;
 
@@ -29,17 +31,9 @@ import lombok.Setter;
 
     private long p1;
 
-    private long p5;
-
-    private long p25;
-
-    private long p50;
-
-    private long p75;
-
-    private long p95;
-
     private long p99;
+
+    private long[] footprint;
 
     private String histogram;
 

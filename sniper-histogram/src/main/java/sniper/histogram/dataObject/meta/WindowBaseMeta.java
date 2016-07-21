@@ -1,19 +1,18 @@
-package phoenix.histogram;
+package sniper.histogram.dataObject.meta;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Builder;
 
 /**
- * Created by peiliping on 16-7-14.
+ * Created by peiliping on 16-7-15.
  */
-
-@Getter @Setter @ToString public class WindowMeta extends Meta {
+@Getter @Setter @ToString public class WindowBaseMeta extends Meta {
 
     protected long windowTime;
 
-    @Builder public WindowMeta(String nameSpace, String metric, long windowTime) {
+    @Builder public WindowBaseMeta(String nameSpace, String metric, long windowTime) {
         super(nameSpace, metric);
         this.windowTime = windowTime;
     }

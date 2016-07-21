@@ -1,9 +1,8 @@
-package sinper.histogram.service;
+package sniper.histogram.service;
 
 import org.HdrHistogram.Histogram;
 import org.apache.commons.lang3.tuple.Pair;
-import sinper.histogram.dataObject.meta.BaseMeta;
-import sinper.histogram.dataObject.meta.Meta;
+import sniper.histogram.dataObject.meta.Meta;
 
 import java.util.concurrent.ConcurrentNavigableMap;
 

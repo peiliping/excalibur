@@ -1,12 +1,9 @@
-package sinper.histogram.dataObject.meta;
+package sniper.histogram.dataObject.meta;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Builder;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by peiliping on 16-7-15.

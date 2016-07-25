@@ -18,13 +18,20 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TsarFilter implements Filter {
 
-    static AtomicLong IN         = new AtomicLong(0);
+    static AtomicLong   IN         = new AtomicLong(0);
 
-    static AtomicLong OUT        = new AtomicLong(0);
+    static AtomicLong   OUT        = new AtomicLong(0);
 
-    static AtomicLong COST       = new AtomicLong(0);
+    static AtomicLong   COST       = new AtomicLong(0);
 
-    String            status_url = "/tomcat_status";
+    static AtomicLong[] HTTPCODES  = new AtomicLong[5];
+
+    {
+        for (int i = 0; i < 5; i++)
+            HTTPCODES[i] = new AtomicLong(0);
+    }
+
+    String              status_url = "/tomcat_status";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -60,6 +67,11 @@ public class TsarFilter implements Filter {
         sb.append("Accept connections: ").append(in).append("\n");
         sb.append("Handle connections: ").append(out).append("\n");
         sb.append("Cost ms: ").append(cost).append("\n");
+        sb.append("1XX: ").append(HTTPCODES[0].get()).append("\n");
+        sb.append("2XX: ").append(HTTPCODES[1].get()).append("\n");
+        sb.append("3XX: ").append(HTTPCODES[2].get()).append("\n");
+        sb.append("4XX: ").append(HTTPCODES[3].get()).append("\n");
+        sb.append("5XX: ").append(HTTPCODES[4].get()).append("\n");
         byte[] result = sb.toString().getBytes(Charset.forName("UTF-8"));
 
         response.setHeader("Pragma", "no-cache");

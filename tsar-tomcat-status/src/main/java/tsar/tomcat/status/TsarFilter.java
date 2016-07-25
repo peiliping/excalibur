@@ -18,13 +18,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TsarFilter implements Filter {
 
-    static AtomicLong        IN         = new AtomicLong(0);
+    static AtomicLong IN         = new AtomicLong(0);
 
-    static AtomicLong        OUT        = new AtomicLong(0);
+    static AtomicLong OUT        = new AtomicLong(0);
 
-    public static AtomicLong COST       = new AtomicLong(0);
+    static AtomicLong COST       = new AtomicLong(0);
 
-    String                   status_url = "/tomcat_status";
+    String            status_url = "/tomcat_status";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -43,14 +43,10 @@ public class TsarFilter implements Filter {
         IN.incrementAndGet();
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        try {
-            if (status_url.equals(httpRequest.getRequestURI())) {
-                printResult(httpResponse);
-            } else {
-                chain.doFilter(request, response);
-            }
-        } finally {
-            OUT.incrementAndGet();
+        if (status_url.equals(httpRequest.getRequestURI())) {
+            printResult(httpResponse);
+        } else {
+            chain.doFilter(request, response);
         }
     }
 
@@ -76,7 +72,5 @@ public class TsarFilter implements Filter {
     }
 
     @Override
-    public void destroy() {
-
-    }
+    public void destroy() {}
 }

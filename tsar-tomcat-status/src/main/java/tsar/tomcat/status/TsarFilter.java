@@ -46,15 +46,20 @@ public class TsarFilter implements Filter {
         if (!(request instanceof HttpServletRequest) || !(response instanceof HttpServletResponse)) {
             chain.doFilter(request, response);
         }
-
-        IN.incrementAndGet();
+        TsarFilter.IN.incrementAndGet();
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        if (status_url.equals(httpRequest.getRequestURI())) {
-            printResult(httpResponse);
-        } else {
-            chain.doFilter(request, response);
+
+        try {
+            if (status_url.equals(httpRequest.getRequestURI())) {
+                printResult(httpResponse);
+            } else {
+                chain.doFilter(request, response);
+            }
+        } finally {
+            TsarFilter.OUT.incrementAndGet();
         }
+
     }
 
     private void printResult(HttpServletResponse response) throws IOException {

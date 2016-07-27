@@ -70,8 +70,7 @@ public class JstatWorker implements Runnable {
                 monitoredHost.removeHostListener(terminator);
             }
             monitoredHost.detach(monitoredVm);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
             EventService.addEvent(new Event(0, "Monitor " + item.mainClass + " Exception" + e.getMessage()));
         }
     }

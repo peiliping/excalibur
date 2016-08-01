@@ -32,17 +32,17 @@ public abstract class JstatPlus implements Runnable {
         while (running.get()) {
             try {
                 fly();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
             try {
                 jstatPool.cleanDoneFuture();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
             try {
                 Thread.sleep(coordinateIntervel.get());
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }

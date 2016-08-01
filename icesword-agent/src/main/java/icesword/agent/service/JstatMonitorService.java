@@ -26,6 +26,10 @@ public class JstatMonitorService {
         Iterator<Map.Entry<Integer, Pair<Future<?>, JstatWorker>>> it = processing.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, Pair<Future<?>, JstatWorker>> one = it.next();
+            if (one.getValue().getRight().isFinished()) {
+                one.getValue().getLeft().cancel(true);
+            }
+
             if (one.getValue().getLeft().isCancelled() || one.getValue().getLeft().isDone()) {
                 it.remove();
                 DataService.cleanCache(one.getKey());
@@ -36,7 +40,7 @@ public class JstatMonitorService {
     public synchronized void addJVMs(List<JvmItem> jvms, int interval) {
         for (JvmItem item : jvms) {
             if (!processing.containsKey(item.pid)) {
-                JstatWorker worker = JstatWorker.builder().item(item).interval(interval).build();
+                JstatWorker worker = JstatWorker.builder().item(item).interval(interval).finished(false).build();
                 Future<?> task = executor.submit(worker);
                 processing.put(item.pid, new Pair<Future<?>, JstatWorker>(task, worker));
             }

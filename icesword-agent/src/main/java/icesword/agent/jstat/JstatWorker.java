@@ -24,6 +24,8 @@ public class JstatWorker implements Runnable {
 
     private JstatLogger logger;
 
+    private boolean     finished;
+
     @Override
     public void run() {
         try {
@@ -73,9 +75,14 @@ public class JstatWorker implements Runnable {
         } catch (Throwable e) {
             EventService.addEvent(new Event(0, "Monitor " + item.mainClass + " Exception" + e.getMessage()));
         }
+        this.finished = true;
     }
 
     public void stop() {
         logger.stopLogging();
+    }
+
+    public boolean isFinished() {
+        return this.finished;
     }
 }

@@ -50,6 +50,8 @@ public class JstatMonitorService {
                 Thread.sleep(10 * 1000);
             } catch (InterruptedException e) {
             }
+            if (!one.getValue().getLeft().isDone() && !one.getValue().getLeft().isCancelled())
+                one.getValue().getLeft().cancel(true);
         }
     }
 

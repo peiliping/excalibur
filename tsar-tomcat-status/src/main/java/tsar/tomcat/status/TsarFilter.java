@@ -68,15 +68,15 @@ public class TsarFilter implements Filter {
         long cost = COST.get();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Active connections: ").append(in - out).append("\n");
-        sb.append("Accept connections: ").append(in).append("\n");
-        sb.append("Handle connections: ").append(out).append("\n");
-        sb.append("Cost ms: ").append(cost).append("\n");
-        sb.append("1XX: ").append(HTTPCODES[0].get()).append("\n");
-        sb.append("2XX: ").append(HTTPCODES[1].get()).append("\n");
-        sb.append("3XX: ").append(HTTPCODES[2].get()).append("\n");
-        sb.append("4XX: ").append(HTTPCODES[3].get()).append("\n");
-        sb.append("5XX: ").append(HTTPCODES[4].get()).append("\n");
+        sb.append("active:").append(in - out).append("\n");
+        sb.append("accepts:").append(in).append("\n");
+        sb.append("handled:").append(out).append("\n");
+        sb.append("1XX:").append(HTTPCODES[0].get()).append("\n");
+        sb.append("2XX:").append(HTTPCODES[1].get()).append("\n");
+        sb.append("3XX:").append(HTTPCODES[2].get()).append("\n");
+        sb.append("4XX:").append(HTTPCODES[3].get()).append("\n");
+        sb.append("5XX:").append(HTTPCODES[4].get()).append("\n");
+        sb.append("request_time:").append(cost).append("\n");
         byte[] result = sb.toString().getBytes(Charset.forName("UTF-8"));
 
         response.setHeader("Pragma", "no-cache");

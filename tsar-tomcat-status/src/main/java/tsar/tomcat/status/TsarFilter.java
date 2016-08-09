@@ -2,6 +2,7 @@ package tsar.tomcat.status;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.Filter;
@@ -18,26 +19,35 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class TsarFilter implements Filter {
 
-    static AtomicLong   IN         = new AtomicLong(0);
+    static AtomicLong    IN         = new AtomicLong(0);
 
-    static AtomicLong   OUT        = new AtomicLong(0);
+    static AtomicLong    OUT        = new AtomicLong(0);
 
-    static AtomicLong   COST       = new AtomicLong(0);
+    static AtomicLong    COST       = new AtomicLong(0);
 
-    static AtomicLong[] HTTPCODES  = new AtomicLong[5];
+    static AtomicLong[]  HTTPCODES  = new AtomicLong[5];
+
+    static AtomicBoolean HEALTH     = new AtomicBoolean(true);
 
     {
         for (int i = 0; i < 5; i++)
             HTTPCODES[i] = new AtomicLong(0);
     }
 
-    String              status_url = "/tomcat_status";
+    String               status_url = "/tomcat_status";
+
+    String               health_url = "/health_status";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        String path = filterConfig.getInitParameter("status_url");
-        if (path != null && path.trim().length() > 0) {
-            this.status_url = path.trim();
+        String tomcat_status_path = filterConfig.getInitParameter("status_url");
+        if (tomcat_status_path != null && tomcat_status_path.trim().length() > 0) {
+            this.status_url = tomcat_status_path.trim();
+        }
+
+        String health_status_path = filterConfig.getInitParameter("health_url");
+        if (health_status_path != null && health_status_path.trim().length() > 0) {
+            this.health_url = health_status_path.trim();
         }
     }
 
@@ -52,17 +62,38 @@ public class TsarFilter implements Filter {
 
         try {
             if (status_url.equals(httpRequest.getRequestURI())) {
-                printResult(httpResponse);
+                printStatusResult(httpResponse);
+            } else if (health_url.equals(httpRequest.getRequestURI())) {
+                if (httpRequest.getParameter("status") != null) {
+                    HEALTH.set(Boolean.valueOf(httpRequest.getParameter("status")));
+                }
+                printHealthResult(httpResponse);
             } else {
                 chain.doFilter(request, response);
             }
         } finally {
             TsarFilter.OUT.incrementAndGet();
         }
-
     }
 
-    private void printResult(HttpServletResponse response) throws IOException {
+    private void printHealthResult(HttpServletResponse response) throws IOException {
+        boolean health = HEALTH.get();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("health:").append(health).append("\n");
+
+        byte[] result = sb.toString().getBytes(Charset.forName("UTF-8"));
+
+        response.setHeader("Pragma", "no-cache");
+        response.addHeader("Cache-Control", "must-revalidate,no-cache,no-store");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("text/html; charset=UTF-8");
+        response.setContentLength(result.length);
+        response.getOutputStream().write(result);
+        response.flushBuffer();
+    }
+
+    private void printStatusResult(HttpServletResponse response) throws IOException {
         long out = OUT.get();
         long in = IN.get();
         long cost = COST.get();

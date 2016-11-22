@@ -30,7 +30,7 @@ public class Startup {
         Object vmObj = null;
         try {
             if (null == attachVmdObj) {
-                vmObj = vmClass.getMethod("attach", String.class).invoke(null, "" + cmdParams.getPid());
+                vmObj = vmClass.getMethod("attach", String.class).invoke(null, Integer.toString(cmdParams.getPid()));
             } else {
                 vmObj = vmClass.getMethod("attach", vmdClass).invoke(null, attachVmdObj);
             }
@@ -41,5 +41,4 @@ public class Startup {
             }
         }
     }
-
 }

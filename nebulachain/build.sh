@@ -1,3 +1,4 @@
+mvn clean 
 mvn package
 rm -rf target && mkdir target
 cp agent/target/agent-jar-with-dependencies.jar target/agent.jar

@@ -13,30 +13,33 @@ import com.github.ompc.greys.core.manager.ReflectManager;
 
 public class Core {
 
-    private final Thread          jvmShutdownHooker = new Thread("nbc-shutdown-hooker") {
-                                                        @Override
-                                                        public void run() {
-                                                            Core.this.destroy();
-                                                        }
-                                                    };
+    private final Thread            jvmShutdownHooker = new Thread("nbc-shutdown-hooker") {
+                                                          @Override
+                                                          public void run() {
+                                                              Core.this.destroy();
+                                                          }
+                                                      };
 
-    private final ExecutorService executorService   = Executors.newCachedThreadPool(new ThreadFactory() {
-                                                        @Override
-                                                        public Thread newThread(Runnable r) {
-                                                            final Thread t = new Thread(r, "nbc-execute-daemon");
-                                                            t.setDaemon(true);
-                                                            return t;
-                                                        }
-                                                    });
+    private final ExecutorService   executorService   = Executors.newCachedThreadPool(new ThreadFactory() {
+                                                          @Override
+                                                          public Thread newThread(Runnable r) {
+                                                              final Thread t = new Thread(r, "nbc-execute-daemon");
+                                                              t.setDaemon(true);
+                                                              return t;
+                                                          }
+                                                      });
 
-    private static volatile Core  core;
+    private static volatile Core    core;
+
+    private final NBCCommandHandler nbcCommondHandler;
 
     public Core(Instrumentation inst) {
-        initForManager(inst);
+        nbcCommondHandler = new NBCCommandHandler(inst);
+        initForClassDataSourcefinal(inst);
         Runtime.getRuntime().addShutdownHook(jvmShutdownHooker);
     }
 
-    private void initForManager(final Instrumentation inst) {
+    private void initForClassDataSourcefinal(final Instrumentation inst) {
         ReflectManager.Factory.initInstance(new ClassDataSource() {
             @Override
             public Collection<Class<?>> allLoadedClasses() {
@@ -60,6 +63,7 @@ public class Core {
     public void destroy() {
         Runtime.getRuntime().removeShutdownHook(jvmShutdownHooker);
         executorService.shutdown();
+        nbcCommondHandler.close();
     }
 
 }

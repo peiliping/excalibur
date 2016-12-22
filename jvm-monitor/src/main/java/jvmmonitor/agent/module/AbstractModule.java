@@ -17,7 +17,7 @@ public abstract class AbstractModule implements IModule {
         return clazz.getConstructor(MonitorItem.class).newInstance(item);
     }
 
-    private MonitorItem item;
+    protected MonitorItem item;
 
     protected final Map<String, LongMonitor> MONITORS = Maps.newHashMap();
 
@@ -70,11 +70,19 @@ public abstract class AbstractModule implements IModule {
         this.seq++;
     }
 
-    public long getOriginVal(String metric) {
+    protected void _output(String key, long value) {
+        System.out.println(key + "\t:\t" + value);
+    }
+
+    protected long getOriginVal(String metric) {
         return DATA.get(metric)[nextCursor()];
     }
 
-    public long getDeltaVal(String metric) {
+    protected long getDeltaVal(String metric) {
         return (DATA.get(metric)[nextCursor()] - DATA.get(metric)[cursor()]);
+    }
+
+    protected long handleTimePrecision(long time) {
+        return time / precision;
     }
 }

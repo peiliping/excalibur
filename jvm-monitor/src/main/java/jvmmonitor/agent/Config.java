@@ -33,9 +33,13 @@ public class Config {
 
     static {
         MODULES_CONS.put("class", ModuleZClass.class);
+        MODULES_CONS.put("compiler", ModuleZCompiler.class);
         MODULES_CONS.put("gc", ModuleZGC.class);
+        MODULES_CONS.put("lock", ModuleZLock.class);
         MODULES_CONS.put("memory", ModuleZMemory.class);
         MODULES_CONS.put("thread", ModuleZThread.class);
+        MODULES_CONS.put("tlab", ModuleZTlab.class);
+        MODULES_CONS.put("safepoint", ModuleZSafepoint.class);
     }
 
     public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules) {

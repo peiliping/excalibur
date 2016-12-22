@@ -11,12 +11,13 @@ public class ModuleZThread extends AbstractModule {
         super(item);
         METRICNAME.put("/threads/live", "java.threads.live");
         METRICNAME.put("/threads/started", "java.threads.started");
-        //TODO sun.threads.vmOperationTime
+        METRICNAME.put("/threads/vmoperationtime", "sun.threads.vmOperationTime");
     }
 
     public void output() {
         System.out.println("/threads/live" + ":" + getOriginVal("/threads/live"));
         System.out.println("/threads/started" + ":" + getOriginVal("/threads/started"));
         System.out.println("/threads/create" + ":" + getDeltaVal("/threads/started"));
+        System.out.println("/threads/vmoperationtime" + ":" + handleTimePrecision(getDeltaVal("/threads/vmoperationtime")));
     }
 }

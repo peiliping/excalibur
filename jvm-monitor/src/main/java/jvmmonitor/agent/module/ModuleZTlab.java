@@ -14,7 +14,6 @@ public class ModuleZTlab extends AbstractModule {
         METRICNAME.put("allocthreads", "sun.gc.tlab.allocThreads");
         METRICNAME.put("fills", "sun.gc.tlab.fills");
         METRICNAME.put("gcwaste", "sun.gc.tlab.gcWaste");
-        //TODO
     }
 
     public void output() {

@@ -75,19 +75,28 @@ public abstract class AbstractModule implements IModule {
         this.seq++;
     }
 
-    protected void _output(String key, long value) {
+    protected void _output(String key, Long value) {
         System.out.printf("%-10s\t%-20s\t:\t%d\n", getModuleName(), key, value);
     }
 
-    protected long getOriginVal(String metric) {
+    protected Long getOriginVal(String metric) {
+        if (DATA.get(metric) == null) {
+            return null;
+        }
         return DATA.get(metric)[nextCursor()];
     }
 
-    protected long getDeltaVal(String metric) {
-        return seq > 2 ? (DATA.get(metric)[nextCursor()] - DATA.get(metric)[cursor()]) : 0;
+    protected Long getDeltaVal(String metric) {
+        if (DATA.get(metric) == null) {
+            return null;
+        }
+        return seq > 1 ? (DATA.get(metric)[nextCursor()] - DATA.get(metric)[cursor()]) : 0;
     }
 
-    protected long handleTimePrecision(long time) {
+    protected Long handleTimePrecision(Long time) {
+        if (time == null) {
+            return null;
+        }
         return time / precision;
     }
 
@@ -96,11 +105,12 @@ public abstract class AbstractModule implements IModule {
     }
 
     public boolean noChange() {
-        if (noChangeMetricNames == null) {
+        if (noChangeMetricNames != null) {
             return false;
         } else {
             for (String ncmn : noChangeMetricNames) {
-                if (getDeltaVal(ncmn) != 0) {
+                Long t = getDeltaVal(ncmn);
+                if (t != null && t != 0) {
                     return false;
                 }
             }

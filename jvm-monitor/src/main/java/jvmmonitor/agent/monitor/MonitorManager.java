@@ -96,7 +96,6 @@ public class MonitorManager {
     public synchronized void run() {
         for (Map.Entry<Integer, MonitorItem> item : CONTAINER.entrySet()) {
             try {
-                System.out.println(item.getKey());
                 item.getValue().run();
             } catch (Exception e) {
                 e.printStackTrace();

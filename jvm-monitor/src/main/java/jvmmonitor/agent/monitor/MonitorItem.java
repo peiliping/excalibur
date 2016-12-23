@@ -52,7 +52,7 @@ import java.util.List;
     public void initModules(Config config) throws Exception {
         this.modules = Lists.newArrayList();
         for (String moduleName : config.getModules()) {
-            IModule m = AbstractModule.build(config.MODULES_CONS.get(moduleName), this);
+            IModule m = AbstractModule.build(config.MODULES_CONS.get(moduleName), moduleName, this);
             m.init();
             modules.add(m);
         }
@@ -61,7 +61,11 @@ import java.util.List;
     public void run() {
         for (IModule module : modules) {
             module.monitor();
-            module.output();
+            if (module.noChange()) {
+                //SKIP
+            } else {
+                module.output();
+            }
         }
     }
 

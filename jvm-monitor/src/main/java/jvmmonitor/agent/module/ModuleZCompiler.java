@@ -7,22 +7,23 @@ import jvmmonitor.agent.monitor.MonitorItem;
  */
 public class ModuleZCompiler extends AbstractModule {
 
-    public ModuleZCompiler(MonitorItem item) {
-        super(item);
-        METRICNAME.put("/compiler/time", "java.ci.totalTime");
-        METRICNAME.put("/compiler/count", "sun.ci.totalCompiles");
-        METRICNAME.put("/compiler/osrtime", "sun.ci.osrTime");
-        METRICNAME.put("/compiler/osrcount", "sun.ci.osrCompiles");
-        METRICNAME.put("/compiler/bailouts", "sun.ci.totalBailouts");
-        METRICNAME.put("/compiler/invalidates", "sun.ci.totalInvalidates");
+    public ModuleZCompiler(String moduleName, MonitorItem item) {
+        super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"time"};
+        METRICNAME.put("time", "java.ci.totalTime");
+        METRICNAME.put("count", "sun.ci.totalCompiles");
+        METRICNAME.put("osrtime", "sun.ci.osrTime");
+        METRICNAME.put("osrcount", "sun.ci.osrCompiles");
+        METRICNAME.put("bailouts", "sun.ci.totalBailouts");
+        METRICNAME.put("invalidates", "sun.ci.totalInvalidates");
     }
 
     public void output() {
-        System.out.println("/compiler/time" + ":" + handleTimePrecision(getDeltaVal("/compiler/time")));
-        System.out.println("/compiler/count" + ":" + getDeltaVal("/compiler/count"));
-        System.out.println("/compiler/osrtime" + ":" + handleTimePrecision(getDeltaVal("/compiler/osrtime")));
-        System.out.println("/compiler/osrcount" + ":" + getDeltaVal("/compiler/osrcount"));
-        System.out.println("/compiler/bailouts" + ":" + getDeltaVal("/compiler/bailouts"));
-        System.out.println("/compiler/invalidates" + ":" + getDeltaVal("/compiler/invalidates"));
+        super._output("time", handleTimePrecision(getDeltaVal("time")));
+        super._output("count", getDeltaVal("count"));
+        super._output("osrtime", handleTimePrecision(getDeltaVal("osrtime")));
+        super._output("osrcount", getDeltaVal("osrcount"));
+        super._output("bailouts", getDeltaVal("bailouts"));
+        super._output("invalidates", getDeltaVal("invalidates"));
     }
 }

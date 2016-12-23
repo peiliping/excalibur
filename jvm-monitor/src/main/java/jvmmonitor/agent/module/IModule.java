@@ -11,4 +11,8 @@ public interface IModule {
 
     public void output();
 
+    public boolean noChange();
+
+    public String getModuleName();
+
 }

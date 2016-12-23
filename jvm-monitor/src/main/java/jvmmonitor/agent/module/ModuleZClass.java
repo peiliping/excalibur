@@ -7,18 +7,17 @@ import jvmmonitor.agent.monitor.MonitorItem;
  */
 public class ModuleZClass extends AbstractModule {
 
-    public ModuleZClass(MonitorItem item) {
-        super(item);
-        METRICNAME.put("/class/time", "sun.cls.time");
-        METRICNAME.put("/class/loaded", "java.cls.loadedClasses");
-        METRICNAME.put("/class/unloaded", "java.cls.unloadedClasses");
+    public ModuleZClass(String moduleName, MonitorItem item) {
+        super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"time"};
+        METRICNAME.put("time", "sun.cls.time");
+        METRICNAME.put("loaded", "java.cls.loadedClasses");
+        METRICNAME.put("unloaded", "java.cls.unloadedClasses");
     }
 
     public void output() {
-        super._output("/class/time", handleTimePrecision(getDeltaVal("/class/time")));
-        System.out.println("/class/loading" + ":" + getDeltaVal("/class/loaded"));
-        System.out.println("/class/loaded" + ":" + getOriginVal("/class/loaded"));
-        System.out.println("/class/unloading" + ":" + getDeltaVal("/class/unloaded"));
-        System.out.println("/class/unloaded" + ":" + getOriginVal("/class/unloaded"));
+        super._output("time", handleTimePrecision(getDeltaVal("time")));
+        super._output("loading", getDeltaVal("loaded"));
+        super._output("unloading", getDeltaVal("unloaded"));
     }
 }

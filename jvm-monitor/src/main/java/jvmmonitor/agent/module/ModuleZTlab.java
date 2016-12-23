@@ -7,18 +7,20 @@ import jvmmonitor.agent.monitor.MonitorItem;
  */
 public class ModuleZTlab extends AbstractModule {
 
-    public ModuleZTlab(MonitorItem item) {
-        super(item);
-        METRICNAME.put("/tlab/alloc", "sun.gc.tlab.alloc");
-        METRICNAME.put("/tlab/allocthreads", "sun.gc.tlab.allocThreads");
-        METRICNAME.put("/tlab/fills", "sun.gc.tlab.fills");
-        METRICNAME.put("/tlab/gcwaste", "sun.gc.tlab.gcWaste");
+    public ModuleZTlab(String moduleName, MonitorItem item) {
+        super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"alloc"};
+        METRICNAME.put("alloc", "sun.gc.tlab.alloc");
+        METRICNAME.put("allocthreads", "sun.gc.tlab.allocThreads");
+        METRICNAME.put("fills", "sun.gc.tlab.fills");
+        METRICNAME.put("gcwaste", "sun.gc.tlab.gcWaste");
+        //TODO
     }
 
     public void output() {
-        System.out.println("/tlab/alloc" + ":" + getOriginVal("/tlab/alloc"));
-        System.out.println("/tlab/allocthreads" + ":" + getOriginVal("/tlab/allocthreads"));
-        System.out.println("/tlab/fills" + ":" + getOriginVal("/tlab/fills"));
-        System.out.println("/tlab/gcwaste" + ":" + getOriginVal("/tlab/gcwaste"));
+        super._output("alloc", getOriginVal("alloc"));
+        super._output("allocthreads", getOriginVal("allocthreads"));
+        super._output("fills", getOriginVal("fills"));
+        super._output("gcwaste", getOriginVal("gcwaste"));
     }
 }

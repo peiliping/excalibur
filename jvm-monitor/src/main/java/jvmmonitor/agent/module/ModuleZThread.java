@@ -7,17 +7,17 @@ import jvmmonitor.agent.monitor.MonitorItem;
  */
 public class ModuleZThread extends AbstractModule {
 
-    public ModuleZThread(MonitorItem item) {
-        super(item);
-        METRICNAME.put("/threads/live", "java.threads.live");
-        METRICNAME.put("/threads/started", "java.threads.started");
-        METRICNAME.put("/threads/vmoperationtime", "sun.threads.vmOperationTime");
+    public ModuleZThread(String moduleName, MonitorItem item) {
+        super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"live", "started", "vmoperationtime"};
+        METRICNAME.put("live", "java.threads.live");
+        METRICNAME.put("started", "java.threads.started");
+        METRICNAME.put("vmoperationtime", "sun.threads.vmOperationTime");
     }
 
     public void output() {
-        System.out.println("/threads/live" + ":" + getOriginVal("/threads/live"));
-        System.out.println("/threads/started" + ":" + getOriginVal("/threads/started"));
-        System.out.println("/threads/create" + ":" + getDeltaVal("/threads/started"));
-        System.out.println("/threads/vmoperationtime" + ":" + handleTimePrecision(getDeltaVal("/threads/vmoperationtime")));
+        super._output("live", getOriginVal("live"));
+        super._output("create", getDeltaVal("started"));
+        super._output("vmoperationtime", handleTimePrecision(getDeltaVal("vmoperationtime")));
     }
 }

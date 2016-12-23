@@ -7,16 +7,17 @@ import jvmmonitor.agent.monitor.MonitorItem;
  */
 public class ModuleZSafepoint extends AbstractModule {
 
-    public ModuleZSafepoint(MonitorItem item) {
-        super(item);
-        METRICNAME.put("/safepoint/count", "sun.rt.safepoints");
-        METRICNAME.put("/safepoint/time", "sun.rt.safepointTime");
-        METRICNAME.put("/safepoint/synctime", "sun.rt.safepointSyncTime");
+    public ModuleZSafepoint(String moduleName, MonitorItem item) {
+        super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"count"};
+        METRICNAME.put("count", "sun.rt.safepoints");
+        METRICNAME.put("time", "sun.rt.safepointTime");
+        METRICNAME.put("synctime", "sun.rt.safepointSyncTime");
     }
 
     public void output() {
-        System.out.println("/safepoint/count" + ":" + (getDeltaVal("/safepoint/count")));
-        System.out.println("/safepoint/time" + ":" + handleTimePrecision(getDeltaVal("/safepoint/time")));
-        System.out.println("/safepoint/synctime" + ":" + handleTimePrecision(getDeltaVal("/safepoint/synctime")));
+        super._output("count", (getDeltaVal("count")));
+        super._output("time", handleTimePrecision(getDeltaVal("time")));
+        super._output("synctime", handleTimePrecision(getDeltaVal("synctime")));
     }
 }

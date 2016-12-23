@@ -1,6 +1,7 @@
 package jvmmonitor.agent;
 
 import com.google.common.collect.Sets;
+import org.apache.commons.lang3.StringUtils;
 import sun.jvmstat.monitor.LongMonitor;
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredVm;
@@ -15,7 +16,7 @@ public class Util {
 
     public static Set<Integer> parse2IntSet(String args) {
         Set<Integer> result = Sets.newHashSet();
-        if (args != null && args.trim().length() > 0) {
+        if (StringUtils.isNotBlank(args)) {
             String[] pidsStr = args.split(",");
             for (String pidStr : pidsStr) {
                 result.add(Integer.valueOf(pidStr));
@@ -26,7 +27,7 @@ public class Util {
 
     public static Set<String> parse2StringSet(String args) {
         Set<String> result = Sets.newHashSet();
-        if (args != null && args.trim().length() > 0) {
+        if (StringUtils.isNotBlank(args)) {
             String[] ekws = args.split(",");
             for (String ekw : ekws) {
                 result.add(ekw);

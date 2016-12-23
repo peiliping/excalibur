@@ -7,22 +7,23 @@ import jvmmonitor.agent.monitor.MonitorItem;
  */
 public class ModuleZLock extends AbstractModule {
 
-    public ModuleZLock(MonitorItem item) {
-        super(item);
-        METRICNAME.put("/lock/contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
-        METRICNAME.put("/lock/parks", "sun.rt._sync_Parks");
-        METRICNAME.put("/lock/notifications", "sun.rt._sync_Notifications");
-        METRICNAME.put("/lock/futilewakeups", "sun.rt._sync_FutileWakeups");
-        METRICNAME.put("/lock/inflations", "sun.rt._sync_Inflations");
-        METRICNAME.put("/lock/deflations", "sun.rt._sync_Deflations");
+    public ModuleZLock(String moduleName, MonitorItem item) {
+        super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"contendedlockattempts", "parks", "notifications", "futilewakeups", "inflations", "deflations"};
+        METRICNAME.put("contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
+        METRICNAME.put("parks", "sun.rt._sync_Parks");
+        METRICNAME.put("notifications", "sun.rt._sync_Notifications");
+        METRICNAME.put("futilewakeups", "sun.rt._sync_FutileWakeups");
+        METRICNAME.put("inflations", "sun.rt._sync_Inflations");
+        METRICNAME.put("deflations", "sun.rt._sync_Deflations");
     }
 
     public void output() {
-        System.out.println("/lock/contendedlockattempts" + ":" + getDeltaVal("/lock/contendedlockattempts"));
-        System.out.println("/lock/parks" + ":" + getDeltaVal("/lock/parks"));
-        System.out.println("/lock/notifications" + ":" + getDeltaVal("/lock/notifications"));
-        System.out.println("/lock/futilewakeups" + ":" + getDeltaVal("/lock/futilewakeups"));
-        System.out.println("/lock/inflations" + ":" + getDeltaVal("/lock/inflations"));
-        System.out.println("/lock/deflations" + ":" + getDeltaVal("/lock/deflations"));
+        super._output("contendedlockattempts", getDeltaVal("contendedlockattempts"));
+        super._output("parks", getDeltaVal("parks"));
+        super._output("notifications", getDeltaVal("notifications"));
+        super._output("futilewakeups", getDeltaVal("futilewakeups"));
+        super._output("inflations", getDeltaVal("inflations"));
+        super._output("deflations", getDeltaVal("deflations"));
     }
 }

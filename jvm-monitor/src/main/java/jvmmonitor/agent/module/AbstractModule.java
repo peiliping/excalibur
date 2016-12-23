@@ -13,11 +13,15 @@ import java.util.Map;
  */
 public abstract class AbstractModule implements IModule {
 
-    public static AbstractModule build(Class<? extends AbstractModule> clazz, MonitorItem item) throws Exception {
-        return clazz.getConstructor(MonitorItem.class).newInstance(item);
+    public static AbstractModule build(Class<? extends AbstractModule> clazz, String moduleName, MonitorItem item) throws Exception {
+        return clazz.getConstructor(String.class, MonitorItem.class).newInstance(moduleName, item);
     }
 
+    protected String moduleName;
+
     protected MonitorItem item;
+
+    protected String[] noChangeMetricNames;
 
     protected final Map<String, LongMonitor> MONITORS = Maps.newHashMap();
 
@@ -29,7 +33,8 @@ public abstract class AbstractModule implements IModule {
 
     protected long precision = 0;
 
-    public AbstractModule(MonitorItem item) {
+    public AbstractModule(String moduleName, MonitorItem item) {
+        this.moduleName = moduleName;
         this.item = item;
         this.precision = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.os.hrt.frequency", 1000000000) / 1000000;// JVM默认精度为纳秒, 监控程序的精度在微秒即可
     }
@@ -71,7 +76,7 @@ public abstract class AbstractModule implements IModule {
     }
 
     protected void _output(String key, long value) {
-        System.out.println(key + "\t:\t" + value);
+        System.out.printf("%-10s\t%-20s\t:\t%d\n", getModuleName(), key, value);
     }
 
     protected long getOriginVal(String metric) {
@@ -84,5 +89,22 @@ public abstract class AbstractModule implements IModule {
 
     protected long handleTimePrecision(long time) {
         return time / precision;
+    }
+
+    public String getModuleName() {
+        return this.moduleName;
+    }
+
+    public boolean noChange() {
+        if (noChangeMetricNames == null) {
+            return false;
+        } else {
+            for (String ncmn : noChangeMetricNames) {
+                if (getDeltaVal(ncmn) != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -38,6 +38,7 @@ public class Config {
         MODULES_CONS.put("lock", ModuleZLock.class);
         MODULES_CONS.put("memory", ModuleZMemory.class);
         MODULES_CONS.put("thread", ModuleZThread.class);
+        MODULES_CONS.put("threshold", ModuleZThreshold.class);
         MODULES_CONS.put("tlab", ModuleZTlab.class);
         MODULES_CONS.put("safepoint", ModuleZSafepoint.class);
     }

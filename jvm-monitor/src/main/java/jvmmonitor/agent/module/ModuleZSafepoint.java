@@ -16,7 +16,7 @@ public class ModuleZSafepoint extends AbstractModule {
     }
 
     public void output() {
-        super._output("count", (getDeltaVal("count")));
+        super._output("count", getDeltaVal("count"));
         super._output("time", handleTimePrecision(getDeltaVal("time")));
         super._output("synctime", handleTimePrecision(getDeltaVal("synctime")));
     }

@@ -84,7 +84,7 @@ public abstract class AbstractModule implements IModule {
     }
 
     protected long getDeltaVal(String metric) {
-        return (DATA.get(metric)[nextCursor()] - DATA.get(metric)[cursor()]);
+        return seq > 2 ? (DATA.get(metric)[nextCursor()] - DATA.get(metric)[cursor()]) : 0;
     }
 
     protected long handleTimePrecision(long time) {

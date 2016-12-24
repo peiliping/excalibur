@@ -7,7 +7,7 @@ public interface IModule {
 
     public void init();
 
-    public void monitor();
+    public void monitor(long timestamp);
 
     public void output();
 

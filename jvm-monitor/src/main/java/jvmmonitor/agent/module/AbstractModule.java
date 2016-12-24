@@ -27,7 +27,7 @@ public abstract class AbstractModule implements IModule {
 
     protected final Map<String, String> METRICNAME = Maps.newHashMap();
 
-    protected final Map<String, long[]> DATA = Maps.newHashMap();
+    protected final Map<String, long[][]> DATA = Maps.newHashMap();
 
     protected int seq = 0;
 
@@ -53,7 +53,11 @@ public abstract class AbstractModule implements IModule {
                 LongMonitor lm = (LongMonitor) item.getMonitoredVm().findByName(METRICNAME.get(metric));
                 if (lm != null) {
                     MONITORS.put(metric, lm);
-                    DATA.put(metric, new long[] {0, 0});
+                    long ts[][] = new long[bufferSize][2];
+                    for (int i = 0; i < bufferSize; i++) {
+                        ts[i] = new long[] {0, 0};
+                    }
+                    DATA.put(metric, ts);
                 }
             } catch (MonitorException e) {
                 e.printStackTrace();
@@ -73,30 +77,31 @@ public abstract class AbstractModule implements IModule {
         return (seq + 1) & (bufferSize - 1);
     }
 
-    public void monitor() {
+    public void monitor(long timestamp) {
         int cr = cursor();
         for (Map.Entry<String, LongMonitor> entry : MONITORS.entrySet()) {
-            DATA.get(entry.getKey())[cr] = entry.getValue().longValue();
+            DATA.get(entry.getKey())[cr][0] = timestamp;
+            DATA.get(entry.getKey())[cr][1] = entry.getValue().longValue();
         }
         this.seq++;
     }
 
     protected void _output(String key, Long value) {
-        System.out.printf("%-10s\t%-20s\t:\t%d\n", getModuleName(), key, value);
+        System.out.printf("%-5d\t%-10s\t%-20s\t:\t%d\n", item.getPid(), getModuleName(), key, value);
     }
 
     protected Long getOriginVal(String metric) {
         if (DATA.get(metric) == null) {
             return null;
         }
-        return DATA.get(metric)[lastCursor(1)];
+        return DATA.get(metric)[lastCursor(1)][1];
     }
 
     protected Long getDeltaVal(String metric) {
         if (DATA.get(metric) == null) {
             return null;
         }
-        return seq > 1 ? (DATA.get(metric)[lastCursor(1)] - DATA.get(metric)[lastCursor(2)]) : null;
+        return seq > 1 ? (DATA.get(metric)[lastCursor(1)][1] - DATA.get(metric)[lastCursor(2)][1]) : null;
     }
 
     protected Long handleTimePrecision(Long time) {
@@ -111,7 +116,7 @@ public abstract class AbstractModule implements IModule {
     }
 
     public boolean noChange() {
-        if (noChangeMetricNames != null) {
+        if (noChangeMetricNames == null) {
             return false;
         } else {
             for (String ncmn : noChangeMetricNames) {

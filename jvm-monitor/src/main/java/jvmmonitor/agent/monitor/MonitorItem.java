@@ -59,8 +59,9 @@ import java.util.List;
     }
 
     public void run() {
+        long t = System.currentTimeMillis();
         for (IModule module : modules) {
-            module.monitor();
+            module.monitor(t);
             if (module.noChange()) {
                 //SKIP
             } else {

@@ -48,12 +48,12 @@ public class ModuleZMemory extends AbstractModule {
     public void output() {
         super._output(memoryGeneration0Space0Name + "/used", getOriginVal(memoryGeneration0Space0Name + "/used"));
         super._output(memoryGeneration0Space0Name + "/capacity", getOriginVal(memoryGeneration0Space0Name + "/capacity"));
-        super._output(memoryGeneration0Space1Name + "/used", getOriginVal(memoryGeneration0Space0Name + "/used"));
-        super._output(memoryGeneration0Space1Name + "/capacity", getOriginVal(memoryGeneration0Space0Name + "/capacity"));
-        super._output(memoryGeneration0Space2Name + "/used", getOriginVal(memoryGeneration0Space0Name + "/used"));
-        super._output(memoryGeneration0Space2Name + "/capacity", getOriginVal(memoryGeneration0Space0Name + "/capacity"));
-        super._output(memoryGeneration1Space0Name + "/used", getOriginVal(memoryGeneration0Space0Name + "/used"));
-        super._output(memoryGeneration1Space0Name + "/capacity", getOriginVal(memoryGeneration0Space0Name + "/capacity"));
+        super._output(memoryGeneration0Space1Name + "/used", getOriginVal(memoryGeneration0Space1Name + "/used"));
+        super._output(memoryGeneration0Space1Name + "/capacity", getOriginVal(memoryGeneration0Space1Name + "/capacity"));
+        super._output(memoryGeneration0Space2Name + "/used", getOriginVal(memoryGeneration0Space2Name + "/used"));
+        super._output(memoryGeneration0Space2Name + "/capacity", getOriginVal(memoryGeneration0Space2Name + "/capacity"));
+        super._output(memoryGeneration1Space0Name + "/used", getOriginVal(memoryGeneration1Space0Name + "/used"));
+        super._output(memoryGeneration1Space0Name + "/capacity", getOriginVal(memoryGeneration1Space0Name + "/capacity"));
 
         super._output(memorySurvivorName + "/desiredsize", getOriginVal(memorySurvivorName + "/desiredsize"));
 

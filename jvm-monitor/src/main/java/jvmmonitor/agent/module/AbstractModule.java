@@ -33,6 +33,8 @@ public abstract class AbstractModule implements IModule {
 
     protected long precision = 0;
 
+    protected final int bufferSize = 2;
+
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
         this.item = item;
@@ -60,11 +62,15 @@ public abstract class AbstractModule implements IModule {
     }
 
     protected int cursor() {
-        return seq & 1;
+        return seq & (bufferSize - 1);
+    }
+
+    protected int lastCursor(int n) {
+        return (seq - n) & (bufferSize - 1);
     }
 
     protected int nextCursor() {
-        return (seq + 1) & 1;
+        return (seq + 1) & (bufferSize - 1);
     }
 
     public void monitor() {
@@ -83,14 +89,14 @@ public abstract class AbstractModule implements IModule {
         if (DATA.get(metric) == null) {
             return null;
         }
-        return DATA.get(metric)[nextCursor()];
+        return DATA.get(metric)[lastCursor(1)];
     }
 
     protected Long getDeltaVal(String metric) {
         if (DATA.get(metric) == null) {
             return null;
         }
-        return seq > 1 ? (DATA.get(metric)[nextCursor()] - DATA.get(metric)[cursor()]) : 0;
+        return seq > 1 ? (DATA.get(metric)[lastCursor(1)] - DATA.get(metric)[lastCursor(2)]) : null;
     }
 
     protected Long handleTimePrecision(Long time) {

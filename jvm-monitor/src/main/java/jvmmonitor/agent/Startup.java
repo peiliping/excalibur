@@ -51,9 +51,14 @@ public class Startup {
             }
         });
         monitorManager.findActiveJVM(null);
+        long lastStart = 0;
+        long sleep = 0;
         while (true) {
+            lastStart = System.currentTimeMillis();
             monitorManager.run();
-            Thread.sleep(interval);
+            sleep = (interval - System.currentTimeMillis() + lastStart);
+            if (sleep > 0)
+                Thread.sleep(sleep);
         }
     }
 

@@ -21,7 +21,7 @@ public class ModuleZAgetable extends AbstractModule {
         METRICNAME.put("majorgc", "sun.gc.collector.1.invocations");
         ageTableSize = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.generation.0.agetable.size", 0) - 1;
         for (int i = 0; i < ageTableSize; i++) {
-            METRICNAME.put("agetable-" + AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
+            METRICNAME.put(AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
         }
     }
 

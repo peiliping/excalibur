@@ -17,6 +17,7 @@ public class Config {
 
     // metric monitor interval
     @Getter private int interval;
+    @Getter private int multiple4SendData;
 
     // filter info
     private Set<Integer> targetPids;
@@ -43,12 +44,13 @@ public class Config {
         MODULES_CONS.put("safepoint", ModuleZSafepoint.class);
     }
 
-    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules) {
+    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple) {
         this.interval = interval;
         this.targetPids = targetPids;
         this.excludeKeyWords = excludeKeyWords;
         this.excludeKeyWords.addAll(EXCLUDEKEYWORDS_CONS);
         this.modules = modules;
+        this.multiple4SendData = multiple;
         if (modules.size() == 0) {
             modules.addAll(MODULES_CONS.keySet());
         }

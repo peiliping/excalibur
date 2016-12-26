@@ -1,12 +1,11 @@
 package jvmmonitor.agent.monitor;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jvmmonitor.agent.Config;
+import jvmmonitor.agent.Util;
 import jvmmonitor.agent.module.AbstractModule;
 import jvmmonitor.agent.module.IModule;
-import jvmmonitor.agent.Util;
 import lombok.Builder;
 import lombok.Getter;
 import sun.jvmstat.monitor.MonitoredVm;
@@ -39,8 +38,6 @@ import java.util.Map;
 
     private String vmMode;
 
-    private int counter = 1;
-
     public void initBaseInfo() {
         this.javaHome = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.home");
         this.javaVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.version");
@@ -63,14 +60,8 @@ import java.util.Map;
         }
     }
 
-    private final Map<String, Map<String, long[][]>> G = Maps.newHashMap();
-
     public void run() {
         long t = System.currentTimeMillis();
-        boolean pull = (counter % 10 == 0);
-        if (pull) {
-            G.clear();
-        }
         for (IModule module : modules) {
             module.monitor(t);
             if (module.noChange()) {
@@ -78,14 +69,15 @@ import java.util.Map;
             } else {
                 module.output(t);
             }
-            if (pull) {
-                G.put(module.getModuleName(), module.pullData());
-            }
         }
-        counter++;
-        if(pull){
-            System.out.println(JSON.toJSONString(G));
+    }
+
+    public Map<String, Map<String, long[][]>> getMetrics() {
+        Map<String, Map<String, long[][]>> result = Maps.newHashMap();
+        for (IModule module : modules) {
+            result.put(module.getModuleName(), module.pullData());
         }
+        return result;
     }
 
 }

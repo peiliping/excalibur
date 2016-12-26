@@ -3,12 +3,15 @@ package jvmmonitor.agent.monitor;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import jvmmonitor.agent.Config;
+import jvmmonitor.agent.DataContainer;
+import jvmmonitor.agent.Util;
 import sun.jvmstat.monitor.*;
 import sun.jvmstat.monitor.event.HostEvent;
 import sun.jvmstat.monitor.event.HostListener;
 import sun.jvmstat.monitor.event.VmStatusChangeEvent;
 import sun.tools.jps.Arguments;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +24,8 @@ public class MonitorManager {
     private static Arguments JPS_ARGUMENTS = new Arguments(new String[] {"-l"});
 
     private final Map<Integer, MonitorItem> CONTAINER = Maps.newHashMap();
+
+    private final DataContainer DATACONTAINER = new DataContainer();
 
     private Config config;
 
@@ -42,6 +47,7 @@ public class MonitorManager {
                 close(null);
             }
         });
+        this.DATACONTAINER.getMeta().put("ip", Util.getLocalIP());
     }
 
     private static VmIdentifier buildVmIdentifier(Integer id) throws URISyntaxException {
@@ -93,13 +99,30 @@ public class MonitorManager {
         }
     }
 
+    private int counter = 1;
+
+    private boolean match4SendData() {
+        return counter % config.getMultiple4SendData() == 0;
+    }
+
     public synchronized void run() {
+        boolean match = match4SendData();
         for (Map.Entry<Integer, MonitorItem> item : CONTAINER.entrySet()) {
             try {
                 item.getValue().run();
+                if (match) {
+                    DATACONTAINER.getData().put(item.getValue().getMainClass(), item.getValue().getMetrics());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        if (match) {
+            try {
+                Util.httpPost("", Util.compress(DATACONTAINER));
+            } catch (IOException e) {
+            }
+        }
+        counter++;
     }
 }

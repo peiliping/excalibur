@@ -21,6 +21,8 @@ public class Startup {
         OPTIONS.addOption("x", "excludes", true, "excludes keyswords");
 
         OPTIONS.addOption("m", "modules", true, "modules name");
+
+        OPTIONS.addOption("t", "multiple", true, "send data after n interval");
     }
 
     public static void main(String[] args) throws Exception {
@@ -31,8 +33,9 @@ public class Startup {
         Set<Integer> targetPids = Util.parse2IntSet(commandLine.getOptionValue("p", ""));
         Set<String> excludeKeyWords = Util.parse2StringSet(commandLine.getOptionValue("x", ""));
         Set<String> modules = Util.parse2StringSet(commandLine.getOptionValue("m", ""));
+        int multiple = Integer.valueOf(commandLine.getOptionValue("t", "10"));
 
-        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules);
+        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple);
         final MonitorManager monitorManager = new MonitorManager(cfg);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

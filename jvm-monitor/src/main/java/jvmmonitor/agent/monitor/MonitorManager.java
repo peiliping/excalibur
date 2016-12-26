@@ -1,5 +1,6 @@
 package jvmmonitor.agent.monitor;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import jvmmonitor.agent.Config;
@@ -111,7 +112,10 @@ public class MonitorManager {
             try {
                 item.getValue().run();
                 if (match) {
-                    DATACONTAINER.getData().put(item.getValue().getMainClass(), item.getValue().getMetrics());
+                    Map<String, Map<String, long[][]>> v = item.getValue().getMetrics();
+                    if (v.size() > 0) {
+                        DATACONTAINER.getData().put(item.getValue().getMainClass(), v);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -119,7 +123,8 @@ public class MonitorManager {
         }
         if (match) {
             try {
-                Util.httpPost("", Util.compress(DATACONTAINER));
+                System.out.println(JSON.toJSONString(DATACONTAINER));
+                Util.httpPost(config.getMetricUrl(), Util.compress(DATACONTAINER));
             } catch (IOException e) {
             }
         }

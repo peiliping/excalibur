@@ -15,6 +15,8 @@ import java.util.Set;
 
 public class Config {
 
+    @Getter private String remoteIp = "";
+
     // metric monitor interval
     @Getter private int interval;
     @Getter private int multiple4SendData;
@@ -25,8 +27,7 @@ public class Config {
     private static final Set<String> EXCLUDEKEYWORDS_CONS = Sets.newHashSet();
 
     static {
-        EXCLUDEKEYWORDS_CONS.add("sun.tools");
-        EXCLUDEKEYWORDS_CONS.add("jvmmonitor.agent.Startup");
+        EXCLUDEKEYWORDS_CONS.add("sun.tools.*");
     }
 
     @Getter private Set<String> modules;
@@ -44,7 +45,8 @@ public class Config {
         MODULES_CONS.put("safepoint", ModuleZSafepoint.class);
     }
 
-    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple) {
+    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple, String remoteIp) {
+        this.remoteIp = remoteIp;
         this.interval = interval;
         this.targetPids = targetPids;
         this.excludeKeyWords = excludeKeyWords;
@@ -71,6 +73,10 @@ public class Config {
             }
         }
         return false;
+    }
+
+    public String getMetricUrl() {
+        return "http://" + this.remoteIp + "/metric/jvm";
     }
 
 }

@@ -162,6 +162,7 @@ public class Util {
                 connection = (HttpURLConnection) u.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setConnectTimeout(100);
+                connection.setReadTimeout(1000);
                 connection.setDoOutput(true);
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 if (paramsString == null) {

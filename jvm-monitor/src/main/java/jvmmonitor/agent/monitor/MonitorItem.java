@@ -64,9 +64,7 @@ import java.util.Map;
         long t = System.currentTimeMillis();
         for (IModule module : modules) {
             module.monitor(t);
-            if (module.noChange()) {
-                //SKIP
-            } else {
+            if (!module.noChange()) {
                 module.output(t);
             }
         }

@@ -40,9 +40,14 @@ public class ModuleZThreshold extends AbstractModule {
         super._output("decre4gc", timestamp, getDeltaVal("decre4gc"));
         super._output("decre4survivor", timestamp, getDeltaVal("decre4survivor"));
 
+        long r = 0;
+        long sum = 0;
         for (int i = 0; i < ageTableSize; i++) {
+            r = r + (i + 1) * getOriginVal("agetable-" + AGE_CONS[i]);
+            sum = sum + getOriginVal("agetable-" + AGE_CONS[i]);
             super._output("agetable-" + AGE_CONS[i], timestamp, getOriginVal("agetable-" + AGE_CONS[i]));
         }
+        super._output("avgage", timestamp, r / (sum == 0 ? 1 : sum));
         super.output(timestamp);
     }
 }

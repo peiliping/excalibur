@@ -20,8 +20,7 @@ public class ModuleZMemory extends AbstractModule {
 
     public ModuleZMemory(String moduleName, MonitorItem item) {
         super(moduleName, item);
-        super.noChangeMetricNames = new String[] {"eden/used"};
-
+        //super.noChangeMetricNames = new String[] {"eden/used"};
         METRICNAME.put(memoryGeneration0Space0Name + "/used", "sun.gc.generation.0.space.0.used");
         METRICNAME.put(memoryGeneration0Space0Name + "/capacity", "sun.gc.generation.0.space.0.capacity");
         METRICNAME.put(memoryGeneration0Space1Name + "/used", "sun.gc.generation.0.space.1.used");
@@ -42,7 +41,6 @@ public class ModuleZMemory extends AbstractModule {
             METRICNAME.put(memoryPermName + "/used", "sun.gc.generation.2.space.0.used");
             METRICNAME.put(memoryPermName + "/capacity", "sun.gc.generation.2.space.0.capacity");
         }
-
     }
 
     public void output(long timestamp) {

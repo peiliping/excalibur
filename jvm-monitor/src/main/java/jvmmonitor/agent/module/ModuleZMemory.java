@@ -12,7 +12,7 @@ public class ModuleZMemory extends AbstractModule {
     private String memoryGeneration0Space2Name = "s1";
     private String memoryGeneration1Space0Name = "old";
 
-    private String memorySurvivorName = "survivor";
+    private String memorySurvivorName = "survivordesired";
     private String memoryPermName     = "perm";
 
     private String memoryCompressedClassSpaceName = "ccs";
@@ -30,7 +30,7 @@ public class ModuleZMemory extends AbstractModule {
         METRICNAME.put(memoryGeneration1Space0Name + "/used", "sun.gc.generation.1.space.0.used");
         METRICNAME.put(memoryGeneration1Space0Name + "/capacity", "sun.gc.generation.1.space.0.capacity");
 
-        METRICNAME.put(memorySurvivorName + "/desiredsize", "sun.gc.policy.desiredSurvivorSize");
+        METRICNAME.put(memorySurvivorName + "/capacity", "sun.gc.policy.desiredSurvivorSize");
 
         if ("1.8".compareTo(super.item.getVmVersion()) >= 0) {
             METRICNAME.put(memoryCompressedClassSpaceName + "/used", "sun.gc.compressedclassspace.used");
@@ -53,7 +53,7 @@ public class ModuleZMemory extends AbstractModule {
         super._output(memoryGeneration1Space0Name + "/used", timestamp, getOriginVal(memoryGeneration1Space0Name + "/used"));
         super._output(memoryGeneration1Space0Name + "/capacity", timestamp, getOriginVal(memoryGeneration1Space0Name + "/capacity"));
 
-        super._output(memorySurvivorName + "/desiredsize", timestamp, getOriginVal(memorySurvivorName + "/desiredsize"));
+        super._output(memorySurvivorName + "/capacity", timestamp, getOriginVal(memorySurvivorName + "/capacity"));
 
         if ("1.8".compareTo(super.item.getVmVersion()) >= 0) {
             super._output(memoryCompressedClassSpaceName + "/used", timestamp, getOriginVal(memoryCompressedClassSpaceName + "/used"));
@@ -63,7 +63,7 @@ public class ModuleZMemory extends AbstractModule {
         } else {
             super._output(memoryPermName + "/used", timestamp, getOriginVal(memoryPermName + "/used"));
             super._output(memoryPermName + "/capacity", timestamp, getOriginVal(memoryPermName + "/capacity"));
-            super.output(timestamp);
         }
+        super.output(timestamp);
     }
 }

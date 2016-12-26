@@ -9,7 +9,10 @@ public class ModuleZTlab extends AbstractModule {
 
     public ModuleZTlab(String moduleName, MonitorItem item) {
         super(moduleName, item);
-        //super.noChangeMetricNames = new String[] {"alloc"};
+        super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
+        METRICNAME.put("minorgc", "sun.gc.collector.0.invocations");
+        METRICNAME.put("majorgc", "sun.gc.collector.1.invocations");
+
         METRICNAME.put("alloc", "sun.gc.tlab.alloc");
         METRICNAME.put("allocthreads", "sun.gc.tlab.allocThreads");
         METRICNAME.put("fills", "sun.gc.tlab.fills");

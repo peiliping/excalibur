@@ -16,10 +16,11 @@ public class ModuleZTlab extends AbstractModule {
         METRICNAME.put("gcwaste", "sun.gc.tlab.gcWaste");
     }
 
-    public void output() {
-        super._output("alloc", getOriginVal("alloc"));
-        super._output("allocthreads", getOriginVal("allocthreads"));
-        super._output("fills", getOriginVal("fills"));
-        super._output("gcwaste", getOriginVal("gcwaste"));
+    public void output(long timestamp) {
+        super._output("alloc", timestamp, getOriginVal("alloc"));
+        super._output("allocthreads", timestamp, getOriginVal("allocthreads"));
+        super._output("fills", timestamp, getOriginVal("fills"));
+        super._output("gcwaste", timestamp, getOriginVal("gcwaste"));
+        super.output(timestamp);
     }
 }

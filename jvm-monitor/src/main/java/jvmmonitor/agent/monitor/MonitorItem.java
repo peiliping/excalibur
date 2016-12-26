@@ -1,6 +1,8 @@
 package jvmmonitor.agent.monitor;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import jvmmonitor.agent.Config;
 import jvmmonitor.agent.module.AbstractModule;
 import jvmmonitor.agent.module.IModule;
@@ -10,6 +12,7 @@ import lombok.Getter;
 import sun.jvmstat.monitor.MonitoredVm;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by peiliping on 16-12-20.
@@ -36,6 +39,8 @@ import java.util.List;
 
     private String vmMode;
 
+    private int counter = 1;
+
     public void initBaseInfo() {
         this.javaHome = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.home");
         this.javaVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.version");
@@ -58,15 +63,28 @@ import java.util.List;
         }
     }
 
+    private final Map<String, Map<String, long[][]>> G = Maps.newHashMap();
+
     public void run() {
         long t = System.currentTimeMillis();
+        boolean pull = (counter % 10 == 0);
+        if (pull) {
+            G.clear();
+        }
         for (IModule module : modules) {
             module.monitor(t);
             if (module.noChange()) {
                 //SKIP
             } else {
-                module.output();
+                module.output(t);
             }
+            if (pull) {
+                G.put(module.getModuleName(), module.pullData());
+            }
+        }
+        counter++;
+        if(pull){
+            System.out.println(JSON.toJSONString(G));
         }
     }
 

@@ -31,19 +31,20 @@ public class ModuleZGC extends AbstractModule {
         METRICNAME.put("error/survivoroverflowed", "sun.gc.policy.survivorOverflowed");
     }
 
-    public void output() {
-        super._output(garbageCollector0Name + "/count", getDeltaVal(garbageCollector0Name + "/count"));
-        super._output(garbageCollector0Name + "/time", handleTimePrecision(getDeltaVal(garbageCollector0Name + "/time")));
-        super._output(garbageCollector0Name + "/pausetime", handleTimePrecision(getOriginVal(garbageCollector0Name + "/pausetime")));
+    public void output(long timestamp) {
+        super._output(garbageCollector0Name + "/count", timestamp, getDeltaVal(garbageCollector0Name + "/count"));
+        super._output(garbageCollector0Name + "/time", timestamp, handleTimePrecision(getDeltaVal(garbageCollector0Name + "/time")));
+        super._output(garbageCollector0Name + "/pausetime", timestamp, handleTimePrecision(getOriginVal(garbageCollector0Name + "/pausetime")));
 
-        super._output(garbageCollector1Name + "/count", getDeltaVal(garbageCollector1Name + "/count"));
-        super._output(garbageCollector1Name + "/time", handleTimePrecision(getDeltaVal(garbageCollector1Name + "/time")));
-        super._output(garbageCollector1Name + "/pausetime", handleTimePrecision(getOriginVal(garbageCollector1Name + "/pausetime")));
+        super._output(garbageCollector1Name + "/count", timestamp, getDeltaVal(garbageCollector1Name + "/count"));
+        super._output(garbageCollector1Name + "/time", timestamp, handleTimePrecision(getDeltaVal(garbageCollector1Name + "/time")));
+        super._output(garbageCollector1Name + "/pausetime", timestamp, handleTimePrecision(getOriginVal(garbageCollector1Name + "/pausetime")));
 
-        super._output("cross/promoted", getOriginVal("cross/promoted"));
-        super._output("cross/survived", getOriginVal("cross/survived"));
+        super._output("cross/promoted", timestamp, getOriginVal("cross/promoted"));
+        super._output("cross/survived", timestamp, getOriginVal("cross/survived"));
 
-        super._output("error/timelimitexceeded", handleTimePrecision(getDeltaVal("error/timelimitexceeded")));
-        super._output("error/survivoroverflowed", handleTimePrecision(getDeltaVal("error/survivoroverflowed")));
+        super._output("error/timelimitexceeded", timestamp, handleTimePrecision(getDeltaVal("error/timelimitexceeded")));
+        super._output("error/survivoroverflowed", timestamp, handleTimePrecision(getDeltaVal("error/survivoroverflowed")));
+        super.output(timestamp);
     }
 }

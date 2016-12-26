@@ -15,9 +15,10 @@ public class ModuleZClass extends AbstractModule {
         METRICNAME.put("unloaded", "java.cls.unloadedClasses");
     }
 
-    public void output() {
-        super._output("time", handleTimePrecision(getDeltaVal("time")));
-        super._output("loading", getDeltaVal("loaded"));
-        super._output("unloading", getDeltaVal("unloaded"));
+    public void output(long timestamp) {
+        super._output("time", timestamp, handleTimePrecision(getDeltaVal("time")));
+        super._output("loading", timestamp, getDeltaVal("loaded"));
+        super._output("unloading", timestamp, getDeltaVal("unloaded"));
+        super.output(timestamp);
     }
 }

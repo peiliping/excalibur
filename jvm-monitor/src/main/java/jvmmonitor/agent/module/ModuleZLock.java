@@ -18,12 +18,13 @@ public class ModuleZLock extends AbstractModule {
         METRICNAME.put("deflations", "sun.rt._sync_Deflations");
     }
 
-    public void output() {
-        super._output("contendedlockattempts", getDeltaVal("contendedlockattempts"));
-        super._output("parks", getDeltaVal("parks"));
-        super._output("notifications", getDeltaVal("notifications"));
-        super._output("futilewakeups", getDeltaVal("futilewakeups"));
-        super._output("inflations", getDeltaVal("inflations"));
-        super._output("deflations", getDeltaVal("deflations"));
+    public void output(long timestamp) {
+        super._output("contendedlockattempts", timestamp, getDeltaVal("contendedlockattempts"));
+        super._output("parks", timestamp, getDeltaVal("parks"));
+        super._output("notifications", timestamp, getDeltaVal("notifications"));
+        super._output("futilewakeups", timestamp, getDeltaVal("futilewakeups"));
+        super._output("inflations", timestamp, getDeltaVal("inflations"));
+        super._output("deflations", timestamp, getDeltaVal("deflations"));
+        super.output(timestamp);
     }
 }

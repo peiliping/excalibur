@@ -27,13 +27,21 @@ public abstract class AbstractModule implements IModule {
 
     protected final Map<String, String> METRICNAME = Maps.newHashMap();
 
+    protected final Map<String, long[][]> TEMPORARYDATA = Maps.newHashMap();
+
+    protected final int TEMPORARYSIZE = 2;
+
+    protected int temporarySeq = 0;
+
     protected final Map<String, long[][]> DATA = Maps.newHashMap();
 
-    protected int seq = 0;
+    protected final int DATASIZE = 64;
+
+    protected int dataWSeq = 0;
+
+    protected int dataRSeq = 0;
 
     protected long precision = 0;
-
-    protected final int bufferSize = 2;
 
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
@@ -53,11 +61,11 @@ public abstract class AbstractModule implements IModule {
                 LongMonitor lm = (LongMonitor) item.getMonitoredVm().findByName(METRICNAME.get(metric));
                 if (lm != null) {
                     MONITORS.put(metric, lm);
-                    long ts[][] = new long[bufferSize][2];
-                    for (int i = 0; i < bufferSize; i++) {
+                    long ts[][] = new long[TEMPORARYSIZE][2];
+                    for (int i = 0; i < TEMPORARYSIZE; i++) {
                         ts[i] = new long[] {0, 0};
                     }
-                    DATA.put(metric, ts);
+                    TEMPORARYDATA.put(metric, ts);
                 }
             } catch (MonitorException e) {
                 e.printStackTrace();
@@ -66,42 +74,81 @@ public abstract class AbstractModule implements IModule {
     }
 
     protected int cursor() {
-        return seq & (bufferSize - 1);
+        return temporarySeq & (TEMPORARYSIZE - 1);
     }
 
     protected int lastCursor(int n) {
-        return (seq - n) & (bufferSize - 1);
+        return (temporarySeq - n) & (TEMPORARYSIZE - 1);
     }
 
-    protected int nextCursor() {
-        return (seq + 1) & (bufferSize - 1);
+    protected int cursor4Data() {
+        return dataWSeq & (DATASIZE - 1);
+    }
+
+    protected int nextCursor4Data(int n) {
+        return (dataRSeq + n) & (DATASIZE - 1);
+    }
+
+    private int dataLength() {
+        return dataWSeq - dataRSeq;
+    }
+
+    public Map<String, long[][]> pullData() {
+        if (dataLength() > 0) {
+            Map<String, long[][]> result = Maps.newHashMap();
+            for (Map.Entry<String, long[][]> item : DATA.entrySet()) {
+                long ts[][] = new long[dataLength()][2];
+                for (int i = 0; i < dataLength(); i++) {
+                    ts[i] = item.getValue()[nextCursor4Data(i)];
+                }
+                result.put(item.getKey(), ts);
+            }
+            dataRSeq = dataWSeq;
+            return result;
+        }
+        return null;
     }
 
     public void monitor(long timestamp) {
         int cr = cursor();
         for (Map.Entry<String, LongMonitor> entry : MONITORS.entrySet()) {
-            DATA.get(entry.getKey())[cr][0] = timestamp;
-            DATA.get(entry.getKey())[cr][1] = entry.getValue().longValue();
+            TEMPORARYDATA.get(entry.getKey())[cr][0] = timestamp;
+            TEMPORARYDATA.get(entry.getKey())[cr][1] = entry.getValue().longValue();
         }
-        this.seq++;
+        this.temporarySeq++;
     }
 
-    protected void _output(String key, Long value) {
-        System.out.printf("%-5d\t%-10s\t%-20s\t:\t%d\n", item.getPid(), getModuleName(), key, value);
+    public void output(long timestamp) {
+        this.dataWSeq++;
+    }
+
+    protected void _output(String key, long timestamp, Long value) {
+        if (value == null)
+            return;
+        if (DATA.get(key) == null) {
+            long ts[][] = new long[DATASIZE][2];
+            for (int i = 0; i < DATASIZE; i++) {
+                ts[i] = new long[] {0, 0};
+            }
+            DATA.put(key, ts);
+        }
+        DATA.get(key)[cursor4Data()][0] = timestamp;
+        DATA.get(key)[cursor4Data()][1] = value;
+        System.out.printf("%-10s\t%-20s\t:\t%d\n", getModuleName(), key, value);
     }
 
     protected Long getOriginVal(String metric) {
-        if (DATA.get(metric) == null) {
+        if (TEMPORARYDATA.get(metric) == null) {
             return null;
         }
-        return DATA.get(metric)[lastCursor(1)][1];
+        return TEMPORARYDATA.get(metric)[lastCursor(1)][1];
     }
 
     protected Long getDeltaVal(String metric) {
-        if (DATA.get(metric) == null) {
+        if (TEMPORARYDATA.get(metric) == null) {
             return null;
         }
-        return seq > 1 ? (DATA.get(metric)[lastCursor(1)][1] - DATA.get(metric)[lastCursor(2)][1]) : null;
+        return temporarySeq > 1 ? (TEMPORARYDATA.get(metric)[lastCursor(1)][1] - TEMPORARYDATA.get(metric)[lastCursor(2)][1]) : null;
     }
 
     protected Long handleTimePrecision(Long time) {

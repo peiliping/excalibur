@@ -15,9 +15,10 @@ public class ModuleZSafepoint extends AbstractModule {
         METRICNAME.put("synctime", "sun.rt.safepointSyncTime");
     }
 
-    public void output() {
-        super._output("count", getDeltaVal("count"));
-        super._output("time", handleTimePrecision(getDeltaVal("time")));
-        super._output("synctime", handleTimePrecision(getDeltaVal("synctime")));
+    public void output(long timestamp) {
+        super._output("count", timestamp, getDeltaVal("count"));
+        super._output("time", timestamp, handleTimePrecision(getDeltaVal("time")));
+        super._output("synctime", timestamp, handleTimePrecision(getDeltaVal("synctime")));
+        super.output(timestamp);
     }
 }

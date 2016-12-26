@@ -33,15 +33,16 @@ public class ModuleZThreshold extends AbstractModule {
         }
     }
 
-    public void output() {
-        super._output("current", getOriginVal("current"));
-        super._output("max", getOriginVal("max"));
-        super._output("incre4gc", getDeltaVal("incre4gc"));
-        super._output("decre4gc", getDeltaVal("decre4gc"));
-        super._output("decre4survivor", getDeltaVal("decre4survivor"));
+    public void output(long timestamp) {
+        super._output("current", timestamp, getOriginVal("current"));
+        super._output("max", timestamp, getOriginVal("max"));
+        super._output("incre4gc", timestamp, getDeltaVal("incre4gc"));
+        super._output("decre4gc", timestamp, getDeltaVal("decre4gc"));
+        super._output("decre4survivor", timestamp, getDeltaVal("decre4survivor"));
 
         for (int i = 0; i < ageTableSize; i++) {
-            super._output("agetable-" + AGE_CONS[i], getOriginVal("agetable-" + AGE_CONS[i]));
+            super._output("agetable-" + AGE_CONS[i], timestamp, getOriginVal("agetable-" + AGE_CONS[i]));
         }
+        super.output(timestamp);
     }
 }

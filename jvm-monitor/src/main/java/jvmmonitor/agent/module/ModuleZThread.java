@@ -15,9 +15,10 @@ public class ModuleZThread extends AbstractModule {
         METRICNAME.put("vmoperationtime", "sun.threads.vmOperationTime");
     }
 
-    public void output() {
-        super._output("live", getOriginVal("live"));
-        super._output("create", getDeltaVal("started"));
-        super._output("vmoperationtime", handleTimePrecision(getDeltaVal("vmoperationtime")));
+    public void output(long timestamp) {
+        super._output("live", timestamp, getOriginVal("live"));
+        super._output("create", timestamp, getDeltaVal("started"));
+        super._output("vmoperationtime", timestamp, handleTimePrecision(getDeltaVal("vmoperationtime")));
+        super.output(timestamp);
     }
 }

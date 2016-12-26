@@ -45,26 +45,27 @@ public class ModuleZMemory extends AbstractModule {
 
     }
 
-    public void output() {
-        super._output(memoryGeneration0Space0Name + "/used", getOriginVal(memoryGeneration0Space0Name + "/used"));
-        super._output(memoryGeneration0Space0Name + "/capacity", getOriginVal(memoryGeneration0Space0Name + "/capacity"));
-        super._output(memoryGeneration0Space1Name + "/used", getOriginVal(memoryGeneration0Space1Name + "/used"));
-        super._output(memoryGeneration0Space1Name + "/capacity", getOriginVal(memoryGeneration0Space1Name + "/capacity"));
-        super._output(memoryGeneration0Space2Name + "/used", getOriginVal(memoryGeneration0Space2Name + "/used"));
-        super._output(memoryGeneration0Space2Name + "/capacity", getOriginVal(memoryGeneration0Space2Name + "/capacity"));
-        super._output(memoryGeneration1Space0Name + "/used", getOriginVal(memoryGeneration1Space0Name + "/used"));
-        super._output(memoryGeneration1Space0Name + "/capacity", getOriginVal(memoryGeneration1Space0Name + "/capacity"));
+    public void output(long timestamp) {
+        super._output(memoryGeneration0Space0Name + "/used", timestamp, getOriginVal(memoryGeneration0Space0Name + "/used"));
+        super._output(memoryGeneration0Space0Name + "/capacity", timestamp, getOriginVal(memoryGeneration0Space0Name + "/capacity"));
+        super._output(memoryGeneration0Space1Name + "/used", timestamp, getOriginVal(memoryGeneration0Space1Name + "/used"));
+        super._output(memoryGeneration0Space1Name + "/capacity", timestamp, getOriginVal(memoryGeneration0Space1Name + "/capacity"));
+        super._output(memoryGeneration0Space2Name + "/used", timestamp, getOriginVal(memoryGeneration0Space2Name + "/used"));
+        super._output(memoryGeneration0Space2Name + "/capacity", timestamp, getOriginVal(memoryGeneration0Space2Name + "/capacity"));
+        super._output(memoryGeneration1Space0Name + "/used", timestamp, getOriginVal(memoryGeneration1Space0Name + "/used"));
+        super._output(memoryGeneration1Space0Name + "/capacity", timestamp, getOriginVal(memoryGeneration1Space0Name + "/capacity"));
 
-        super._output(memorySurvivorName + "/desiredsize", getOriginVal(memorySurvivorName + "/desiredsize"));
+        super._output(memorySurvivorName + "/desiredsize", timestamp, getOriginVal(memorySurvivorName + "/desiredsize"));
 
         if ("1.8".compareTo(super.item.getVmVersion()) >= 0) {
-            super._output(memoryCompressedClassSpaceName + "/used", getOriginVal(memoryCompressedClassSpaceName + "/used"));
-            super._output(memoryCompressedClassSpaceName + "/capacity", getOriginVal(memoryCompressedClassSpaceName + "/capacity"));
-            super._output(memoryMetaSpaceName + "/used", getOriginVal(memoryMetaSpaceName + "/used"));
-            super._output(memoryMetaSpaceName + "/capacity", getOriginVal(memoryMetaSpaceName + "/capacity"));
+            super._output(memoryCompressedClassSpaceName + "/used", timestamp, getOriginVal(memoryCompressedClassSpaceName + "/used"));
+            super._output(memoryCompressedClassSpaceName + "/capacity", timestamp, getOriginVal(memoryCompressedClassSpaceName + "/capacity"));
+            super._output(memoryMetaSpaceName + "/used", timestamp, getOriginVal(memoryMetaSpaceName + "/used"));
+            super._output(memoryMetaSpaceName + "/capacity", timestamp, getOriginVal(memoryMetaSpaceName + "/capacity"));
         } else {
-            super._output(memoryPermName + "/used", getOriginVal(memoryPermName + "/used"));
-            super._output(memoryPermName + "/capacity", getOriginVal(memoryPermName + "/capacity"));
+            super._output(memoryPermName + "/used", timestamp, getOriginVal(memoryPermName + "/used"));
+            super._output(memoryPermName + "/capacity", timestamp, getOriginVal(memoryPermName + "/capacity"));
+            super.output(timestamp);
         }
     }
 }

@@ -34,9 +34,11 @@ public class Config {
     public static final Map<String, Class<? extends AbstractModule>> MODULES_CONS = Maps.newHashMap();
 
     static {
+        MODULES_CONS.put("agetable", ModuleZAgetable.class);
         MODULES_CONS.put("class", ModuleZClass.class);
         MODULES_CONS.put("compiler", ModuleZCompiler.class);
         MODULES_CONS.put("gc", ModuleZGC.class);
+        MODULES_CONS.put("gcextend", ModuleZGCExtend.class);
         MODULES_CONS.put("lock", ModuleZLock.class);
         MODULES_CONS.put("memory", ModuleZMemory.class);
         MODULES_CONS.put("thread", ModuleZThread.class);

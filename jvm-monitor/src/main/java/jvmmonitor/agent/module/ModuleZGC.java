@@ -23,13 +23,6 @@ public class ModuleZGC extends AbstractModule {
         METRICNAME.put(garbageCollector1Name + "/count", "sun.gc.collector.1.invocations");
         METRICNAME.put(garbageCollector1Name + "/time", "sun.gc.collector.1.time");
         METRICNAME.put(garbageCollector1Name + "/pausetime", "sun.gc.policy.avgMajorPauseTime");
-
-        METRICNAME.put("cross/promoted", "sun.gc.policy.avgPromotedAvg");
-        METRICNAME.put("cross/survived", "sun.gc.policy.avgSurvivedAvg");
-
-        METRICNAME.put("error/timelimitexceeded", "sun.gc.policy.gcTimeLimitExceeded");
-        METRICNAME.put("error/survivoroverflowed", "sun.gc.policy.survivorOverflowed");
-        //TODO  拆分多级
     }
 
     public void output(long timestamp) {
@@ -40,12 +33,6 @@ public class ModuleZGC extends AbstractModule {
         super._output(garbageCollector1Name + "/count", timestamp, getDeltaVal(garbageCollector1Name + "/count"));
         super._output(garbageCollector1Name + "/time", timestamp, handleTimePrecision(getDeltaVal(garbageCollector1Name + "/time")));
         super._output(garbageCollector1Name + "/pausetime", timestamp, handleTimePrecision(getOriginVal(garbageCollector1Name + "/pausetime")));
-
-        super._output("cross/promoted", timestamp, getOriginVal("cross/promoted"));
-        super._output("cross/survived", timestamp, getOriginVal("cross/survived"));
-
-        super._output("error/timelimitexceeded", timestamp, handleTimePrecision(getDeltaVal("error/timelimitexceeded")));
-        super._output("error/survivoroverflowed", timestamp, handleTimePrecision(getDeltaVal("error/survivoroverflowed")));
         super.output(timestamp);
     }
 }

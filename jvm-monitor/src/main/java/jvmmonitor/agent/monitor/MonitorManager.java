@@ -125,7 +125,7 @@ public class MonitorManager {
             try {
                 System.out.println(JSON.toJSONString(DATACONTAINER));
                 Util.httpPost(config.getMetricUrl(), Util.compress(DATACONTAINER));
-            } catch (IOException e) {
+            } catch (Exception e) {
             }
         }
         counter++;

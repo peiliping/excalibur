@@ -25,8 +25,8 @@ public class ModuleZGCExtend extends AbstractModule {
         super._output("promoted", timestamp, getOriginVal("promoted"));
         super._output("survived", timestamp, getOriginVal("survived"));
 
-        super._output("timelimitexceeded", timestamp, handleTimePrecision(getDeltaVal("timelimitexceeded")));
-        super._output("survivoroverflowed", timestamp, handleTimePrecision(getDeltaVal("survivoroverflowed")));
+        super._output("timelimitexceeded", timestamp, getDeltaVal("timelimitexceeded"));
+        super._output("survivoroverflowed", timestamp, getDeltaVal("survivoroverflowed"));
         super.output(timestamp);
     }
 }

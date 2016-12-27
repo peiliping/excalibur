@@ -48,7 +48,7 @@ import java.util.Map;
     }
 
     public void initJVMFlags() {
-
+        Util.getFlags(String.valueOf(pid));
     }
 
     public void initModules(Config config) throws Exception {

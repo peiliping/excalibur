@@ -2,11 +2,13 @@ package jvmmonitor.agent;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Sets;
+import com.sun.tools.attach.VirtualMachine;
 import org.apache.commons.lang3.StringUtils;
 import sun.jvmstat.monitor.LongMonitor;
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredVm;
 import sun.jvmstat.monitor.StringMonitor;
+import sun.tools.attach.HotSpotVirtualMachine;
 
 import java.io.*;
 import java.net.*;
@@ -213,6 +215,30 @@ public class Util {
         gzipOutput.write(jsonData);
         gzipOutput.close();
         return byteOutput.toByteArray();
+    }
+
+    public static void getFlags(String pid) {
+        try {
+            VirtualMachine vm = VirtualMachine.attach(pid);
+            HotSpotVirtualMachine hvm = (HotSpotVirtualMachine) vm;
+            InputStream in = hvm.executeJCmd("VM.flags -all");
+            byte buffer[] = new byte[256];
+            StringBuilder sbd = new StringBuilder(100000);
+            int n;
+            do {
+                n = in.read(buffer);
+                if (n > 0) {
+                    String s = new String(buffer, 0, n, "UTF-8");
+                    sbd.append(s);
+                }
+            } while (n > 0);
+            in.close();
+            System.out.println(sbd.toString().length());
+            //System.out.println(sb.toString());
+            vm.detach();
+        } catch (Exception e) {
+
+        }
     }
 
 }

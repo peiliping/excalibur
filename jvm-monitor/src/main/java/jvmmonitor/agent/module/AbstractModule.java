@@ -134,7 +134,6 @@ public abstract class AbstractModule implements IModule {
         }
         DATA.get(key)[cursor4Data()][0] = timestamp;
         DATA.get(key)[cursor4Data()][1] = value;
-//        System.out.printf("%-10s\t%-20s\t:\t%d\n", getModuleName(), key, value);
     }
 
     protected Long getOriginVal(String metric) {

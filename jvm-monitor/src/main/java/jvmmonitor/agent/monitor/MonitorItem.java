@@ -26,6 +26,8 @@ import java.util.Map;
 
     private transient List<IModule> modules;
 
+    private List<JVMFlagItem> flags;
+
     private String javaHome;
 
     private String javaVersion;
@@ -48,7 +50,7 @@ import java.util.Map;
     }
 
     public void initJVMFlags() {
-        Util.getFlags(String.valueOf(pid));
+        this.flags = Util.getFlags(String.valueOf(pid));
     }
 
     public void initModules(Config config) throws Exception {

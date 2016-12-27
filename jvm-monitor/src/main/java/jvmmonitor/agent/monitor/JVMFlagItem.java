@@ -6,11 +6,11 @@ import lombok.Getter;
 /**
  * Created by peiliping on 16-12-27.
  */
-@Builder @Getter public class JVMFlagItem<V> {
+@Builder @Getter public class JVMFlagItem {
 
     private String flagName;
 
-    private V value;
+    private Object value;
 
     private boolean original;
 

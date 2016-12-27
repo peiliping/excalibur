@@ -1,8 +1,10 @@
 package jvmmonitor.agent;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.sun.tools.attach.VirtualMachine;
+import jvmmonitor.agent.monitor.JVMFlagItem;
 import org.apache.commons.lang3.StringUtils;
 import sun.jvmstat.monitor.LongMonitor;
 import sun.jvmstat.monitor.MonitorException;
@@ -13,7 +15,10 @@ import sun.tools.attach.HotSpotVirtualMachine;
 import java.io.*;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -217,7 +222,7 @@ public class Util {
         return byteOutput.toByteArray();
     }
 
-    public static void getFlags(String pid) {
+    public static List<JVMFlagItem> getFlags(String pid) {
         try {
             VirtualMachine vm = VirtualMachine.attach(pid);
             HotSpotVirtualMachine hvm = (HotSpotVirtualMachine) vm;
@@ -233,12 +238,20 @@ public class Util {
                 }
             } while (n > 0);
             in.close();
-            System.out.println(sbd.toString().length());
-            //System.out.println(sb.toString());
             vm.detach();
+            String[] flags = sbd.toString().split("\n");
+            List<JVMFlagItem> result = Lists.newArrayListWithCapacity(128);
+            Pattern ptn = Pattern.compile("\\s*([^\\s]+)\\s+([^\\s]+)\\s+(=|:=)([^\\{]+)\\{(.*)\\}");
+            for (int i = 1; i < flags.length; i++) {
+                Matcher m = ptn.matcher(flags[i]);
+                if (m.find()) {
+                    result.add(JVMFlagItem.builder().flagName(m.group(2)).original(m.group(3).equals("=")).value(m.group(4).trim()).type(m.group(5)).build());
+                }
+            }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
+        return null;
     }
 
 }

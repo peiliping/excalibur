@@ -1,5 +1,6 @@
 package jvmmonitor.agent.monitor;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jvmmonitor.agent.Config;
@@ -51,6 +52,7 @@ import java.util.Map;
 
     public void initJVMFlags() {
         this.flags = Util.getFlags(String.valueOf(pid));
+        System.out.println(JSON.toJSONString(flags));
     }
 
     public void initModules(Config config) throws Exception {

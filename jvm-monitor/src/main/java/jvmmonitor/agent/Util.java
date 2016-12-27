@@ -248,6 +248,7 @@ public class Util {
                     result.add(JVMFlagItem.builder().flagName(m.group(2)).original(m.group(3).equals("=")).value(m.group(4).trim()).type(m.group(5)).build());
                 }
             }
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }

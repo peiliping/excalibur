@@ -43,6 +43,8 @@ public abstract class AbstractModule implements IModule {
 
     protected long precision = 0;
 
+    protected int dataLength = 2;
+
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
         this.item = item;
@@ -97,7 +99,7 @@ public abstract class AbstractModule implements IModule {
         if (dataLength() > 0) {
             Map<String, long[][]> result = Maps.newHashMap();
             for (Map.Entry<String, long[][]> item : DATA.entrySet()) {
-                long ts[][] = new long[dataLength()][2];
+                long ts[][] = new long[dataLength()][dataLength];
                 for (int i = 0; i < dataLength(); i++) {
                     ts[i] = item.getValue()[nextCursor4Data(i)];
                 }
@@ -122,18 +124,20 @@ public abstract class AbstractModule implements IModule {
         this.dataWSeq++;
     }
 
-    protected void _output(String key, long timestamp, Long value) {
-        if (value == null)
+    protected void _output(String key, long timestamp, Long... values) {
+        if (values == null)
             return;
         if (DATA.get(key) == null) {
-            long ts[][] = new long[DATASIZE][2];
+            long ts[][] = new long[DATASIZE][dataLength];
             for (int i = 0; i < DATASIZE; i++) {
-                ts[i] = new long[] {0, 0};
+                ts[i] = new long[dataLength];
             }
             DATA.put(key, ts);
         }
         DATA.get(key)[cursor4Data()][0] = timestamp;
-        DATA.get(key)[cursor4Data()][1] = value;
+        for (int i = 0; i < values.length; i++) {
+            DATA.get(key)[cursor4Data()][i + 1] = (values[i] == null ? 0 : values[i]);
+        }
     }
 
     protected Long getOriginVal(String metric) {

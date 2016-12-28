@@ -14,26 +14,31 @@ public class ModuleZAgetable extends AbstractModule {
 
     private long ageTableSize = 0;
 
+    private long total = 0;
+
+    private long count = 0;
+
     public ModuleZAgetable(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
-        METRICNAME.put("minorgc", "sun.gc.collector.0.invocations");
-        METRICNAME.put("majorgc", "sun.gc.collector.1.invocations");
+        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
+        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
+
         ageTableSize = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.generation.0.agetable.size", 0) - 1;
         for (int i = 0; i < ageTableSize; i++) {
-            METRICNAME.put(AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
+            super.addMetric(AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
         }
     }
 
-    public void output(long timestamp) {
-        long total = 0;
-        long count = 0;
+    public void transform(long timestamp) {
+        this.total = 0;
+        this.count = 0;
         for (int i = 0; i < ageTableSize; i++) {
             total = total + (i + 1) * getOriginVal(AGE_CONS[i]);
             count = count + getOriginVal(AGE_CONS[i]);
-            super._output(AGE_CONS[i], timestamp, getOriginVal(AGE_CONS[i]));
+            super.store(AGE_CONS[i], timestamp, getOriginVal(AGE_CONS[i]));
         }
-        super._output("avg", timestamp, (total * 1000) / (count == 0 ? 1 : count));
-        super.output(timestamp);
+        super.store("avg", timestamp, (total * 1000) / (count == 0 ? 1 : count));
+        super.commit();
     }
 }

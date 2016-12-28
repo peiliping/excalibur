@@ -51,7 +51,7 @@ import java.util.Map;
     }
 
     public void initJVMFlags() {
-        this.flags = Util.getFlags(String.valueOf(pid));
+        this.flags = Util.parseFlags(String.valueOf(pid));
         System.out.println(JSON.toJSONString(flags));
     }
 
@@ -59,27 +59,28 @@ import java.util.Map;
         this.modules = Lists.newArrayList();
         for (String moduleName : config.getModules()) {
             IModule m = AbstractModule.build(config.MODULES_CONS.get(moduleName), moduleName, this);
-            m.init();
             modules.add(m);
         }
     }
 
     public void run() {
         long t = System.currentTimeMillis();
-        for (IModule module : modules) {
+        for (IModule module : this.modules) {
             module.monitor(t);
-            if (!module.noChange()) {
-                module.output(t);
+            if (module.changed()) {
+                module.transform(t);
             }
         }
     }
 
+    private final Map<String, Map<String, long[][]>> resultBuffer = Maps.newHashMap();
+
     public Map<String, Map<String, long[][]>> getMetrics() {
-        Map<String, Map<String, long[][]>> result = Maps.newHashMap();
-        for (IModule module : modules) {
-            result.put(module.getModuleName(), module.pullData());
+        this.resultBuffer.clear();
+        for (IModule module : this.modules) {
+            this.resultBuffer.put(module.getModuleName(), module.pullData());
         }
-        return result;
+        return this.resultBuffer;
     }
 
 }

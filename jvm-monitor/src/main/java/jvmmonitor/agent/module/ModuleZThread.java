@@ -9,15 +9,15 @@ public class ModuleZThread extends AbstractModule {
 
     public ModuleZThread(String moduleName, MonitorItem item) {
         super(moduleName, item);
-        METRICNAME.put("live", "java.threads.live");
-        METRICNAME.put("started", "java.threads.started");
-        METRICNAME.put("vmoperationtime", "sun.threads.vmOperationTime");
+        super.addMetric("live", "java.threads.live");
+        super.addMetric("started", "java.threads.started");
+        super.addMetric("vmoperationtime", "sun.threads.vmOperationTime");
     }
 
-    public void output(long timestamp) {
-        super._output("live", timestamp, getOriginVal("live"));
-        super._output("create", timestamp, getDeltaVal("started"));
-        super._output("vmoperationtime", timestamp, handleTimePrecision(getDeltaVal("vmoperationtime")));
-        super.output(timestamp);
+    public void transform(long timestamp) {
+        super.store("live", timestamp, getOriginVal("live"));
+        super.store("create", timestamp, getDeltaVal("started"));
+        super.store("vmoperationtime", timestamp, handleTimePrecision(getDeltaVal("vmoperationtime")));
+        super.commit();
     }
 }

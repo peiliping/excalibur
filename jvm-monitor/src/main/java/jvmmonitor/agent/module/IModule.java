@@ -7,15 +7,13 @@ import java.util.Map;
  */
 public interface IModule {
 
-    public void init();
+    public String getModuleName();
 
     public void monitor(long timestamp);
 
-    public void output(long timestamp);
+    public boolean changed();
 
-    public boolean noChange();
-
-    public String getModuleName();
+    public void transform(long timestamp);
 
     public Map<String, long[][]> pullData();
 

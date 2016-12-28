@@ -11,22 +11,22 @@ public class ModuleZGCExtend extends AbstractModule {
     public ModuleZGCExtend(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
-        METRICNAME.put("minorgc", "sun.gc.collector.0.invocations");
-        METRICNAME.put("majorgc", "sun.gc.collector.1.invocations");
+        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
+        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
-        METRICNAME.put("promoted", "sun.gc.policy.avgPromotedAvg");
-        METRICNAME.put("survived", "sun.gc.policy.avgSurvivedAvg");
+        super.addMetric("promoted", "sun.gc.policy.avgPromotedAvg");
+        super.addMetric("survived", "sun.gc.policy.avgSurvivedAvg");
 
-        METRICNAME.put("timelimitexceeded", "sun.gc.policy.gcTimeLimitExceeded");
-        METRICNAME.put("survivoroverflowed", "sun.gc.policy.survivorOverflowed");
+        super.addMetric("timelimitexceeded", "sun.gc.policy.gcTimeLimitExceeded");
+        super.addMetric("survivoroverflowed", "sun.gc.policy.survivorOverflowed");
     }
 
-    public void output(long timestamp) {
-        super._output("promoted", timestamp, getOriginVal("promoted"));
-        super._output("survived", timestamp, getOriginVal("survived"));
+    public void transform(long timestamp) {
+        super.store("promoted", timestamp, getOriginVal("promoted"));
+        super.store("survived", timestamp, getOriginVal("survived"));
 
-        super._output("timelimitexceeded", timestamp, getDeltaVal("timelimitexceeded"));
-        super._output("survivoroverflowed", timestamp, getDeltaVal("survivoroverflowed"));
-        super.output(timestamp);
+        super.store("timelimitexceeded", timestamp, getDeltaVal("timelimitexceeded"));
+        super.store("survivoroverflowed", timestamp, getDeltaVal("survivoroverflowed"));
+        super.commit();
     }
 }

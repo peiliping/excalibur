@@ -13,31 +13,24 @@ public class ModuleZGC extends AbstractModule {
 
     public ModuleZGC(String moduleName, MonitorItem item) {
         super(moduleName, item);
-        super.dataLength = 4;
+        super.metricValuesNum = 4;
         this.garbageCollector0Name = Util.getValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.collector.0.name").toLowerCase();
         this.garbageCollector1Name = Util.getValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.collector.1.name").toLowerCase();
         super.noChangeMetricNames = new String[] {garbageCollector0Name + "/count", garbageCollector1Name + "/count"};
-        METRICNAME.put(garbageCollector0Name + "/count", "sun.gc.collector.0.invocations");
-        METRICNAME.put(garbageCollector0Name + "/time", "sun.gc.collector.0.time");
-        METRICNAME.put(garbageCollector0Name + "/pausetime", "sun.gc.policy.avgMinorPauseTime");
+        super.addMetric(garbageCollector0Name + "/count", "sun.gc.collector.0.invocations");
+        super.addMetric(garbageCollector0Name + "/time", "sun.gc.collector.0.time");
+        super.addMetric(garbageCollector0Name + "/pausetime", "sun.gc.policy.avgMinorPauseTime");
 
-        METRICNAME.put(garbageCollector1Name + "/count", "sun.gc.collector.1.invocations");
-        METRICNAME.put(garbageCollector1Name + "/time", "sun.gc.collector.1.time");
-        METRICNAME.put(garbageCollector1Name + "/pausetime", "sun.gc.policy.avgMajorPauseTime");
+        super.addMetric(garbageCollector1Name + "/count", "sun.gc.collector.1.invocations");
+        super.addMetric(garbageCollector1Name + "/time", "sun.gc.collector.1.time");
+        super.addMetric(garbageCollector1Name + "/pausetime", "sun.gc.policy.avgMajorPauseTime");
     }
 
-    public void output(long timestamp) {
-        //        super._output(garbageCollector0Name + "/count", timestamp, getDeltaVal(garbageCollector0Name + "/count"));
-        //        super._output(garbageCollector0Name + "/time", timestamp, handleTimePrecision(getDeltaVal(garbageCollector0Name + "/time")));
-        //        super._output(garbageCollector0Name + "/pausetime", timestamp, handleTimePrecision(getOriginVal(garbageCollector0Name + "/pausetime")));
-        //
-        //        super._output(garbageCollector1Name + "/count", timestamp, getDeltaVal(garbageCollector1Name + "/count"));
-        //        super._output(garbageCollector1Name + "/time", timestamp, handleTimePrecision(getDeltaVal(garbageCollector1Name + "/time")));
-        //        super._output(garbageCollector1Name + "/pausetime", timestamp, handleTimePrecision(getOriginVal(garbageCollector1Name + "/pausetime")));
-        super._output(garbageCollector0Name, timestamp, getDeltaVal(garbageCollector0Name + "/count"), handleTimePrecision(getDeltaVal(garbageCollector0Name + "/time")),
+    public void transform(long timestamp) {
+        super.store(garbageCollector0Name, timestamp, getDeltaVal(garbageCollector0Name + "/count"), handleTimePrecision(getDeltaVal(garbageCollector0Name + "/time")),
                 handleTimePrecision(getOriginVal(garbageCollector0Name + "/pausetime")));
-        super._output(garbageCollector1Name, timestamp, getDeltaVal(garbageCollector1Name + "/count"), handleTimePrecision(getDeltaVal(garbageCollector1Name + "/time")),
+        super.store(garbageCollector1Name, timestamp, getDeltaVal(garbageCollector1Name + "/count"), handleTimePrecision(getDeltaVal(garbageCollector1Name + "/time")),
                 handleTimePrecision(getOriginVal(garbageCollector1Name + "/pausetime")));
-        super.output(timestamp);
+        super.commit();
     }
 }

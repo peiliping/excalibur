@@ -13,7 +13,9 @@ import java.util.Set;
  */
 public class Startup {
 
-    public static Options OPTIONS = new Options();
+    public static final Options OPTIONS = new Options();
+
+    private static final long DEFAULT_SLEEP_TIME = 100;
 
     static {
         OPTIONS.addOption("i", "interval", true, "Metric MonitorManager Interval");
@@ -57,8 +59,7 @@ public class Startup {
             lastStart = System.currentTimeMillis();
             monitorManager.run();
             sleep = (interval - System.currentTimeMillis() + lastStart);
-            if (sleep > 0)
-                Thread.sleep(sleep);
+            Thread.sleep(sleep > DEFAULT_SLEEP_TIME ? sleep : DEFAULT_SLEEP_TIME);
         }
     }
 

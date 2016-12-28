@@ -13,67 +13,56 @@ public class ModuleZMemory extends AbstractModule {
     private String memoryGeneration1Space0Name = "old";
 
     private String memorySurvivorName = "survivordesired";
-    private String memoryPermName     = "perm";
+
+    private String memoryPermName = "perm";
 
     private String memoryCompressedClassSpaceName = "ccs";
     private String memoryMetaSpaceName            = "meta";
 
+    private boolean greaterThanOrEqualJava1_8 = true;
+
     public ModuleZMemory(String moduleName, MonitorItem item) {
         super(moduleName, item);
-        super.dataLength = 3;
-        METRICNAME.put(memoryGeneration0Space0Name + "/used", "sun.gc.generation.0.space.0.used");
-        METRICNAME.put(memoryGeneration0Space0Name + "/capacity", "sun.gc.generation.0.space.0.capacity");
-        METRICNAME.put(memoryGeneration0Space1Name + "/used", "sun.gc.generation.0.space.1.used");
-        METRICNAME.put(memoryGeneration0Space1Name + "/capacity", "sun.gc.generation.0.space.1.capacity");
-        METRICNAME.put(memoryGeneration0Space2Name + "/used", "sun.gc.generation.0.space.2.used");
-        METRICNAME.put(memoryGeneration0Space2Name + "/capacity", "sun.gc.generation.0.space.2.capacity");
-        METRICNAME.put(memoryGeneration1Space0Name + "/used", "sun.gc.generation.1.space.0.used");
-        METRICNAME.put(memoryGeneration1Space0Name + "/capacity", "sun.gc.generation.1.space.0.capacity");
+        super.metricValuesNum = 3;
+        this.greaterThanOrEqualJava1_8 = ("1.8".compareTo(super.item.getVmVersion()) >= 0);
 
-        METRICNAME.put(memorySurvivorName + "/capacity", "sun.gc.policy.desiredSurvivorSize");
+        super.addMetric(memoryGeneration0Space0Name + "/used", "sun.gc.generation.0.space.0.used");
+        super.addMetric(memoryGeneration0Space0Name + "/capacity", "sun.gc.generation.0.space.0.capacity");
+        super.addMetric(memoryGeneration0Space1Name + "/used", "sun.gc.generation.0.space.1.used");
+        super.addMetric(memoryGeneration0Space1Name + "/capacity", "sun.gc.generation.0.space.1.capacity");
+        super.addMetric(memoryGeneration0Space2Name + "/used", "sun.gc.generation.0.space.2.used");
+        super.addMetric(memoryGeneration0Space2Name + "/capacity", "sun.gc.generation.0.space.2.capacity");
+        super.addMetric(memoryGeneration1Space0Name + "/used", "sun.gc.generation.1.space.0.used");
+        super.addMetric(memoryGeneration1Space0Name + "/capacity", "sun.gc.generation.1.space.0.capacity");
 
-        if ("1.8".compareTo(super.item.getVmVersion()) >= 0) {
-            METRICNAME.put(memoryCompressedClassSpaceName + "/used", "sun.gc.compressedclassspace.used");
-            METRICNAME.put(memoryCompressedClassSpaceName + "/capacity", "sun.gc.compressedclassspace.capacity");
-            METRICNAME.put(memoryMetaSpaceName + "/used", "sun.gc.metaspace.used");
-            METRICNAME.put(memoryMetaSpaceName + "/capacity", "sun.gc.metaspace.capacity");
+        super.addMetric(memorySurvivorName + "/capacity", "sun.gc.policy.desiredSurvivorSize");
+
+        if (this.greaterThanOrEqualJava1_8) {
+            super.addMetric(memoryCompressedClassSpaceName + "/used", "sun.gc.compressedclassspace.used");
+            super.addMetric(memoryCompressedClassSpaceName + "/capacity", "sun.gc.compressedclassspace.capacity");
+            super.addMetric(memoryMetaSpaceName + "/used", "sun.gc.metaspace.used");
+            super.addMetric(memoryMetaSpaceName + "/capacity", "sun.gc.metaspace.capacity");
         } else {
-            METRICNAME.put(memoryPermName + "/used", "sun.gc.generation.2.space.0.used");
-            METRICNAME.put(memoryPermName + "/capacity", "sun.gc.generation.2.space.0.capacity");
+            super.addMetric(memoryPermName + "/used", "sun.gc.generation.2.space.0.used");
+            super.addMetric(memoryPermName + "/capacity", "sun.gc.generation.2.space.0.capacity");
         }
     }
 
-    public void output(long timestamp) {
-        super._output(memoryGeneration0Space0Name, timestamp, getOriginVal(memoryGeneration0Space0Name + "/used"), getOriginVal(memoryGeneration0Space0Name + "/capacity"));
-        super._output(memoryGeneration0Space1Name, timestamp, getOriginVal(memoryGeneration0Space1Name + "/used"), getOriginVal(memoryGeneration0Space1Name + "/capacity"));
-        super._output(memoryGeneration0Space2Name, timestamp, getOriginVal(memoryGeneration0Space2Name + "/used"), getOriginVal(memoryGeneration0Space2Name + "/capacity"));
-        super._output(memoryGeneration1Space0Name, timestamp, getOriginVal(memoryGeneration1Space0Name + "/used"), getOriginVal(memoryGeneration1Space0Name + "/capacity"));
-        super._output(memorySurvivorName, timestamp, 0L, getOriginVal(memorySurvivorName + "/capacity"));
+    public void transform(long timestamp) {
+        super.store(memoryGeneration0Space0Name, timestamp, getOriginVal(memoryGeneration0Space0Name + "/used"), getOriginVal(memoryGeneration0Space0Name + "/capacity"));
+        super.store(memoryGeneration0Space1Name, timestamp, getOriginVal(memoryGeneration0Space1Name + "/used"), getOriginVal(memoryGeneration0Space1Name + "/capacity"));
+        super.store(memoryGeneration0Space2Name, timestamp, getOriginVal(memoryGeneration0Space2Name + "/used"), getOriginVal(memoryGeneration0Space2Name + "/capacity"));
+        super.store(memoryGeneration1Space0Name, timestamp, getOriginVal(memoryGeneration1Space0Name + "/used"), getOriginVal(memoryGeneration1Space0Name + "/capacity"));
 
-        //        super._output(memoryGeneration0Space0Name + "/used", timestamp, getOriginVal(memoryGeneration0Space0Name + "/used"));
-        //        super._output(memoryGeneration0Space0Name + "/capacity", timestamp, getOriginVal(memoryGeneration0Space0Name + "/capacity"));
-        //        super._output(memoryGeneration0Space1Name + "/used", timestamp, getOriginVal(memoryGeneration0Space1Name + "/used"));
-        //        super._output(memoryGeneration0Space1Name + "/capacity", timestamp, getOriginVal(memoryGeneration0Space1Name + "/capacity"));
-        //        super._output(memoryGeneration0Space2Name + "/used", timestamp, getOriginVal(memoryGeneration0Space2Name + "/used"));
-        //        super._output(memoryGeneration0Space2Name + "/capacity", timestamp, getOriginVal(memoryGeneration0Space2Name + "/capacity"));
-        //        super._output(memoryGeneration1Space0Name + "/used", timestamp, getOriginVal(memoryGeneration1Space0Name + "/used"));
-        //        super._output(memoryGeneration1Space0Name + "/capacity", timestamp, getOriginVal(memoryGeneration1Space0Name + "/capacity"));
-        //        super._output(memorySurvivorName + "/capacity", timestamp, getOriginVal(memorySurvivorName + "/capacity"));
+        super.store(memorySurvivorName, timestamp, 0L, getOriginVal(memorySurvivorName + "/capacity"));
 
-        if ("1.8".compareTo(super.item.getVmVersion()) >= 0) {
-            super._output(memoryCompressedClassSpaceName, timestamp, getOriginVal(memoryCompressedClassSpaceName + "/used"),
+        if (this.greaterThanOrEqualJava1_8) {
+            super.store(memoryCompressedClassSpaceName, timestamp, getOriginVal(memoryCompressedClassSpaceName + "/used"),
                     getOriginVal(memoryCompressedClassSpaceName + "/capacity"));
-            super._output(memoryMetaSpaceName, timestamp, getOriginVal(memoryMetaSpaceName + "/used"), getOriginVal(memoryMetaSpaceName + "/capacity"));
-
-            //            super._output(memoryCompressedClassSpaceName + "/used", timestamp, getOriginVal(memoryCompressedClassSpaceName + "/used"));
-            //            super._output(memoryCompressedClassSpaceName + "/capacity", timestamp, getOriginVal(memoryCompressedClassSpaceName + "/capacity"));
-            //            super._output(memoryMetaSpaceName + "/used", timestamp, getOriginVal(memoryMetaSpaceName + "/used"));
-            //            super._output(memoryMetaSpaceName + "/capacity", timestamp, getOriginVal(memoryMetaSpaceName + "/capacity"));
+            super.store(memoryMetaSpaceName, timestamp, getOriginVal(memoryMetaSpaceName + "/used"), getOriginVal(memoryMetaSpaceName + "/capacity"));
         } else {
-            super._output(memoryPermName, timestamp, getOriginVal(memoryPermName + "/used"), getOriginVal(memoryPermName + "/capacity"));
-            //            super._output(memoryPermName + "/used", timestamp, getOriginVal(memoryPermName + "/used"));
-            //            super._output(memoryPermName + "/capacity", timestamp, getOriginVal(memoryPermName + "/capacity"));
+            super.store(memoryPermName, timestamp, getOriginVal(memoryPermName + "/used"), getOriginVal(memoryPermName + "/capacity"));
         }
-        super.output(timestamp);
+        super.commit();
     }
 }

@@ -10,21 +10,21 @@ public class ModuleZLock extends AbstractModule {
     public ModuleZLock(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"contendedlockattempts", "parks", "notifications", "futilewakeups", "inflations", "deflations"};
-        METRICNAME.put("contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
-        METRICNAME.put("parks", "sun.rt._sync_Parks");
-        METRICNAME.put("notifications", "sun.rt._sync_Notifications");
-        METRICNAME.put("futilewakeups", "sun.rt._sync_FutileWakeups");
-        METRICNAME.put("inflations", "sun.rt._sync_Inflations");
-        METRICNAME.put("deflations", "sun.rt._sync_Deflations");
+        super.addMetric("contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
+        super.addMetric("parks", "sun.rt._sync_Parks");
+        super.addMetric("notifications", "sun.rt._sync_Notifications");
+        super.addMetric("futilewakeups", "sun.rt._sync_FutileWakeups");
+        super.addMetric("inflations", "sun.rt._sync_Inflations");
+        super.addMetric("deflations", "sun.rt._sync_Deflations");
     }
 
-    public void output(long timestamp) {
-        super._output("contendedlockattempts", timestamp, getDeltaVal("contendedlockattempts"));
-        super._output("parks", timestamp, getDeltaVal("parks"));
-        super._output("notifications", timestamp, getDeltaVal("notifications"));
-        super._output("futilewakeups", timestamp, getDeltaVal("futilewakeups"));
-        super._output("inflations", timestamp, getDeltaVal("inflations"));
-        super._output("deflations", timestamp, getDeltaVal("deflations"));
-        super.output(timestamp);
+    public void transform(long timestamp) {
+        super.store("contendedlockattempts", timestamp, getDeltaVal("contendedlockattempts"));
+        super.store("parks", timestamp, getDeltaVal("parks"));
+        super.store("notifications", timestamp, getDeltaVal("notifications"));
+        super.store("futilewakeups", timestamp, getDeltaVal("futilewakeups"));
+        super.store("inflations", timestamp, getDeltaVal("inflations"));
+        super.store("deflations", timestamp, getDeltaVal("deflations"));
+        super.commit();
     }
 }

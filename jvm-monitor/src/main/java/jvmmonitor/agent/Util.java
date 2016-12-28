@@ -26,10 +26,12 @@ import java.util.zip.GZIPOutputStream;
  */
 public class Util {
 
+    private static final String SPLIT = ",";
+
     public static Set<Integer> parse2IntSet(String args) {
         Set<Integer> result = Sets.newHashSet();
         if (StringUtils.isNotBlank(args)) {
-            String[] pidsStr = args.split(",");
+            String[] pidsStr = args.split(SPLIT);
             for (String pidStr : pidsStr) {
                 result.add(Integer.valueOf(pidStr));
             }
@@ -40,7 +42,7 @@ public class Util {
     public static Set<String> parse2StringSet(String args) {
         Set<String> result = Sets.newHashSet();
         if (StringUtils.isNotBlank(args)) {
-            String[] ekws = args.split(",");
+            String[] ekws = args.split(SPLIT);
             for (String ekw : ekws) {
                 result.add(ekw);
             }
@@ -222,7 +224,7 @@ public class Util {
         return byteOutput.toByteArray();
     }
 
-    public static List<JVMFlagItem> getFlags(String pid) {
+    public static List<JVMFlagItem> parseFlags(String pid) {
         try {
             VirtualMachine vm = VirtualMachine.attach(pid);
             HotSpotVirtualMachine hvm = (HotSpotVirtualMachine) vm;

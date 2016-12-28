@@ -10,21 +10,21 @@ public class ModuleZCompiler extends AbstractModule {
     public ModuleZCompiler(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"time"};
-        METRICNAME.put("time", "java.ci.totalTime");
-        METRICNAME.put("count", "sun.ci.totalCompiles");
-        METRICNAME.put("osrtime", "sun.ci.osrTime");
-        METRICNAME.put("osrcount", "sun.ci.osrCompiles");
-        METRICNAME.put("bailouts", "sun.ci.totalBailouts");
-        METRICNAME.put("invalidates", "sun.ci.totalInvalidates");
+        super.addMetric("time", "java.ci.totalTime");
+        super.addMetric("count", "sun.ci.totalCompiles");
+        super.addMetric("osrtime", "sun.ci.osrTime");
+        super.addMetric("osrcount", "sun.ci.osrCompiles");
+        super.addMetric("bailouts", "sun.ci.totalBailouts");
+        super.addMetric("invalidates", "sun.ci.totalInvalidates");
     }
 
-    public void output(long timestamp) {
-        super._output("time", timestamp, handleTimePrecision(getDeltaVal("time")));
-        super._output("count", timestamp, getDeltaVal("count"));
-        super._output("osrtime", timestamp, handleTimePrecision(getDeltaVal("osrtime")));
-        super._output("osrcount", timestamp, getDeltaVal("osrcount"));
-        super._output("bailouts", timestamp, getDeltaVal("bailouts"));
-        super._output("invalidates", timestamp, getDeltaVal("invalidates"));
-        super.output(timestamp);
+    public void transform(long timestamp) {
+        super.store("time", timestamp, handleTimePrecision(getDeltaVal("time")));
+        super.store("count", timestamp, getDeltaVal("count"));
+        super.store("osrtime", timestamp, handleTimePrecision(getDeltaVal("osrtime")));
+        super.store("osrcount", timestamp, getDeltaVal("osrcount"));
+        super.store("bailouts", timestamp, getDeltaVal("bailouts"));
+        super.store("invalidates", timestamp, getDeltaVal("invalidates"));
+        super.commit();
     }
 }

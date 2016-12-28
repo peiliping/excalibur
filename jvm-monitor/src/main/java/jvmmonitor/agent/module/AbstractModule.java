@@ -3,6 +3,7 @@ package jvmmonitor.agent.module;
 import com.google.common.collect.Maps;
 import jvmmonitor.agent.Util;
 import jvmmonitor.agent.monitor.MonitorItem;
+import lombok.Getter;
 import sun.jvmstat.monitor.LongMonitor;
 import sun.jvmstat.monitor.MonitorException;
 
@@ -17,165 +18,156 @@ public abstract class AbstractModule implements IModule {
         return clazz.getConstructor(String.class, MonitorItem.class).newInstance(moduleName, item);
     }
 
-    protected String moduleName;
+    @Getter protected String moduleName;
 
     protected MonitorItem item;
 
+    protected long precision = 0;
+
+
     protected String[] noChangeMetricNames;
 
-    protected final Map<String, LongMonitor> MONITORS = Maps.newHashMap();
+    protected int metricValuesNum = 2;
 
-    protected final Map<String, String> METRICNAME = Maps.newHashMap();
 
-    protected final Map<String, long[][]> TEMPORARYDATA = Maps.newHashMap();
+    private final Map<String, String> metricsName = Maps.newHashMap();
 
-    protected final int TEMPORARYSIZE = 2;
+    protected final Map<String, LongMonitor> monitors = Maps.newHashMap();
+
+
+    protected final Map<String, long[][]> temporaryData = Maps.newHashMap();
+
+    protected int tempDataSize = 2;
 
     protected int temporarySeq = 0;
 
-    protected final Map<String, long[][]> DATA = Maps.newHashMap();
 
-    protected final int DATASIZE = 64;
+    protected final Map<String, long[][]> resultDataRBuffer = Maps.newHashMap();
+
+    protected int resultDataSize = 64;
 
     protected int dataWSeq = 0;
 
     protected int dataRSeq = 0;
 
-    protected long precision = 0;
-
-    protected int dataLength = 2;
-
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
         this.item = item;
-        this.precision = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.os.hrt.frequency", 1000000000) / 1000000;// JVM默认精度为纳秒, 监控程序的精度在微秒即可
+        this.precision = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.os.hrt.frequency", 1000000000) / 1000000;
     }
 
-    public void init() {
-        for (Map.Entry<String, String> entry : METRICNAME.entrySet()) {
-            addMetrics(entry.getKey());
-        }
-    }
-
-    protected void addMetrics(String... metrics) {
-        for (String metric : metrics) {
-            try {
-                LongMonitor lm = (LongMonitor) item.getMonitoredVm().findByName(METRICNAME.get(metric));
-                if (lm != null) {
-                    MONITORS.put(metric, lm);
-                    long ts[][] = new long[TEMPORARYSIZE][2];
-                    for (int i = 0; i < TEMPORARYSIZE; i++) {
-                        ts[i] = new long[] {0, 0};
-                    }
-                    TEMPORARYDATA.put(metric, ts);
+    protected void addMetric(String metricName, String perfDataName) {
+        try {
+            this.metricsName.put(metricName, perfDataName);
+            LongMonitor lm = (LongMonitor) this.item.getMonitoredVm().findByName(perfDataName);
+            if (lm != null) {
+                this.monitors.put(metricName, lm);
+                long ts[][] = new long[tempDataSize][2];
+                for (int i = 0; i < tempDataSize; i++) {
+                    ts[i] = new long[] {0, 0};
                 }
-            } catch (MonitorException e) {
-                e.printStackTrace();
+                this.temporaryData.put(metricName, ts);
             }
+        } catch (MonitorException e) {
+            e.printStackTrace();
         }
     }
 
-    protected int cursor() {
-        return temporarySeq & (TEMPORARYSIZE - 1);
+    protected int cursor4TempData() {
+        return this.temporarySeq & (this.tempDataSize - 1);
     }
 
-    protected int lastCursor(int n) {
-        return (temporarySeq - n) & (TEMPORARYSIZE - 1);
+    protected int lastCursor4TempData(int n) {
+        return (this.temporarySeq - n) & (this.tempDataSize - 1);
+    }
+
+    protected Long getOriginVal(String metric) {
+        long[][] temp = this.temporaryData.get(metric);
+        return temp != null ? temp[lastCursor4TempData(1)][1] : null;
+    }
+
+    protected Long getDeltaVal(String metric) {
+        long[][] temp = this.temporaryData.get(metric);
+        if (temp == null)
+            return null;
+        return this.temporarySeq > 1 ? (temp[lastCursor4TempData(1)][1] - temp[lastCursor4TempData(2)][1]) : null;
+    }
+
+    protected Long handleTimePrecision(Long time) {
+        return (time != null) ? time / precision : null;
     }
 
     protected int cursor4Data() {
-        return dataWSeq & (DATASIZE - 1);
+        return this.dataWSeq & (this.resultDataSize - 1);
     }
 
     protected int nextCursor4Data(int n) {
-        return (dataRSeq + n) & (DATASIZE - 1);
+        return (this.dataRSeq + n) & (this.resultDataSize - 1);
     }
 
     private int dataLength() {
-        return dataWSeq - dataRSeq;
-    }
-
-    public Map<String, long[][]> pullData() {
-        if (dataLength() > 0) {
-            Map<String, long[][]> result = Maps.newHashMap();
-            for (Map.Entry<String, long[][]> item : DATA.entrySet()) {
-                long ts[][] = new long[dataLength()][dataLength];
-                for (int i = 0; i < dataLength(); i++) {
-                    ts[i] = item.getValue()[nextCursor4Data(i)];
-                }
-                result.put(item.getKey(), ts);
-            }
-            dataRSeq = dataWSeq;
-            return result;
-        }
-        return null;
+        return this.dataWSeq - this.dataRSeq;
     }
 
     public void monitor(long timestamp) {
-        int cr = cursor();
-        for (Map.Entry<String, LongMonitor> entry : MONITORS.entrySet()) {
-            TEMPORARYDATA.get(entry.getKey())[cr][0] = timestamp;
-            TEMPORARYDATA.get(entry.getKey())[cr][1] = entry.getValue().longValue();
+        int cr = cursor4TempData();
+        for (Map.Entry<String, LongMonitor> entry : this.monitors.entrySet()) {
+            this.temporaryData.get(entry.getKey())[cr][0] = timestamp;
+            this.temporaryData.get(entry.getKey())[cr][1] = entry.getValue().longValue();
         }
         this.temporarySeq++;
     }
 
-    public void output(long timestamp) {
+    public boolean changed() {
+        if (this.noChangeMetricNames == null) {
+            return true;
+        } else {
+            for (String ncmn : this.noChangeMetricNames) {
+                Long t = getDeltaVal(ncmn);
+                if (t != null && t != 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    protected void commit() {
         this.dataWSeq++;
     }
 
-    protected void _output(String key, long timestamp, Long... values) {
+    protected void store(String key, long timestamp, Long... values) {
         if (values == null)
             return;
-        if (DATA.get(key) == null) {
-            long ts[][] = new long[DATASIZE][dataLength];
-            for (int i = 0; i < DATASIZE; i++) {
-                ts[i] = new long[dataLength];
+        long[][] temp = this.resultDataRBuffer.get(key);
+        if (temp == null) {
+            long ts[][] = new long[this.resultDataSize][this.metricValuesNum];
+            for (int i = 0; i < this.resultDataSize; i++) {
+                ts[i] = new long[this.metricValuesNum];
             }
-            DATA.put(key, ts);
+            this.resultDataRBuffer.put(key, ts);
+            temp = ts;
         }
-        DATA.get(key)[cursor4Data()][0] = timestamp;
+        long[] item = temp[cursor4Data()];
+        item[0] = timestamp;
         for (int i = 0; i < values.length; i++) {
-            DATA.get(key)[cursor4Data()][i + 1] = (values[i] == null ? 0 : values[i]);
+            item[i + 1] = (values[i] == null ? 0 : values[i]);
         }
     }
 
-    protected Long getOriginVal(String metric) {
-        if (TEMPORARYDATA.get(metric) == null) {
-            return null;
-        }
-        return TEMPORARYDATA.get(metric)[lastCursor(1)][1];
-    }
+    private final Map<String, long[][]> pullBuffer = Maps.newHashMap();
 
-    protected Long getDeltaVal(String metric) {
-        if (TEMPORARYDATA.get(metric) == null) {
-            return null;
-        }
-        return temporarySeq > 1 ? (TEMPORARYDATA.get(metric)[lastCursor(1)][1] - TEMPORARYDATA.get(metric)[lastCursor(2)][1]) : null;
-    }
-
-    protected Long handleTimePrecision(Long time) {
-        if (time == null) {
-            return null;
-        }
-        return time / precision;
-    }
-
-    public String getModuleName() {
-        return this.moduleName;
-    }
-
-    public boolean noChange() {
-        if (noChangeMetricNames == null) {
-            return false;
-        } else {
-            for (String ncmn : noChangeMetricNames) {
-                Long t = getDeltaVal(ncmn);
-                if (t != null && t != 0) {
-                    return false;
-                }
+    public Map<String, long[][]> pullData() {
+        this.pullData().clear();
+        if (dataLength() == 0)
+            return this.pullBuffer;
+        for (Map.Entry<String, long[][]> item : this.resultDataRBuffer.entrySet()) {
+            long ts[][] = new long[dataLength()][this.metricValuesNum];
+            for (int i = 0; i < dataLength(); i++) {
+                ts[i] = item.getValue()[nextCursor4Data(i)];
             }
+            this.pullBuffer.put(item.getKey(), ts);
         }
-        return true;
+        this.dataRSeq = this.dataWSeq;
+        return this.pullBuffer;
     }
 }

@@ -10,20 +10,20 @@ public class ModuleZTlab extends AbstractModule {
     public ModuleZTlab(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
-        METRICNAME.put("minorgc", "sun.gc.collector.0.invocations");
-        METRICNAME.put("majorgc", "sun.gc.collector.1.invocations");
+        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
+        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
-        METRICNAME.put("alloc", "sun.gc.tlab.alloc");
-        METRICNAME.put("allocthreads", "sun.gc.tlab.allocThreads");
-        METRICNAME.put("fills", "sun.gc.tlab.fills");
-        METRICNAME.put("gcwaste", "sun.gc.tlab.gcWaste");
+        super.addMetric("alloc", "sun.gc.tlab.alloc");
+        super.addMetric("allocthreads", "sun.gc.tlab.allocThreads");
+        super.addMetric("fills", "sun.gc.tlab.fills");
+        super.addMetric("gcwaste", "sun.gc.tlab.gcWaste");
     }
 
-    public void output(long timestamp) {
-        super._output("alloc", timestamp, getOriginVal("alloc"));
-        super._output("allocthreads", timestamp, getOriginVal("allocthreads"));
-        super._output("fills", timestamp, getOriginVal("fills"));
-        super._output("gcwaste", timestamp, getOriginVal("gcwaste"));
-        super.output(timestamp);
+    public void transform(long timestamp) {
+        super.store("alloc", timestamp, getOriginVal("alloc"));
+        super.store("allocthreads", timestamp, getOriginVal("allocthreads"));
+        super.store("fills", timestamp, getOriginVal("fills"));
+        super.store("gcwaste", timestamp, getOriginVal("gcwaste"));
+        super.commit();
     }
 }

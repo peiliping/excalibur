@@ -59,21 +59,21 @@ public class MonitorManager {
     public synchronized void findActiveJVM(Set<Integer> jvmIds) {
         try {
             if (jvmIds == null || jvmIds.size() == 0) {
-                jvmIds = monitoredHost.activeVms();
+                jvmIds = this.monitoredHost.activeVms();
             }
             for (Integer id : jvmIds) {
-                if (!CONTAINER.containsKey(id) && config.filterPid(id)) {
+                if (!this.CONTAINER.containsKey(id) && this.config.filterPid(id)) {
                     try {
-                        MonitoredVm vm = monitoredHost.getMonitoredVm(buildVmIdentifier(id), 1000);
+                        MonitoredVm vm = this.monitoredHost.getMonitoredVm(buildVmIdentifier(id), 1000);
                         String mainClass = MonitoredVmUtil.mainClass(vm, true);
-                        if (!config.filterKeyWords(mainClass)) {
+                        if (!this.config.filterKeyWords(mainClass)) {
                             MonitorItem item = MonitorItem.builder().pid(id).mainClass(mainClass).monitoredVm(vm).build();
                             item.initBaseInfo();
                             item.initJVMFlags();
-                            item.initModules(config);
-                            CONTAINER.put(id, item);
+                            item.initModules(this.config);
+                            this.CONTAINER.put(id, item);
                         } else {
-                            monitoredHost.detach(vm);
+                            this.monitoredHost.detach(vm);
                         }
                     } catch (Throwable e) {
                         e.printStackTrace();
@@ -88,12 +88,12 @@ public class MonitorManager {
     public synchronized void close(Set<Integer> vmIds) {
         if (vmIds == null || vmIds.size() == 0) {
             vmIds = Sets.newHashSet();
-            vmIds.addAll(CONTAINER.keySet());
+            vmIds.addAll(this.CONTAINER.keySet());
         }
         for (Integer id : vmIds) {
-            MonitorItem item = CONTAINER.remove(id);
+            MonitorItem item = this.CONTAINER.remove(id);
             try {
-                monitoredHost.detach(item.getMonitoredVm());
+                this.monitoredHost.detach(item.getMonitoredVm());
             } catch (MonitorException e) {
                 e.printStackTrace();
             }
@@ -103,18 +103,18 @@ public class MonitorManager {
     private int counter = 1;
 
     private boolean match4SendData() {
-        return counter % config.getMultiple4SendData() == 0;
+        return this.counter % this.config.getMultiple4SendData() == 0;
     }
 
     public synchronized void run() {
         boolean match = match4SendData();
-        for (Map.Entry<Integer, MonitorItem> item : CONTAINER.entrySet()) {
+        for (Map.Entry<Integer, MonitorItem> item : this.CONTAINER.entrySet()) {
             try {
                 item.getValue().run();
                 if (match) {
                     Map<String, Map<String, long[][]>> v = item.getValue().getMetrics();
                     if (v.size() > 0) {
-                        DATACONTAINER.getData().put(item.getValue().getMainClass(), v);
+                        this.DATACONTAINER.getData().put(item.getValue().getMainClass(), v);
                     }
                 }
             } catch (Exception e) {
@@ -123,11 +123,11 @@ public class MonitorManager {
         }
         if (match) {
             try {
-                System.out.println(JSON.toJSONString(DATACONTAINER));
-                Util.httpPost(config.getMetricUrl(), Util.compress(DATACONTAINER));
+                System.out.println(JSON.toJSONString(this.DATACONTAINER));
+                Util.httpPost(this.config.getMetricUrl(), Util.compress(this.DATACONTAINER));
             } catch (Exception e) {
             }
         }
-        counter++;
+        this.counter++;
     }
 }

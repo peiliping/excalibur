@@ -157,7 +157,7 @@ public abstract class AbstractModule implements IModule {
     private final Map<String, long[][]> pullBuffer = Maps.newHashMap();
 
     public Map<String, long[][]> pullData() {
-        this.pullData().clear();
+        this.pullBuffer.clear();
         if (dataLength() == 0)
             return this.pullBuffer;
         for (Map.Entry<String, long[][]> item : this.resultDataRBuffer.entrySet()) {

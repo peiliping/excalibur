@@ -57,7 +57,7 @@ import java.util.Map;
     public void initModules(Config config) throws Exception {
         this.modules = Lists.newArrayList();
         for (String moduleName : config.getModules()) {
-            IModule m = AbstractModule.build(config.MODULES_CONS.get(moduleName), moduleName, this);
+            IModule m = AbstractModule.build(Config.MODULES_CONS.get(moduleName), moduleName, this);
             modules.add(m);
         }
     }

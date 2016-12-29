@@ -42,6 +42,7 @@ public class MonitorManager {
         this.config = config;
         this.monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());
         this.monitoredHost.addHostListener(new HostListener() {
+            @SuppressWarnings("unchecked")
             public void vmStatusChanged(VmStatusChangeEvent event) {
                 if (event.getStarted().size() > 0) {
                     findActiveJVM(false, event.getStarted());

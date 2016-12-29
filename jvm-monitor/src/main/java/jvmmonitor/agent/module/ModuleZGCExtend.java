@@ -1,6 +1,5 @@
 package jvmmonitor.agent.module;
 
-import jvmmonitor.agent.Util;
 import jvmmonitor.agent.monitor.MonitorItem;
 
 /**

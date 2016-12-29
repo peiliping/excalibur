@@ -1,6 +1,7 @@
 package jvmmonitor.agent.flag;
 
 import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Map;
 /**
  * Created by peiliping on 16-12-29.
  */
-@Builder public class FlagsContainer {
+@Builder @Getter public class FlagsContainer {
 
     private Map<String, String> meta;
 

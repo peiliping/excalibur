@@ -51,6 +51,10 @@ import java.util.Map;
         this.vmVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.specification.version");
         this.vmMode = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.info");
         this.vmStartTime = String.valueOf(Util.getLongValueFromMonitoredVm(monitoredVm, "sun.rt.createVmBeginTime", System.currentTimeMillis()));
+        String[] mc = this.mainClass.split("/");
+        if (mc.length > 1) {
+            this.mainClass = mc[mc.length - 1];
+        }
     }
 
     public void initJVMFlags() {

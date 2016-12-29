@@ -1,4 +1,4 @@
-package jvmmonitor.agent.monitor;
+package jvmmonitor.agent.flag;
 
 import lombok.Builder;
 import lombok.Getter;

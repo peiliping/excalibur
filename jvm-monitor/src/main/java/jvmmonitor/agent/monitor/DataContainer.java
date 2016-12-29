@@ -1,4 +1,4 @@
-package jvmmonitor.agent;
+package jvmmonitor.agent.monitor;
 
 import com.google.common.collect.Maps;
 import lombok.Getter;

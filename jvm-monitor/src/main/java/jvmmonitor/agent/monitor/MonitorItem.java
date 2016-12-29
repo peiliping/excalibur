@@ -1,10 +1,10 @@
 package jvmmonitor.agent.monitor;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jvmmonitor.agent.Config;
 import jvmmonitor.agent.Util;
+import jvmmonitor.agent.flag.JVMFlagItem;
 import jvmmonitor.agent.module.AbstractModule;
 import jvmmonitor.agent.module.IModule;
 import lombok.Builder;

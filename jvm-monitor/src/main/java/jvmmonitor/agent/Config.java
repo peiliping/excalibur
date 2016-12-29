@@ -84,4 +84,8 @@ public class Config {
         return "http://" + this.remoteIp + "/metric/jvm";
     }
 
+    public String getFlagUrl() {
+        return "http://" + this.remoteIp + "/jvm/flags";
+    }
+
 }

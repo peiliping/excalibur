@@ -1,12 +1,14 @@
 package jvmmonitor.agent.monitor;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import jvmmonitor.agent.Config;
-import jvmmonitor.agent.DataContainer;
 import jvmmonitor.agent.Util;
+import jvmmonitor.agent.flag.FlagsContainer;
+import jvmmonitor.agent.flag.JVMFlagItem;
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredHost;
 import sun.jvmstat.monitor.MonitoredVm;
@@ -73,8 +75,13 @@ public class MonitorManager {
                         if (!this.config.filterKeyWords(mainClass)) {
                             MonitorItem item = MonitorItem.builder().pid(id).mainClass(mainClass).monitoredVm(vm).build();
                             item.initBaseInfo();
-                            if (!restartAgent)
+                            if (!restartAgent) {
                                 item.initJVMFlags();
+                                Map<String, List<JVMFlagItem>> d = Maps.newHashMap();
+                                d.put(item.getMainClass(), item.getFlags());
+                                FlagsContainer fc = FlagsContainer.builder().meta(this.DATACONTAINER.getMeta()).data(d).build();
+                                Util.httpPost(this.config.getFlagUrl(), Util.compress(fc));
+                            }
                             if (this.config.isDebug())
                                 System.out.println(JSON.toJSONString(item.getFlags()));
                             item.initModules(this.config);

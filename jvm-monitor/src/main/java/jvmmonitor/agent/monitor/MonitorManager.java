@@ -74,13 +74,13 @@ public class MonitorManager {
                         if (!this.config.filterKeyWords(mainClass)) {
                             MonitorItem item = MonitorItem.builder().pid(id).mainClass(mainClass).monitoredVm(vm).build();
                             item.initBaseInfo();
-                            if (!restartAgent) {
+                            if (!restartAgent || this.config.isParseFlagsWhenRestartAgent()) {
                                 item.initJVMFlags();
                                 FlagsContainer fc = new FlagsContainer();
                                 fc.getMeta().put("ip", Util.getLocalIP());
                                 fc.getMeta().put("type", "flag");
                                 Map<String, Object> data = Maps.newHashMap();
-                                data.put("jvmInfo", item.getJVMInfo());
+                                data.put("jvminfo", item.getJVMInfo());
                                 data.put("flags", item.getFlags());
                                 fc.getData().put(item.getMainClass(), data);
                                 if (this.config.isDebug())

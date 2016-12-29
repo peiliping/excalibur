@@ -29,13 +29,15 @@ public class Startup {
         OPTIONS.addOption("r", "remoteIp", true, "dc ip");
 
         OPTIONS.addOption("d", "debug", false, "debug");
+
+        OPTIONS.addOption("f", "positive flag", false, "restart agent and get flags");
     }
 
     public static void main(String[] args) throws Exception {
 
         CommandLine commandLine = (new DefaultParser()).parse(OPTIONS, args);
 
-        int interval = Integer.valueOf(commandLine.getOptionValue("i", "2000"));
+        int interval = Integer.valueOf(commandLine.getOptionValue("i", "3000"));
         int multiple = Integer.valueOf(commandLine.getOptionValue("t", "10"));
 
         Set<Integer> targetPids = Util.parse2IntSet(commandLine.getOptionValue("p", ""));
@@ -48,7 +50,9 @@ public class Startup {
 
         boolean debug = commandLine.hasOption("d");
 
-        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug);
+        boolean getFlagsWhenRestartAgent = commandLine.hasOption("f");
+
+        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug, getFlagsWhenRestartAgent);
         final MonitorManager monitorManager = new MonitorManager(cfg);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

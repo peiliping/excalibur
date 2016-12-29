@@ -36,6 +36,8 @@ public class Config {
 
     @Getter private boolean debug;
 
+    @Getter private boolean parseFlagsWhenRestartAgent;
+
     static {
         MODULES_CONS.put("agetable", ModuleZAgetable.class);
         MODULES_CONS.put("class", ModuleZClass.class);
@@ -50,7 +52,8 @@ public class Config {
         MODULES_CONS.put("safepoint", ModuleZSafepoint.class);
     }
 
-    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple, String remoteIp, boolean debug) {
+    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple, String remoteIp, boolean debug,
+            boolean parseFlagsWhenRestartAgent) {
         this.remoteIp = remoteIp;
         this.interval = interval;
         this.targetPids = targetPids;
@@ -62,6 +65,7 @@ public class Config {
             modules.addAll(MODULES_CONS.keySet());
         }
         this.debug = debug;
+        this.parseFlagsWhenRestartAgent = parseFlagsWhenRestartAgent;
     }
 
     public boolean filterPid(Integer id) {

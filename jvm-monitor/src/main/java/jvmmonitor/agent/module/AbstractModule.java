@@ -50,6 +50,10 @@ public abstract class AbstractModule implements IModule {
 
     protected int dataRSeq = 0;
 
+    protected boolean atLeastOnce4NoChange = false;
+
+    protected int continuousNoChange = 0;
+
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
         this.item = item;
@@ -120,13 +124,21 @@ public abstract class AbstractModule implements IModule {
 
     public boolean changed() {
         if (this.noChangeMetricNames == null) {
+            this.continuousNoChange = 0;
             return true;
         } else {
             for (String ncmn : this.noChangeMetricNames) {
                 Long t = getDeltaVal(ncmn);
-                if (t != null && t != 0)
+                if (t != null && t != 0) {
+                    this.continuousNoChange = 0;
                     return true;
+                }
             }
+        }
+        this.continuousNoChange++;
+        if (this.atLeastOnce4NoChange && this.continuousNoChange >= 10) {
+            this.continuousNoChange = 0;
+            return true;
         }
         return false;
     }
@@ -150,7 +162,7 @@ public abstract class AbstractModule implements IModule {
         long[] item = temp[cursor4Data()];
         item[0] = timestamp;
         for (int i = 0; i < values.length; i++) {
-            item[i + 1] = (values[i] == null ? 0 : values[i]);
+            item[i + 1] = (values[i] == null ? null : values[i]);
         }
     }
 

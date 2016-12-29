@@ -9,6 +9,8 @@ public class ModuleZThread extends AbstractModule {
 
     public ModuleZThread(String moduleName, MonitorItem item) {
         super(moduleName, item);
+        super.noChangeMetricNames = new String[] {"live", "started", "vmoperationtime"};
+        super.atLeastOnce4NoChange = true;
         super.addMetric("live", "java.threads.live");
         super.addMetric("started", "java.threads.started");
         super.addMetric("vmoperationtime", "sun.threads.vmOperationTime");

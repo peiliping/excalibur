@@ -1,12 +1,11 @@
 package jvmmonitor.agent.flag;
 
-import com.google.common.collect.Maps;
-import lombok.Builder;
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 /**
  * Created by peiliping on 16-12-29.
@@ -15,5 +14,5 @@ import java.util.Map;
 
     private Map<String, String> meta = Maps.newHashMap();
 
-    private Map<String, List<JVMFlagItem>> data = Maps.newHashMap();
+    private Map<String, Map<String, Object>> data = Maps.newHashMap();
 }

@@ -41,6 +41,8 @@ import java.util.Map;
 
     private String vmMode;
 
+    private String vmStartTime;
+
     public void initBaseInfo() {
         this.javaHome = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.home");
         this.javaVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.version");
@@ -48,6 +50,7 @@ import java.util.Map;
         this.vmVendor = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.specification.vendor");
         this.vmVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.specification.version");
         this.vmMode = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.info");
+        this.vmStartTime = String.valueOf(Util.getLongValueFromMonitoredVm(monitoredVm, "sun.rt.createVmBeginTime", System.currentTimeMillis()));
     }
 
     public void initJVMFlags() {
@@ -81,5 +84,17 @@ import java.util.Map;
         }
         return this.resultBuffer;
     }
+
+    public Map<String, String> getJVMInfo() {
+        Map<String, String> jvmInfo = Maps.newHashMap();
+        jvmInfo.put("javaVersion", javaVersion);
+        jvmInfo.put("vmName", vmName);
+        jvmInfo.put("vmVersion", vmVersion);
+        jvmInfo.put("vmVendor", vmVendor);
+        jvmInfo.put("vmStartTime", vmStartTime);
+        return jvmInfo;
+    }
+
+
 
 }

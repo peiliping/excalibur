@@ -1,14 +1,12 @@
 package jvmmonitor.agent.monitor;
 
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import jvmmonitor.agent.Config;
 import jvmmonitor.agent.Util;
 import jvmmonitor.agent.flag.FlagsContainer;
-import jvmmonitor.agent.flag.JVMFlagItem;
 import sun.jvmstat.monitor.MonitorException;
 import sun.jvmstat.monitor.MonitoredHost;
 import sun.jvmstat.monitor.MonitoredVm;
@@ -81,7 +79,10 @@ public class MonitorManager {
                                 FlagsContainer fc = new FlagsContainer();
                                 fc.getMeta().put("ip", Util.getLocalIP());
                                 fc.getMeta().put("type", "flag");
-                                fc.getData().put(item.getMainClass(), item.getFlags());
+                                Map<String, Object> data = Maps.newHashMap();
+                                data.put("jvmInfo", item.getJVMInfo());
+                                data.put("flags", item.getFlags());
+                                fc.getData().put(item.getMainClass(), data);
                                 if (this.config.isDebug())
                                     System.out.println(JSON.toJSONString(fc));
                                 Util.httpPost(this.config.getUrl(), Util.compress(fc));

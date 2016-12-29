@@ -17,6 +17,7 @@ public class ModuleZGC extends AbstractModule {
         this.garbageCollector0Name = Util.getValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.collector.0.name").toLowerCase();
         this.garbageCollector1Name = Util.getValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.collector.1.name").toLowerCase();
         super.noChangeMetricNames = new String[] {garbageCollector0Name + "/count", garbageCollector1Name + "/count"};
+        super.filterZeroValue = true;
         super.addMetric(garbageCollector0Name + "/count", "sun.gc.collector.0.invocations");
         super.addMetric(garbageCollector0Name + "/time", "sun.gc.collector.0.time");
         super.addMetric(garbageCollector0Name + "/pausetime", "sun.gc.policy.avgMinorPauseTime");

@@ -24,7 +24,7 @@ public class ModuleZMemory extends AbstractModule {
     public ModuleZMemory(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.metricValuesNum = 3;
-        super.noChangeMetricNames = new String[] {"eden"};
+        super.noChangeMetricNames = new String[] {"eden/used", "old/used"};
         super.atLeastOnce4NoChange = true;
         this.greaterThanOrEqualJava1_8 = ("1.8".compareTo(super.item.getVmVersion()) >= 0);
 

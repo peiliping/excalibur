@@ -1,12 +1,15 @@
 package jvmmonitor.agent.module;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import jvmmonitor.agent.Util;
 import jvmmonitor.agent.monitor.MonitorItem;
 import lombok.Getter;
+import org.apache.commons.lang3.ArrayUtils;
 import sun.jvmstat.monitor.LongMonitor;
 import sun.jvmstat.monitor.MonitorException;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,6 +56,8 @@ public abstract class AbstractModule implements IModule {
     protected boolean atLeastOnce4NoChange = false;
 
     protected int continuousNoChange = 0;
+
+    protected boolean filterZeroValue = false;
 
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
@@ -173,11 +178,22 @@ public abstract class AbstractModule implements IModule {
         if (dataLength() == 0)
             return this.pullBuffer;
         for (Map.Entry<String, long[][]> item : this.resultDataRBuffer.entrySet()) {
-            long ts[][] = new long[dataLength()][this.metricValuesNum];
-            for (int i = 0; i < dataLength(); i++) {
-                ts[i] = item.getValue()[nextCursor4Data(i)];
+            if (this.filterZeroValue) {
+                List<long[]> ts = Lists.newArrayList();
+                for (int i = 0; i < dataLength(); i++) {
+                    if (item.getValue()[nextCursor4Data(i)][1] == 0) {
+                        continue;
+                    }
+                    ts.add(item.getValue()[nextCursor4Data(i)]);
+                }
+                this.pullBuffer.put(item.getKey(), ts.toArray(new long[ts.size()][this.metricValuesNum]));
+            } else {
+                long ts[][] = new long[dataLength()][this.metricValuesNum];
+                for (int i = 0; i < dataLength(); i++) {
+                    ts[i] = item.getValue()[nextCursor4Data(i)];
+                }
+                this.pullBuffer.put(item.getKey(), ts);
             }
-            this.pullBuffer.put(item.getKey(), ts);
         }
         this.dataRSeq = this.dataWSeq;
         return this.pullBuffer;

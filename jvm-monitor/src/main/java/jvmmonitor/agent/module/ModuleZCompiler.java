@@ -10,6 +10,7 @@ public class ModuleZCompiler extends AbstractModule {
     public ModuleZCompiler(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"time"};
+        super.filterZeroValue = true;
         super.addMetric("time", "java.ci.totalTime");
         super.addMetric("count", "sun.ci.totalCompiles");
         super.addMetric("osrtime", "sun.ci.osrTime");

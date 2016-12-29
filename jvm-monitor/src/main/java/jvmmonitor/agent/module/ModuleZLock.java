@@ -10,6 +10,7 @@ public class ModuleZLock extends AbstractModule {
     public ModuleZLock(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"contendedlockattempts", "parks", "notifications", "futilewakeups", "inflations", "deflations"};
+        super.filterZeroValue = true;
         super.addMetric("contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
         super.addMetric("parks", "sun.rt._sync_Parks");
         super.addMetric("notifications", "sun.rt._sync_Notifications");

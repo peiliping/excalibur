@@ -10,6 +10,7 @@ public class ModuleZClass extends AbstractModule {
     public ModuleZClass(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"time"};
+        super.filterZeroValue = true;
         super.addMetric("time", "sun.cls.time");
         super.addMetric("loaded", "java.cls.loadedClasses");
         super.addMetric("unloaded", "java.cls.unloadedClasses");

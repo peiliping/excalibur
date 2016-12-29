@@ -33,6 +33,8 @@ public class Config {
     @Getter private Set<String> modules;
     public static final Map<String, Class<? extends AbstractModule>> MODULES_CONS = Maps.newHashMap();
 
+    @Getter private boolean debug;
+
     static {
         MODULES_CONS.put("agetable", ModuleZAgetable.class);
         MODULES_CONS.put("class", ModuleZClass.class);
@@ -47,7 +49,7 @@ public class Config {
         MODULES_CONS.put("safepoint", ModuleZSafepoint.class);
     }
 
-    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple, String remoteIp) {
+    public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple, String remoteIp, boolean debug) {
         this.remoteIp = remoteIp;
         this.interval = interval;
         this.targetPids = targetPids;
@@ -58,6 +60,7 @@ public class Config {
         if (modules.size() == 0) {
             modules.addAll(MODULES_CONS.keySet());
         }
+        this.debug = debug;
     }
 
     public boolean filterPid(Integer id) {

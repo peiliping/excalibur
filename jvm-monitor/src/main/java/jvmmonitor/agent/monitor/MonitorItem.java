@@ -52,7 +52,6 @@ import java.util.Map;
 
     public void initJVMFlags() {
         this.flags = Util.parseFlags(String.valueOf(pid));
-        System.out.println(JSON.toJSONString(flags));
     }
 
     public void initModules(Config config) throws Exception {

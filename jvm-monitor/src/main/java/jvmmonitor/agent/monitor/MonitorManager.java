@@ -42,7 +42,7 @@ public class MonitorManager {
         this.monitoredHost.addHostListener(new HostListener() {
             public void vmStatusChanged(VmStatusChangeEvent event) {
                 if (event.getStarted().size() > 0) {
-                    findActiveJVM(event.getStarted());
+                    findActiveJVM(false, event.getStarted());
                 } else if (event.getTerminated().size() > 0) {
                     close(event.getTerminated());
                 }
@@ -60,7 +60,7 @@ public class MonitorManager {
         return new VmIdentifier(vmidString);
     }
 
-    public synchronized void findActiveJVM(Set<Integer> jvmIds) {
+    public synchronized void findActiveJVM(boolean restartAgent, Set<Integer> jvmIds) {
         try {
             if (jvmIds == null || jvmIds.size() == 0) {
                 jvmIds = this.monitoredHost.activeVms();
@@ -73,7 +73,10 @@ public class MonitorManager {
                         if (!this.config.filterKeyWords(mainClass)) {
                             MonitorItem item = MonitorItem.builder().pid(id).mainClass(mainClass).monitoredVm(vm).build();
                             item.initBaseInfo();
-                            item.initJVMFlags();
+                            if (!restartAgent)
+                                item.initJVMFlags();
+                            if (this.config.isDebug())
+                                System.out.println(JSON.toJSONString(item.getFlags()));
                             item.initModules(this.config);
                             this.CONTAINER.put(id, item);
                         } else {
@@ -127,7 +130,9 @@ public class MonitorManager {
         }
         if (match) {
             try {
-                System.out.println(JSON.toJSONString(this.DATACONTAINER));
+                if (this.config.isDebug()) {
+                    System.out.println(JSON.toJSONString(this.DATACONTAINER));
+                }
                 Util.httpPost(this.config.getMetricUrl(), Util.compress(this.DATACONTAINER));
             } catch (Exception e) {
             }

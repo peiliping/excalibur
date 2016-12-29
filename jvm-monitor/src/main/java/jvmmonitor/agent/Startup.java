@@ -27,6 +27,8 @@ public class Startup {
         OPTIONS.addOption("m", "modules", true, "modules name");
 
         OPTIONS.addOption("r", "remoteIp", true, "dc ip");
+
+        OPTIONS.addOption("d", "debug", false, "debug");
     }
 
     public static void main(String[] args) throws Exception {
@@ -44,7 +46,9 @@ public class Startup {
         String remoteIp = commandLine.getOptionValue("r");
         Validate.notBlank(remoteIp);
 
-        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp);
+        boolean debug = commandLine.hasOption("d");
+
+        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug);
         final MonitorManager monitorManager = new MonitorManager(cfg);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -52,7 +56,7 @@ public class Startup {
                 monitorManager.close(null);
             }
         });
-        monitorManager.findActiveJVM(null);
+        monitorManager.findActiveJVM(true, null);
         long lastStart = 0;
         long sleep = 0;
         while (true) {

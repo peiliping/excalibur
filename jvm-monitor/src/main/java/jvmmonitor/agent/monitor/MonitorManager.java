@@ -42,8 +42,7 @@ public class MonitorManager {
         this.config = config;
         this.monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());
         this.monitoredHost.addHostListener(new HostListener() {
-            @SuppressWarnings("unchecked")
-            public void vmStatusChanged(VmStatusChangeEvent event) {
+            @SuppressWarnings("unchecked") public void vmStatusChanged(VmStatusChangeEvent event) {
                 if (event.getStarted().size() > 0) {
                     findActiveJVM(false, event.getStarted());
                 } else if (event.getTerminated().size() > 0) {
@@ -56,6 +55,7 @@ public class MonitorManager {
             }
         });
         this.DATACONTAINER.getMeta().put("ip", Util.getLocalIP());
+        this.DATACONTAINER.getMeta().put("type", "metric");
     }
 
     private static VmIdentifier buildVmIdentifier(Integer id) throws URISyntaxException {
@@ -78,13 +78,14 @@ public class MonitorManager {
                             item.initBaseInfo();
                             if (!restartAgent) {
                                 item.initJVMFlags();
-                                Map<String, List<JVMFlagItem>> d = Maps.newHashMap();
-                                d.put(item.getMainClass(), item.getFlags());
-                                FlagsContainer fc = FlagsContainer.builder().meta(this.DATACONTAINER.getMeta()).data(d).build();
-                                Util.httpPost(this.config.getFlagsUrl(), Util.compress(fc));
+                                FlagsContainer fc = new FlagsContainer();
+                                fc.getMeta().put("ip", Util.getLocalIP());
+                                fc.getMeta().put("type", "flag");
+                                fc.getData().put(item.getMainClass(), item.getFlags());
+                                if (this.config.isDebug())
+                                    System.out.println(JSON.toJSONString(fc));
+                                Util.httpPost(this.config.getUrl(), Util.compress(fc));
                             }
-                            if (this.config.isDebug())
-                                System.out.println(JSON.toJSONString(item.getFlags()));
                             item.initModules(this.config);
                             this.CONTAINER.put(id, item);
                         } else {
@@ -141,7 +142,7 @@ public class MonitorManager {
                 if (this.config.isDebug()) {
                     System.out.println(JSON.toJSONString(this.DATACONTAINER));
                 }
-                Util.httpPost(this.config.getMetricsUrl(), Util.compress(this.DATACONTAINER));
+                Util.httpPost(this.config.getUrl(), Util.compress(this.DATACONTAINER));
             } catch (Exception e) {
             }
         }

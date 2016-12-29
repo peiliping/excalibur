@@ -162,7 +162,7 @@ public abstract class AbstractModule implements IModule {
         long[] item = temp[cursor4Data()];
         item[0] = timestamp;
         for (int i = 0; i < values.length; i++) {
-            item[i + 1] = (values[i] == null ? null : values[i]);
+            item[i + 1] = (values[i] == null ? 0 : values[i]);
         }
     }
 

@@ -110,7 +110,8 @@ public class MonitorManager {
         for (Integer id : vmIds) {
             MonitorItem item = this.CONTAINER.remove(id);
             try {
-                this.monitoredHost.detach(item.getMonitoredVm());
+                if (item != null)
+                    this.monitoredHost.detach(item.getMonitoredVm());
             } catch (MonitorException e) {
                 e.printStackTrace();
             }

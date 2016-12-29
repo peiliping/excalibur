@@ -80,7 +80,7 @@ public class MonitorManager {
                                 Map<String, List<JVMFlagItem>> d = Maps.newHashMap();
                                 d.put(item.getMainClass(), item.getFlags());
                                 FlagsContainer fc = FlagsContainer.builder().meta(this.DATACONTAINER.getMeta()).data(d).build();
-                                Util.httpPost(this.config.getFlagUrl(), Util.compress(fc));
+                                Util.httpPost(this.config.getFlagsUrl(), Util.compress(fc));
                             }
                             if (this.config.isDebug())
                                 System.out.println(JSON.toJSONString(item.getFlags()));
@@ -140,7 +140,7 @@ public class MonitorManager {
                 if (this.config.isDebug()) {
                     System.out.println(JSON.toJSONString(this.DATACONTAINER));
                 }
-                Util.httpPost(this.config.getMetricUrl(), Util.compress(this.DATACONTAINER));
+                Util.httpPost(this.config.getMetricsUrl(), Util.compress(this.DATACONTAINER));
             } catch (Exception e) {
             }
         }

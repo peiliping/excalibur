@@ -80,11 +80,11 @@ public class Config {
         return false;
     }
 
-    public String getMetricUrl() {
-        return "http://" + this.remoteIp + "/metric/jvm";
+    public String getMetricsUrl() {
+        return "http://" + this.remoteIp + "/jvm/metrics";
     }
 
-    public String getFlagUrl() {
+    public String getFlagsUrl() {
         return "http://" + this.remoteIp + "/jvm/flags";
     }
 

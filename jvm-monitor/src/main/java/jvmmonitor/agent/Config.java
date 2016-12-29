@@ -28,6 +28,7 @@ public class Config {
 
     static {
         EXCLUDEKEYWORDS_CONS.add("sun.tools.*");
+        EXCLUDEKEYWORDS_CONS.add("*/jvm-monitor-agent.jar");
     }
 
     @Getter private Set<String> modules;

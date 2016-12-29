@@ -1,16 +1,16 @@
 package jvmmonitor.agent.module;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+
 import jvmmonitor.agent.Util;
 import jvmmonitor.agent.monitor.MonitorItem;
 import lombok.Getter;
-import org.apache.commons.lang3.ArrayUtils;
 import sun.jvmstat.monitor.LongMonitor;
 import sun.jvmstat.monitor.MonitorException;
 
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Created by peiliping on 16-12-21.

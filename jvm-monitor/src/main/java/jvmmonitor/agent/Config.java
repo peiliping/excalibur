@@ -29,6 +29,8 @@ public class Config {
     static {
         EXCLUDEKEYWORDS_CONS.add("sun.tools.*");
         EXCLUDEKEYWORDS_CONS.add(".*jvm-monitor-agent.jar");
+        EXCLUDEKEYWORDS_CONS.add(".*icesword-agent.jar");
+        EXCLUDEKEYWORDS_CONS.add(".*GreysConsole");
     }
 
     @Getter private Set<String> modules;

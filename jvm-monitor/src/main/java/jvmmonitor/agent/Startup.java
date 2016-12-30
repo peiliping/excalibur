@@ -61,6 +61,7 @@ public class Startup {
             }
         });
         monitorManager.findActiveJVM(true, null);
+
         long lastStart = 0;
         long sleep = 0;
         while (true) {

@@ -88,7 +88,7 @@ public class Config {
     }
 
     public String getUrl() {
-        return "http://" + this.remoteIp + "/jvm";
+        return "http://" + this.remoteIp + "/agent/jvm";
     }
 
 }

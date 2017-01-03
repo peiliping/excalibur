@@ -11,6 +11,7 @@ public class ModuleZGCExtend extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
         super.filterZeroValue = true;
+        super.metricValuesNum = 3;
         super.addMetric("minorgc", "sun.gc.collector.0.invocations");
         super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
@@ -22,11 +23,11 @@ public class ModuleZGCExtend extends AbstractModule {
     }
 
     public void transform(long timestamp) {
-        super.store("promoted", timestamp, getOriginVal("promoted"));
-        super.store("survived", timestamp, getOriginVal("survived"));
+        super.store("promoted", timestamp, getOriginVal("promoted"), 1L);
+        super.store("survived", timestamp, getOriginVal("survived"), 1L);
 
-        super.store("timelimitexceeded", timestamp, getDeltaVal("timelimitexceeded"));
-        super.store("survivoroverflowed", timestamp, getDeltaVal("survivoroverflowed"));
+        super.store("timelimitexceeded", timestamp, getDeltaVal("timelimitexceeded"), 0L);
+        super.store("survivoroverflowed", timestamp, getDeltaVal("survivoroverflowed"), 0L);
         super.commit();
     }
 }

@@ -21,6 +21,7 @@ public class ModuleZAgetable extends AbstractModule {
     public ModuleZAgetable(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
+        super.metricValuesNum = 3;
         super.addMetric("minorgc", "sun.gc.collector.0.invocations");
         super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
@@ -36,9 +37,9 @@ public class ModuleZAgetable extends AbstractModule {
         for (int i = 0; i < ageTableSize; i++) {
             total = total + (i + 1) * getOriginVal(AGE_CONS[i]);
             count = count + getOriginVal(AGE_CONS[i]);
-            super.store(AGE_CONS[i], timestamp, getOriginVal(AGE_CONS[i]));
+            super.store(AGE_CONS[i], timestamp, getOriginVal(AGE_CONS[i]), 1L);
         }
-        super.store("avg", timestamp, (total * 1000) / (count == 0 ? 1 : count));
+        super.store("avg", timestamp, (total * 1000) / (count == 0 ? 1 : count), 1L);
         super.commit();
     }
 }

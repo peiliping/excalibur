@@ -11,6 +11,7 @@ public class ModuleZThreshold extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
         super.filterZeroValue = true;
+        super.metricValuesNum = 3;
         super.addMetric("minorgc", "sun.gc.collector.0.invocations");
         super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
@@ -22,11 +23,11 @@ public class ModuleZThreshold extends AbstractModule {
     }
 
     public void transform(long timestamp) {
-        super.store("current", timestamp, getOriginVal("current"));
-        super.store("max", timestamp, getOriginVal("max"));
-        super.store("incre4gc", timestamp, getDeltaVal("incre4gc"));
-        super.store("decre4gc", timestamp, getDeltaVal("decre4gc"));
-        super.store("decre4survivor", timestamp, getDeltaVal("decre4survivor"));
+        super.store("current", timestamp, getOriginVal("current"), 1L);
+        super.store("max", timestamp, getOriginVal("max"), 1L);
+        super.store("incre4gc", timestamp, getDeltaVal("incre4gc"), 0L);
+        super.store("decre4gc", timestamp, getDeltaVal("decre4gc"), 0L);
+        super.store("decre4survivor", timestamp, getDeltaVal("decre4survivor"), 0L);
         super.commit();
     }
 }

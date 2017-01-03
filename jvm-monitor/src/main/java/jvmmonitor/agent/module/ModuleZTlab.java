@@ -10,6 +10,7 @@ public class ModuleZTlab extends AbstractModule {
     public ModuleZTlab(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
+        super.metricValuesNum = 3;
         super.addMetric("minorgc", "sun.gc.collector.0.invocations");
         super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
@@ -20,10 +21,10 @@ public class ModuleZTlab extends AbstractModule {
     }
 
     public void transform(long timestamp) {
-        super.store("alloc", timestamp, getOriginVal("alloc"));
-        super.store("allocthreads", timestamp, getOriginVal("allocthreads"));
-        super.store("fills", timestamp, getOriginVal("fills"));
-        super.store("gcwaste", timestamp, getOriginVal("gcwaste"));
+        super.store("alloc", timestamp, getOriginVal("alloc"), 1L);
+        super.store("allocthreads", timestamp, getOriginVal("allocthreads"), 1L);
+        super.store("fills", timestamp, getOriginVal("fills"), 1L);
+        super.store("gcwaste", timestamp, getOriginVal("gcwaste"), 1L);
         super.commit();
     }
 }

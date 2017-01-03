@@ -10,6 +10,7 @@ public class ModuleZThreshold extends AbstractModule {
     public ModuleZThreshold(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
+        super.filterZeroValue = true;
         super.addMetric("minorgc", "sun.gc.collector.0.invocations");
         super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 

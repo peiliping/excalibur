@@ -42,6 +42,11 @@ public class MonitorManager {
         this.monitoredHost.addHostListener(new HostListener() {
             @SuppressWarnings("unchecked") public void vmStatusChanged(VmStatusChangeEvent event) {
                 if (event.getStarted().size() > 0) {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     findActiveJVM(false, event.getStarted());
                 } else if (event.getTerminated().size() > 0) {
                     close(event.getTerminated());

@@ -93,6 +93,7 @@ public class MonitorManager {
                             this.monitoredHost.detach(vm);
                         }
                     } catch (Throwable e) {
+                        System.out.println("ID : " + id);
                         e.printStackTrace();
                     }
                 }
@@ -142,10 +143,12 @@ public class MonitorManager {
         if (match) {
             try {
                 if (this.config.isDebug()) {
+                    System.out.println("Monitor Pids : " + CONTAINER.keySet().toString());
                     System.out.println(JSON.toJSONString(this.DATACONTAINER));
                 }
                 Util.httpPost(this.config.getUrl(), Util.compress(this.DATACONTAINER));
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         this.counter++;

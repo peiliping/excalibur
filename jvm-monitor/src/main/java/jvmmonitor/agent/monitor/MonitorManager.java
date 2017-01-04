@@ -1,25 +1,22 @@
 package jvmmonitor.agent.monitor;
 
-import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.Set;
-
+import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import jvmmonitor.agent.Config;
 import jvmmonitor.agent.Util;
 import jvmmonitor.agent.flag.FlagsContainer;
-import sun.jvmstat.monitor.MonitorException;
-import sun.jvmstat.monitor.MonitoredHost;
-import sun.jvmstat.monitor.MonitoredVm;
-import sun.jvmstat.monitor.MonitoredVmUtil;
-import sun.jvmstat.monitor.VmIdentifier;
+import sun.jvmstat.monitor.*;
 import sun.jvmstat.monitor.event.HostEvent;
 import sun.jvmstat.monitor.event.HostListener;
 import sun.jvmstat.monitor.event.VmStatusChangeEvent;
 import sun.tools.jps.Arguments;
 
-import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by peiliping on 16-12-19.
@@ -36,21 +33,29 @@ public class MonitorManager {
 
     private MonitoredHost monitoredHost;
 
+    private Timer timer = new Timer("Jps");
+
     public MonitorManager(Config config) throws MonitorException {
         this.config = config;
         this.monitoredHost = MonitoredHost.getMonitoredHost(JPS_ARGUMENTS.hostId());
-        this.monitoredHost.addHostListener(new HostListener() {
-            @SuppressWarnings("unchecked") public void vmStatusChanged(VmStatusChangeEvent event) {
-                if (event.getStarted().size() > 0) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        this.timer.schedule(new TimerTask() {
+            @Override public void run() {
+                try {
+                    Set<Integer> last = Sets.newHashSet(CONTAINER.keySet());
+                    Set<Integer> current = monitoredHost.activeVms();
+                    last.removeAll(current);
+                    if (last.size() > 0) {
+                        close(last);
                     }
-                    findActiveJVM(false, event.getStarted());
-                } else if (event.getTerminated().size() > 0) {
-                    close(event.getTerminated());
+                    findActiveJVM(false, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+            }
+        }, 60000, 60000);
+
+        this.monitoredHost.addHostListener(new HostListener() {
+            public void vmStatusChanged(VmStatusChangeEvent event) {
             }
 
             public void disconnected(HostEvent event) {
@@ -116,8 +121,10 @@ public class MonitorManager {
         for (Integer id : vmIds) {
             MonitorItem item = this.CONTAINER.remove(id);
             try {
-                if (item != null)
+                if (item != null) {
+                    this.DATACONTAINER.getData().remove(item.getMainClass());
                     this.monitoredHost.detach(item.getMonitoredVm());
+                }
             } catch (MonitorException e) {
                 e.printStackTrace();
             }

@@ -64,6 +64,10 @@ public class MonitorManager {
         });
         this.DATACONTAINER.getMeta().put("ip", Util.getLocalIP());
         this.DATACONTAINER.getMeta().put("type", "metric");
+        this.DATACONTAINER.getMeta().put("mode", config.getMode());
+        if (config.getMode().equals("test")) {
+            this.DATACONTAINER.getMeta().put("app", config.getAppName());
+        }
     }
 
     private static VmIdentifier buildVmIdentifier(Integer id) throws URISyntaxException {

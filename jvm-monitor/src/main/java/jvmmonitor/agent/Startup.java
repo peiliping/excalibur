@@ -22,7 +22,7 @@ public class Startup {
         OPTIONS.addOption("t", "multiple", true, "send data after n interval");
 
         OPTIONS.addOption("p", "pids", true, "filter pids");
-        OPTIONS.addOption("x", "excludes", true, "excludes keyswords");
+        OPTIONS.addOption("e", "excludes", true, "excludes keyswords");
 
         OPTIONS.addOption("m", "modules", true, "modules name");
 
@@ -30,7 +30,11 @@ public class Startup {
 
         OPTIONS.addOption("d", "debug", false, "debug");
 
-        OPTIONS.addOption("f", "positive flag", false, "restart agent and get flags");
+        OPTIONS.addOption("f", "positiveFlag", false, "restart agent and get flags");
+
+        OPTIONS.addOption("M", "mode", true, "saas or test");
+
+        OPTIONS.addOption("a", "appName", true, "custom appname 4 test mode");
     }
 
     public static void main(String[] args) throws Exception {
@@ -52,7 +56,11 @@ public class Startup {
 
         boolean getFlagsWhenRestartAgent = commandLine.hasOption("f");
 
-        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug, getFlagsWhenRestartAgent);
+        String mode = commandLine.getOptionValue("M", "saas");
+
+        String appName = commandLine.getOptionValue("a");
+
+        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug, getFlagsWhenRestartAgent, mode, appName);
         final MonitorManager monitorManager = new MonitorManager(cfg);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

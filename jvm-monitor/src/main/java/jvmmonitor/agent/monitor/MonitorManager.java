@@ -169,4 +169,10 @@ public class MonitorManager {
         }
         this.counter++;
     }
+
+    public synchronized void printPerfData() {
+        for (Map.Entry<Integer, MonitorItem> item : CONTAINER.entrySet()) {
+            item.getValue().printPerfData();
+        }
+    }
 }

@@ -9,6 +9,7 @@ import jvmmonitor.agent.module.AbstractModule;
 import jvmmonitor.agent.module.IModule;
 import lombok.Builder;
 import lombok.Getter;
+import sun.jvmstat.monitor.Monitor;
 import sun.jvmstat.monitor.MonitoredVm;
 
 import java.util.List;
@@ -99,6 +100,15 @@ import java.util.Map;
         return jvmInfo;
     }
 
-
+    public void printPerfData() {
+        try {
+            List<Monitor> r = monitoredVm.findByPattern("");
+            for (Monitor m : r) {
+                System.out.println(m.getName() + "\t" + m.getValue().toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

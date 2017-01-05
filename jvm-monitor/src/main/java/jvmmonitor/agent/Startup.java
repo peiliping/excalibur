@@ -35,6 +35,8 @@ public class Startup {
         OPTIONS.addOption("M", "mode", true, "saas or test");
 
         OPTIONS.addOption("a", "appName", true, "custom appname 4 test mode");
+
+        OPTIONS.addOption("o", "output", false, "only print perfdata");
     }
 
     public static void main(String[] args) throws Exception {
@@ -72,6 +74,14 @@ public class Startup {
 
         long lastStart = 0;
         long sleep = 0;
+
+        if (commandLine.hasOption("o")) {
+            while (true) {
+                monitorManager.printPerfData();
+                Thread.sleep(1000);
+            }
+        }
+
         while (true) {
             lastStart = System.currentTimeMillis();
             monitorManager.run();

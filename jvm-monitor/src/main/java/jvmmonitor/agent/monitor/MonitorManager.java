@@ -90,13 +90,7 @@ public class MonitorManager {
                             item.initBaseInfo();
                             if (!restartAgent || this.config.isParseFlagsWhenRestartAgent()) {
                                 item.initJVMFlags();
-                                FlagsContainer fc = new FlagsContainer();
-                                fc.getMeta().put("ip", Util.getLocalIP());
-                                fc.getMeta().put("type", "flag");
-                                Map<String, Object> data = Maps.newHashMap();
-                                data.put("jvminfo", item.getJVMInfo());
-                                data.put("flags", item.getFlags());
-                                fc.getData().put(item.getMainClass(), data);
+                                FlagsContainer fc = new FlagsContainer(this.DATACONTAINER, item);
                                 if (this.config.isDebug())
                                     System.out.println(JSON.toJSONString(fc));
                                 Util.httpPost(this.config.getUrl(), Util.compress(fc));

@@ -65,7 +65,7 @@ public abstract class AbstractModule implements IModule {
         this.precision = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.os.hrt.frequency", 1000000000) / 1000000;
     }
 
-    protected void addMetric(String metricName, String perfDataName) {
+    protected boolean addMetric(String metricName, String perfDataName) {
         try {
             this.metricsName.put(metricName, perfDataName);
             LongMonitor lm = (LongMonitor) this.item.getMonitoredVm().findByName(perfDataName);
@@ -76,10 +76,12 @@ public abstract class AbstractModule implements IModule {
                     ts[i] = new long[] {0, 0};
                 }
                 this.temporaryData.put(metricName, ts);
+                return true;
             }
         } catch (MonitorException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     protected int cursor4TempData() {

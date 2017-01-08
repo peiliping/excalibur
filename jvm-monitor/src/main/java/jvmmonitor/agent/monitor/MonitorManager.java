@@ -53,7 +53,6 @@ public class MonitorManager {
                 }
             }
         }, 60000, 60000);
-
         this.monitoredHost.addHostListener(new HostListener() {
             public void vmStatusChanged(VmStatusChangeEvent event) {
             }
@@ -62,12 +61,7 @@ public class MonitorManager {
                 close(null);
             }
         });
-        this.DATACONTAINER.getMeta().put("ip", Util.getLocalIP());
-        this.DATACONTAINER.getMeta().put("type", "metric");
-        this.DATACONTAINER.getMeta().put("mode", config.getMode());
-        if (config.getMode().equals("test")) {
-            this.DATACONTAINER.getMeta().put("app", config.getAppName());
-        }
+        this.DATACONTAINER.initMeta(config);
     }
 
     private static VmIdentifier buildVmIdentifier(Integer id) throws URISyntaxException {

@@ -25,8 +25,8 @@ public class ModuleZAgetable extends AbstractModule {
         super.addMetric("minorgc", "sun.gc.collector.0.invocations");
         super.addMetric("majorgc", "sun.gc.collector.1.invocations");
 
-        ageTableSize = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.generation.0.agetable.size", 0) - 1;
-        for (int i = 0; i < ageTableSize; i++) {
+        ageTableSize = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.generation.0.agetable.size", 0);
+        for (int i = 0; i < ageTableSize - 1; i++) {
             super.addMetric(AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
         }
     }
@@ -34,7 +34,7 @@ public class ModuleZAgetable extends AbstractModule {
     public void transform(long timestamp) {
         this.total = 0;
         this.count = 0;
-        for (int i = 0; i < ageTableSize; i++) {
+        for (int i = 0; i < ageTableSize - 1; i++) {
             total = total + (i + 1) * getOriginVal(AGE_CONS[i]);
             count = count + getOriginVal(AGE_CONS[i]);
             super.store(AGE_CONS[i], timestamp, getOriginVal(AGE_CONS[i]), 1L);

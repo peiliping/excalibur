@@ -11,12 +11,12 @@ public class ModuleZCompiler extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"time"};
         super.filterZeroValue = true;
-        super.addMetric("time", "java.ci.totalTime");
-        super.addMetric("count", "sun.ci.totalCompiles");
-        super.addMetric("osrtime", "sun.ci.osrTime");
-        super.addMetric("osrcount", "sun.ci.osrCompiles");
-        super.addMetric("bailouts", "sun.ci.totalBailouts");
-        super.addMetric("invalidates", "sun.ci.totalInvalidates");
+        super.addMetric(item, "time", "java.ci.totalTime");
+        super.addMetric(item, "count", "sun.ci.totalCompiles");
+        super.addMetric(item, "osrtime", "sun.ci.osrTime");
+        super.addMetric(item, "osrcount", "sun.ci.osrCompiles");
+        super.addMetric(item, "bailouts", "sun.ci.totalBailouts");
+        super.addMetric(item, "invalidates", "sun.ci.totalInvalidates");
     }
 
     public void transform(long timestamp) {

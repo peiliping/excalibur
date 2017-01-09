@@ -66,7 +66,9 @@ import java.util.Map;
         this.modules = Lists.newArrayList();
         for (String moduleName : config.getModules()) {
             IModule m = AbstractModule.build(Config.MODULES_CONS.get(moduleName), moduleName, this);
-            modules.add(m);
+            if (m.valid()) {
+                modules.add(m);
+            }
         }
     }
 

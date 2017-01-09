@@ -23,27 +23,21 @@ public abstract class AbstractModule implements IModule {
 
     @Getter protected String moduleName;
 
-    protected MonitorItem item;
-
     protected long precision = 0;
-
 
     protected String[] noChangeMetricNames;
 
     protected int metricValuesNum = 2;
 
-
     private final Map<String, String> metricsName = Maps.newHashMap();
 
     protected final Map<String, LongMonitor> monitors = Maps.newHashMap();
-
 
     protected final Map<String, long[][]> temporaryData = Maps.newHashMap();
 
     protected int tempDataSize = 2;
 
     protected int temporarySeq = 0;
-
 
     protected final Map<String, long[][]> resultDataRBuffer = Maps.newHashMap();
 
@@ -53,22 +47,15 @@ public abstract class AbstractModule implements IModule {
 
     protected int dataRSeq = 0;
 
-    protected boolean atLeastOnce4NoChange = false;
-
-    protected int continuousNoChange = 0;
-
-    protected boolean filterZeroValue = false;
-
     public AbstractModule(String moduleName, MonitorItem item) {
         this.moduleName = moduleName;
-        this.item = item;
         this.precision = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.os.hrt.frequency", 1000000000) / 1000000;
     }
 
-    protected boolean addMetric(String metricName, String perfDataName) {
+    protected boolean addMetric(MonitorItem item, String metricName, String perfDataName) {
         try {
             this.metricsName.put(metricName, perfDataName);
-            LongMonitor lm = (LongMonitor) this.item.getMonitoredVm().findByName(perfDataName);
+            LongMonitor lm = (LongMonitor) item.getMonitoredVm().findByName(perfDataName);
             if (lm != null) {
                 this.monitors.put(metricName, lm);
                 long ts[][] = new long[tempDataSize][2];
@@ -129,6 +116,10 @@ public abstract class AbstractModule implements IModule {
         this.temporarySeq++;
     }
 
+    protected int continuousNoChange = 0;
+
+    protected boolean atLeastOnce4NoChange = false;
+
     public boolean changed() {
         if (this.noChangeMetricNames == null) {
             this.continuousNoChange = 0;
@@ -175,6 +166,8 @@ public abstract class AbstractModule implements IModule {
 
     private final Map<String, long[][]> pullBuffer = Maps.newHashMap();
 
+    protected boolean filterZeroValue = false;
+
     public Map<String, long[][]> pullData() {
         this.pullBuffer.clear();
         if (dataLength() == 0)
@@ -199,5 +192,11 @@ public abstract class AbstractModule implements IModule {
         }
         this.dataRSeq = this.dataWSeq;
         return this.pullBuffer;
+    }
+
+    protected boolean valid = true;
+
+    public boolean valid() {
+        return valid;
     }
 }

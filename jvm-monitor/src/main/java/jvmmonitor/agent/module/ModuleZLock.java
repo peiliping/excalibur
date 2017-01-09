@@ -11,12 +11,12 @@ public class ModuleZLock extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"contendedlockattempts", "parks", "notifications", "futilewakeups", "inflations", "deflations"};
         super.filterZeroValue = true;
-        super.addMetric("contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
-        super.addMetric("parks", "sun.rt._sync_Parks");
-        super.addMetric("notifications", "sun.rt._sync_Notifications");
-        super.addMetric("futilewakeups", "sun.rt._sync_FutileWakeups");
-        super.addMetric("inflations", "sun.rt._sync_Inflations");
-        super.addMetric("deflations", "sun.rt._sync_Deflations");
+        super.addMetric(item, "contendedlockattempts", "sun.rt._sync_ContendedLockAttempts");
+        super.addMetric(item, "parks", "sun.rt._sync_Parks");
+        super.addMetric(item, "notifications", "sun.rt._sync_Notifications");
+        super.addMetric(item, "futilewakeups", "sun.rt._sync_FutileWakeups");
+        super.addMetric(item, "inflations", "sun.rt._sync_Inflations");
+        super.addMetric(item, "deflations", "sun.rt._sync_Deflations");
     }
 
     public void transform(long timestamp) {

@@ -11,13 +11,13 @@ public class ModuleZTlab extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
         super.metricValuesNum = 3;
-        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
-        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
+        super.addMetric(item, "minorgc", "sun.gc.collector.0.invocations");
+        super.addMetric(item, "majorgc", "sun.gc.collector.1.invocations");
 
-        super.addMetric("alloc", "sun.gc.tlab.alloc");
-        super.addMetric("allocthreads", "sun.gc.tlab.allocThreads");
-        super.addMetric("fills", "sun.gc.tlab.fills");
-        super.addMetric("gcwaste", "sun.gc.tlab.gcWaste");
+        super.addMetric(item, "alloc", "sun.gc.tlab.alloc");
+        super.addMetric(item, "allocthreads", "sun.gc.tlab.allocThreads");
+        super.addMetric(item, "fills", "sun.gc.tlab.fills");
+        super.addMetric(item, "gcwaste", "sun.gc.tlab.gcWaste");
     }
 
     public void transform(long timestamp) {

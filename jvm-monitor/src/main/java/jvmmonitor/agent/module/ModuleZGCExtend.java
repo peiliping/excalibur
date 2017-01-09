@@ -12,14 +12,14 @@ public class ModuleZGCExtend extends AbstractModule {
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
         super.filterZeroValue = true;
         super.metricValuesNum = 3;
-        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
-        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
+        super.addMetric(item, "minorgc", "sun.gc.collector.0.invocations");
+        super.addMetric(item, "majorgc", "sun.gc.collector.1.invocations");
 
-        super.addMetric("promoted", "sun.gc.policy.avgPromotedAvg");
-        super.addMetric("survived", "sun.gc.policy.avgSurvivedAvg");
+        super.addMetric(item, "promoted", "sun.gc.policy.avgPromotedAvg");
+        super.addMetric(item, "survived", "sun.gc.policy.avgSurvivedAvg");
 
-        super.addMetric("timelimitexceeded", "sun.gc.policy.gcTimeLimitExceeded");
-        super.addMetric("survivoroverflowed", "sun.gc.policy.survivorOverflowed");
+        super.addMetric(item, "timelimitexceeded", "sun.gc.policy.gcTimeLimitExceeded");
+        super.addMetric(item, "survivoroverflowed", "sun.gc.policy.survivorOverflowed");
     }
 
     public void transform(long timestamp) {

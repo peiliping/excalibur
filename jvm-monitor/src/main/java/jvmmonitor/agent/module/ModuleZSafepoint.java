@@ -10,9 +10,9 @@ public class ModuleZSafepoint extends AbstractModule {
     public ModuleZSafepoint(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"count"};
-        super.addMetric("count", "sun.rt.safepoints");
-        super.addMetric("time", "sun.rt.safepointTime");
-        super.addMetric("synctime", "sun.rt.safepointSyncTime");
+        super.addMetric(item, "count", "sun.rt.safepoints");
+        super.addMetric(item, "time", "sun.rt.safepointTime");
+        super.addMetric(item, "synctime", "sun.rt.safepointSyncTime");
     }
 
     public void transform(long timestamp) {

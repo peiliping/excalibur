@@ -13,8 +13,8 @@ public class ModuleZThread extends AbstractModule {
         super.atLeastOnce4NoChange = true;
         super.filterZeroValue = true;
         super.metricValuesNum = 3;
-        super.addMetric("live", "java.threads.live");
-        super.addMetric("started", "java.threads.started");
+        super.addMetric(item, "live", "java.threads.live");
+        super.addMetric(item, "started", "java.threads.started");
     }
 
     public void transform(long timestamp) {

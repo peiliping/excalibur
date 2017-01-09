@@ -12,14 +12,14 @@ public class ModuleZThreshold extends AbstractModule {
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
         super.filterZeroValue = true;
         super.metricValuesNum = 3;
-        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
-        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
+        super.addMetric(item, "minorgc", "sun.gc.collector.0.invocations");
+        super.addMetric(item, "majorgc", "sun.gc.collector.1.invocations");
 
-        super.addMetric("current", "sun.gc.policy.tenuringThreshold");
-        super.addMetric("max", "sun.gc.policy.maxTenuringThreshold");
-        super.addMetric("incre4gc", "sun.gc.policy.incrementTenuringThresholdForGcCost");
-        super.addMetric("decre4gc", "sun.gc.policy.decrementTenuringThresholdForGcCost");
-        super.addMetric("decre4survivor", "sun.gc.policy.decrementTenuringThresholdForSurvivorLimit");
+        super.addMetric(item, "current", "sun.gc.policy.tenuringThreshold");
+        super.addMetric(item, "max", "sun.gc.policy.maxTenuringThreshold");
+        super.addMetric(item, "incre4gc", "sun.gc.policy.incrementTenuringThresholdForGcCost");
+        super.addMetric(item, "decre4gc", "sun.gc.policy.decrementTenuringThresholdForGcCost");
+        super.addMetric(item, "decre4survivor", "sun.gc.policy.decrementTenuringThresholdForSurvivorLimit");
     }
 
     public void transform(long timestamp) {

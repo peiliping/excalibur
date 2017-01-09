@@ -22,19 +22,23 @@ public class ModuleZAgetable extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"minorgc", "majorgc"};
         super.metricValuesNum = 3;
-        super.addMetric("minorgc", "sun.gc.collector.0.invocations");
-        super.addMetric("majorgc", "sun.gc.collector.1.invocations");
+        this.ageTableSize = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.generation.0.agetable.size", 0);
 
-        ageTableSize = Util.getLongValueFromMonitoredVm(item.getMonitoredVm(), "sun.gc.generation.0.agetable.size", 0);
-        for (int i = 0; i < ageTableSize - 1; i++) {
-            super.addMetric(AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
+        if (this.ageTableSize >= 1) {
+            super.addMetric(item, "minorgc", "sun.gc.collector.0.invocations");
+            super.addMetric(item, "majorgc", "sun.gc.collector.1.invocations");
+            for (int i = 0; i < this.ageTableSize - 1; i++) {
+                super.addMetric(item, AGE_CONS[i], "sun.gc.generation.0.agetable.bytes." + AGE_CONS[i]);
+            }
+        } else {
+            super.valid = false;
         }
     }
 
     public void transform(long timestamp) {
         this.total = 0;
         this.count = 0;
-        for (int i = 0; i < ageTableSize - 1; i++) {
+        for (int i = 0; i < this.ageTableSize - 1; i++) {
             total = total + (i + 1) * getOriginVal(AGE_CONS[i]);
             count = count + getOriginVal(AGE_CONS[i]);
             super.store(AGE_CONS[i], timestamp, getOriginVal(AGE_CONS[i]), 1L);

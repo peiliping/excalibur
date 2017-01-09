@@ -17,4 +17,6 @@ public interface IModule {
 
     public Map<String, long[][]> pullData();
 
+    public boolean valid();
+
 }

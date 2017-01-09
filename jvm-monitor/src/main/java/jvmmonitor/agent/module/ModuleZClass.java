@@ -11,9 +11,9 @@ public class ModuleZClass extends AbstractModule {
         super(moduleName, item);
         super.noChangeMetricNames = new String[] {"time"};
         super.filterZeroValue = true;
-        super.addMetric("time", "sun.cls.time");
-        super.addMetric("loaded", "java.cls.loadedClasses");
-        super.addMetric("unloaded", "java.cls.unloadedClasses");
+        super.addMetric(item, "time", "sun.cls.time");
+        super.addMetric(item, "loaded", "java.cls.loadedClasses");
+        super.addMetric(item, "unloaded", "java.cls.unloadedClasses");
     }
 
     public void transform(long timestamp) {

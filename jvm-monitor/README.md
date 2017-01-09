@@ -19,4 +19,6 @@ JVM Monitor
 
 9）  -a 指定appname信息，在test模式下有效
 
-10） -o 打印所有的perfdata数据，不执行其他操作
+10） -R 指定rolename信息，在test模式下有效
+
+11） -o 打印所有的perfdata数据，不执行其他操作

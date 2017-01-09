@@ -35,6 +35,7 @@ public class Startup {
         OPTIONS.addOption("M", "mode", true, "saas or test");
 
         OPTIONS.addOption("a", "appName", true, "custom appname 4 test mode");
+        OPTIONS.addOption("R", "roleName", true, "custom rolename 4 test mode");
 
         OPTIONS.addOption("o", "output", false, "only print perfdata");
     }
@@ -60,8 +61,9 @@ public class Startup {
         String mode = commandLine.getOptionValue("M", "saas");
 
         String appName = commandLine.getOptionValue("a");
+        String roleName = commandLine.getOptionValue("R");
 
-        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug, getFlagsWhenRestartAgent, mode, appName);
+        Config cfg = new Config(interval, targetPids, excludeKeyWords, modules, multiple, remoteIp, debug, getFlagsWhenRestartAgent, mode, appName, roleName);
         final MonitorManager monitorManager = new MonitorManager(cfg);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

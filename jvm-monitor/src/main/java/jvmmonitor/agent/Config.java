@@ -44,6 +44,8 @@ public class Config {
 
     @Getter private String appName;
 
+    @Getter private String roleName;
+
     static {
         MODULES_CONS.put("agetable", ModuleZAgetable.class);
         MODULES_CONS.put("class", ModuleZClass.class);
@@ -59,7 +61,7 @@ public class Config {
     }
 
     public Config(int interval, Set<Integer> targetPids, Set<String> excludeKeyWords, Set<String> modules, int multiple, String remoteIp, boolean debug,
-            boolean parseFlagsWhenRestartAgent, String mode, String appName) {
+            boolean parseFlagsWhenRestartAgent, String mode, String appName, String roleName) {
         this.remoteIp = remoteIp;
         this.interval = interval;
         this.targetPids = targetPids;
@@ -74,6 +76,7 @@ public class Config {
         this.parseFlagsWhenRestartAgent = parseFlagsWhenRestartAgent;
         this.mode = mode;
         this.appName = appName;
+        this.roleName = roleName;
     }
 
     public boolean filterPid(Integer id) {

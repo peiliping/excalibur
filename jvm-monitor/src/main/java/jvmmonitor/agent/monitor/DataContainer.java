@@ -23,6 +23,7 @@ import java.util.Map;
         this.meta.put("mode", config.getMode());
         if (config.getMode().equals("test")) {
             this.meta.put("app", config.getAppName());
+            this.meta.put("role", config.getRoleName());
         }
     }
 

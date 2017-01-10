@@ -21,6 +21,8 @@ public class ModuleZMemory extends AbstractModule {
 
     private boolean greaterThanOrEqualJava1_8 = true;
 
+    private boolean hasDesiredSurvivor = true;
+
     public ModuleZMemory(String moduleName, MonitorItem item) {
         super(moduleName, item);
         super.metricValuesNum = 3;
@@ -37,7 +39,7 @@ public class ModuleZMemory extends AbstractModule {
         super.addMetric(item, memoryGeneration1Space0Name + "/used", "sun.gc.generation.1.space.0.used");
         super.addMetric(item, memoryGeneration1Space0Name + "/capacity", "sun.gc.generation.1.space.0.capacity");
 
-        super.addMetric(item, memorySurvivorName + "/capacity", "sun.gc.policy.desiredSurvivorSize");
+        this.hasDesiredSurvivor = super.addMetric(item, memorySurvivorName + "/capacity", "sun.gc.policy.desiredSurvivorSize");
 
         if (this.greaterThanOrEqualJava1_8) {
             super.addMetric(item, memoryCompressedClassSpaceName + "/used", "sun.gc.compressedclassspace.used");
@@ -56,7 +58,8 @@ public class ModuleZMemory extends AbstractModule {
         super.store(memoryGeneration0Space2Name, timestamp, getOriginVal(memoryGeneration0Space2Name + "/used"), getOriginVal(memoryGeneration0Space2Name + "/capacity"));
         super.store(memoryGeneration1Space0Name, timestamp, getOriginVal(memoryGeneration1Space0Name + "/used"), getOriginVal(memoryGeneration1Space0Name + "/capacity"));
 
-        super.store(memorySurvivorName, timestamp, 0L, getOriginVal(memorySurvivorName + "/capacity"));
+        if (hasDesiredSurvivor)
+            super.store(memorySurvivorName, timestamp, 0L, getOriginVal(memorySurvivorName + "/capacity"));
 
         if (this.greaterThanOrEqualJava1_8) {
             super.store(memoryCompressedClassSpaceName, timestamp, getOriginVal(memoryCompressedClassSpaceName + "/used"),

@@ -19,7 +19,7 @@ public class ModuleZThread extends AbstractModule {
 
     public void transform(long timestamp) {
         super.store("live", timestamp, getOriginVal("live"), 1L);
-        super.store("create", timestamp, getDeltaVal("started"), 0L);
+        super.store("starting", timestamp, getDeltaVal("started"), 0L);
         super.commit();
     }
 }

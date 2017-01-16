@@ -44,6 +44,10 @@ import java.util.Map;
 
     private String vmStartTime;
 
+    private String garbageCollector0Name;
+
+    private String garbageCollector1Name;
+
     public void initBaseInfo() {
         this.javaHome = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.home");
         this.javaVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.version");
@@ -52,6 +56,9 @@ import java.util.Map;
         this.vmVersion = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.specification.version");
         this.vmMode = Util.getValueFromMonitoredVm(monitoredVm, "java.property.java.vm.info");
         this.vmStartTime = String.valueOf(Util.getLongValueFromMonitoredVm(monitoredVm, "sun.rt.createVmBeginTime", System.currentTimeMillis()));
+        this.garbageCollector0Name = Util.getValueFromMonitoredVm(monitoredVm, "sun.gc.collector.0.name").toLowerCase();
+        this.garbageCollector1Name = Util.getValueFromMonitoredVm(monitoredVm, "sun.gc.collector.1.name").toLowerCase();
+
         String[] mc = this.mainClass.split("/");
         if (mc.length > 1) {
             this.mainClass = mc[mc.length - 1];
@@ -94,11 +101,13 @@ import java.util.Map;
 
     public Map<String, String> getJVMInfo() {
         Map<String, String> jvmInfo = Maps.newHashMap();
-        jvmInfo.put("javaVersion", javaVersion);
-        jvmInfo.put("vmName", vmName);
-        jvmInfo.put("vmVersion", vmVersion);
-        jvmInfo.put("vmVendor", vmVendor);
-        jvmInfo.put("vmStartTime", vmStartTime);
+        jvmInfo.put("javaVersion", this.javaVersion);
+        jvmInfo.put("vmName", this.vmName);
+        jvmInfo.put("vmVersion", this.vmVersion);
+        jvmInfo.put("vmVendor", this.vmVendor);
+        jvmInfo.put("vmStartTime", this.vmStartTime);
+        jvmInfo.put("minorGC", this.garbageCollector0Name);
+        jvmInfo.put("majorGC", this.garbageCollector1Name);
         return jvmInfo;
     }
 

@@ -1,7 +1,6 @@
 package meepo.reader.parquet;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import meepo.Config;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
@@ -9,26 +8,18 @@ import meepo.tools.TypesMapping;
 import org.apache.commons.lang3.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
-import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
-import org.apache.parquet.hadoop.api.ReadSupport;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
 import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.OriginalType;
-import org.apache.parquet.schema.PrimitiveType;
 import org.apache.parquet.schema.Type;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.nio.file.Paths;
-import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class ParquetFilesReader extends IWorker {
-
 
     protected ParquetReader<Group>[] readers;
 
@@ -63,11 +54,12 @@ public class ParquetFilesReader extends IWorker {
                 try {
                     this.tmp = this.readers[this.fileIndex].read();
                     if (this.tmp == null) {
+                        this.readers[this.fileIndex].close();
                         this.fileIndex++;
                         break;
                     }
                     Thread.sleep(1000);
-                    System.out.println(this.tmp.getGroup("application_id", 1));
+                    System.out.println(this.tmp);
                 } catch (Throwable e) {
                     LOG.error("", e);
                 }

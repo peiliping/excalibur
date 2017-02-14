@@ -1,30 +1,19 @@
 package meepo.writer.parquet;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.sql.Types;
-import java.util.List;
-import java.util.Map;
-
-import meepo.tools.TypesMapping;
-import org.apache.commons.lang3.Validate;
-import org.apache.hadoop.fs.Path;
-import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.OriginalType;
-import org.apache.parquet.schema.PrimitiveType;
-import org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName;
-import org.apache.parquet.schema.Type;
-import org.apache.parquet.schema.Type.Repetition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import meepo.Config;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
+import meepo.tools.TypesMapping;
+import org.apache.hadoop.fs.Path;
+import org.apache.parquet.schema.MessageType;
+import org.apache.parquet.schema.Type;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class ParquetFilesWriter extends IWorker {
 

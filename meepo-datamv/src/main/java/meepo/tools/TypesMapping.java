@@ -31,6 +31,7 @@ public class TypesMapping {
         MAPPING.put(Types.DOUBLE, PrimitiveType.PrimitiveTypeName.DOUBLE);
 
         MAPPING.put(Types.TIMESTAMP, PrimitiveType.PrimitiveTypeName.INT64);
+        MAPPING.put(Types.DATE, PrimitiveType.PrimitiveTypeName.INT64);
 
         MAPPING.put(Types.CHAR, PrimitiveType.PrimitiveTypeName.BINARY);
         MAPPING.put(Types.VARCHAR, PrimitiveType.PrimitiveTypeName.BINARY);

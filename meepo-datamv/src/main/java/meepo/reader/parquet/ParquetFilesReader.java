@@ -10,12 +10,14 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.parquet.example.data.Group;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
+import org.apache.parquet.io.ParquetEncodingException;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.Type;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
+import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,7 +46,9 @@ public class ParquetFilesReader extends IWorker {
         }
     }
 
-    private Group tmp = null;
+    private Group record = null;
+
+    private Object[] item = null;
 
     private int fileIndex = 0;
 
@@ -52,16 +56,65 @@ public class ParquetFilesReader extends IWorker {
         if (this.fileIndex < this.readers.length) {
             while (true) {
                 try {
-                    this.tmp = this.readers[this.fileIndex].read();
-                    if (this.tmp == null) {
+                    this.record = this.readers[this.fileIndex].read();
+                    if (this.record == null) {
                         this.readers[this.fileIndex].close();
                         this.fileIndex++;
                         break;
                     }
-                    Thread.sleep(1000);
-                    System.out.println(this.tmp);
+                    item = new Object[this.config.getSourceTypesArray().size()];
+                    for (int i = 0; i < this.config.getSourceTypesArray().size(); i++) {
+                        if (this.record.getFieldRepetitionCount(i) == 0) {
+                            item[i] = null;
+                            continue;
+                        }
+                        switch (this.config.getSourceTypesArray().get(i)) {
+                            case Types.TINYINT:
+                                item[i] = this.record.getInteger(i, 0);
+                                break;
+                            case Types.SMALLINT:
+                                item[i] = this.record.getInteger(i, 0);
+                                break;
+                            case Types.INTEGER:
+                                item[i] = this.record.getInteger(i, 0);
+                                break;
+                            case Types.BIGINT:
+                                item[i] = this.record.getLong(i, 0);
+                                break;
+                            case Types.BOOLEAN:
+                                item[i] = this.record.getBoolean(i, 0);
+                                break;
+                            case Types.REAL:
+                                item[i] = this.record.getFloat(i, 0);
+                                break;
+                            case Types.FLOAT:
+                                item[i] = this.record.getFloat(i, 0);
+                                break;
+                            case Types.DOUBLE:
+                                item[i] = this.record.getDouble(i, 0);
+                                break;
+                            case Types.TIMESTAMP:
+                                item[i] = this.record.getLong(i, 0);
+                                break;
+                            case Types.DATE:
+                                item[i] = this.record.getLong(i, 0);
+                                break;
+                            case Types.CHAR:
+                                item[i] = this.record.getString(i, 0);
+                                break;
+                            case Types.VARCHAR:
+                                item[i] = this.record.getString(i, 0);
+                                break;
+                            case Types.LONGVARCHAR:
+                                item[i] = this.record.getString(i, 0);
+                                break;
+                            default:
+                                throw new ParquetEncodingException("Unsupported column type: " + this.config.getSourceTypesArray().get(i));
+                        }
+                    }
+                    buffer.add(item);
                 } catch (Throwable e) {
-                    LOG.error("", e);
+                    LOG.error("Handle Parquet Data Error", e);
                 }
             }
         } else {

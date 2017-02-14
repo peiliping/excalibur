@@ -25,9 +25,9 @@ import meepo.Config;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
 
-public class ParquetWriter extends IWorker {
+public class ParquetFilesWriter extends IWorker {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ParquetWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ParquetFilesWriter.class);
 
     private static final Map<Integer, PrimitiveTypeName> MAPPING = Maps.newHashMap();
 
@@ -52,7 +52,7 @@ public class ParquetWriter extends IWorker {
 
     private ParquetWriterHelper writerHelper;
 
-    public ParquetWriter(IStorage<Object[]> buffer, Config config, int index) {
+    public ParquetFilesWriter(IStorage<Object[]> buffer, Config config, int index) {
         super(buffer, config, index);
         try {
             List<Type> types = Lists.newArrayList();
@@ -91,7 +91,7 @@ public class ParquetWriter extends IWorker {
             try {
                 writerHelper.write(data);
             } catch (Exception e) {
-                LOG.error("ParquetWriter Write Data Error :", e);
+                LOG.error("ParquetFilesWriter Write Data Error :", e);
             }
         }
         return true;

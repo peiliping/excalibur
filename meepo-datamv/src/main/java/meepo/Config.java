@@ -53,6 +53,7 @@ public class Config {
     private transient List<String>  targetColumnsArray = Lists.newArrayList();
     private transient List<Integer> targetTypesArray   = Lists.newArrayList();
 
+    private String                  parquetInputPath;
     private String                  parquetOutputPath;
 
     // ----------------------------------------------------------------------
@@ -82,6 +83,7 @@ public class Config {
         this.writerStepSize = Integer.valueOf(ps.getProperty("writerStepSize", "100"));
         this.writersNum = Integer.valueOf(ps.getProperty("writersNum", "1"));
 
+        this.parquetInputPath = ps.getProperty("parquetInputPath");
         this.parquetOutputPath = ps.getProperty("parquetOutputPath");
 
         this.bufferSize = Integer.valueOf(ps.getProperty("bufferSize", "8192"));

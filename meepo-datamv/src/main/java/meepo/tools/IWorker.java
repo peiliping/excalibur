@@ -11,7 +11,7 @@ import meepo.storage.IStorage;
 
 public abstract class IWorker implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IWorker.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(IWorker.class);
 
     protected boolean RUN = true;
 
@@ -54,14 +54,12 @@ public abstract class IWorker implements Runnable {
         return null;
     }
 
-    ;
-
     public static IWorker create(Mode md, IStorage<Object[]> buffer, Config config, int index) {
         IWorker w = null;
         try {
             w = (IWorker) md.clazz.getDeclaredConstructor(IStorage.class, Config.class, int.class).newInstance(buffer, config, index);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Create Worker Error :", e);
         }
         return w;
     }

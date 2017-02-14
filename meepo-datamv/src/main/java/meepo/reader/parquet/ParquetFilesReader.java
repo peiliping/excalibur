@@ -100,13 +100,14 @@ public class ParquetFilesReader extends IWorker {
                                 item[i] = this.record.getLong(i, 0);
                                 break;
                             case Types.CHAR:
-                                item[i] = this.record.getString(i, 0);
+                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
                                 break;
                             case Types.VARCHAR:
-                                item[i] = this.record.getString(i, 0);
+                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
+                                System.out.println(item[i]);
                                 break;
                             case Types.LONGVARCHAR:
-                                item[i] = this.record.getString(i, 0);
+                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
                                 break;
                             default:
                                 throw new ParquetEncodingException("Unsupported column type: " + this.config.getSourceTypesArray().get(i));

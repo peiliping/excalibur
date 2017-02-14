@@ -7,6 +7,7 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
+import meepo.tools.TypesMapping;
 import org.apache.commons.lang3.Validate;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.schema.MessageType;
@@ -29,42 +30,14 @@ public class ParquetFilesWriter extends IWorker {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParquetFilesWriter.class);
 
-    private static final Map<Integer, PrimitiveTypeName> MAPPING = Maps.newHashMap();
-
     private String outPutFilePath;
-
-    static {
-        MAPPING.put(Types.TINYINT, PrimitiveTypeName.INT32);
-        MAPPING.put(Types.SMALLINT, PrimitiveTypeName.INT32);
-        MAPPING.put(Types.INTEGER, PrimitiveTypeName.INT32);
-        MAPPING.put(Types.BIGINT, PrimitiveTypeName.INT64);
-
-        MAPPING.put(Types.BOOLEAN, PrimitiveTypeName.BOOLEAN);
-
-        MAPPING.put(Types.REAL, PrimitiveTypeName.FLOAT);
-        MAPPING.put(Types.FLOAT, PrimitiveTypeName.FLOAT);
-        MAPPING.put(Types.DOUBLE, PrimitiveTypeName.DOUBLE);
-
-        MAPPING.put(Types.CHAR, PrimitiveTypeName.BINARY);
-        MAPPING.put(Types.VARCHAR, PrimitiveTypeName.BINARY);
-        MAPPING.put(Types.LONGVARCHAR, PrimitiveTypeName.BINARY);
-    }
 
     private ParquetWriterHelper writerHelper;
 
     public ParquetFilesWriter(IStorage<Object[]> buffer, Config config, int index) {
         super(buffer, config, index);
         try {
-            List<Type> types = Lists.newArrayList();
-            for (String name : config.getTargetColumnsArray()) {
-                Integer type = config.getTargetColumnsType().get(name);
-                Validate.notNull(MAPPING.get(type));
-                if (MAPPING.get(type) == PrimitiveTypeName.BINARY) {
-                    types.add(new PrimitiveType(Repetition.OPTIONAL, PrimitiveTypeName.BINARY, name, OriginalType.UTF8));
-                } else {
-                    types.add(new PrimitiveType(Repetition.OPTIONAL, MAPPING.get(type), name));
-                }
-            }
+            List<Type> types = TypesMapping.getTypes(config.getTargetColumnsArray(), config.getTargetColumnsType());
             outPutFilePath = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-" + System.currentTimeMillis() / 1000 + ".parquet";
             this.writerHelper = new ParquetWriterHelper(new Path(outPutFilePath), new MessageType(config.getTargetTableName(), types));
         } catch (IllegalArgumentException | IOException e) {

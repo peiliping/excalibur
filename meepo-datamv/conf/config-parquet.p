@@ -1,6 +1,6 @@
-#sourceMode=SIMPLEREADER,SYNCREADER
-sourceTableName=test_1
-#primaryKeyName=id
+sourceMode=PARQUETREADER
+sourceTableName=app_entity
+primaryKeyName=application_id
 #sourceColumnsNames=[AUTO] | id,col1,col2,col3
 #sourceExtraSQL=
 #readerStepSize=100
@@ -10,7 +10,7 @@ sourceTableName=test_1
 #endDelay=0
 
 targetMode=PARQUETWRITER
-targetTableName=test_2
+targetTableName=app_entity
 #targetColumnsNames=[AUTO] | id,col1,col2,col3
 #writerStepSize=100
 #writersNum=1
@@ -18,4 +18,5 @@ targetTableName=test_2
 #bufferSize=8192
 #pluginClass=meepo.storage.plugin.ParseColumnTypePlugin
 
+parquetInputPath=/home/peiliping/dev/log/
 parquetOutputPath=/home/peiliping/dev/logs/

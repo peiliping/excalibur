@@ -4,26 +4,28 @@ import com.google.common.collect.Lists;
 import meepo.Config;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
-import meepo.tools.TypesMapping;
 import org.apache.commons.lang3.Validate;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.parquet.example.data.Group;
+import org.apache.parquet.hadoop.ParquetFileReader;
 import org.apache.parquet.hadoop.ParquetReader;
 import org.apache.parquet.hadoop.example.GroupReadSupport;
+import org.apache.parquet.hadoop.metadata.ParquetMetadata;
 import org.apache.parquet.io.ParquetEncodingException;
 import org.apache.parquet.schema.MessageType;
-import org.apache.parquet.schema.Type;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
-import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 
 public class ParquetFilesReader extends IWorker {
 
-    protected ParquetReader<Group>[] readers;
+    private ParquetReader<Group>[] readers;
+
+    private MessageType schema;
 
     public ParquetFilesReader(IStorage<Object[]> buffer, Config config, int index) {
         super(buffer, config, index);
@@ -35,11 +37,13 @@ public class ParquetFilesReader extends IWorker {
         Collections.sort(fileNames);
         this.readers = new ParquetReader[fileNames.size()];
         try {
-            GroupReadSupport grs = new GroupReadSupport();
-            List<Type> types = TypesMapping.getTypes(config.getSourceColumnsArray(), config.getSourceColumnsType());
-            grs.init(new Configuration(), null, new MessageType(config.getSourceTableName(), types));
             for (int i = 0; i < fileNames.size(); i++) {
-                this.readers[i] = ParquetReader.builder(grs, new org.apache.hadoop.fs.Path(path + fileNames.get(i))).build();
+                Path filePath = new org.apache.hadoop.fs.Path(path + fileNames.get(i));
+                ParquetMetadata metaData = ParquetFileReader.readFooter(new Configuration(), filePath);
+                this.schema = metaData.getFileMetaData().getSchema();
+                GroupReadSupport grs = new GroupReadSupport();
+                grs.init(new Configuration(), null, new MessageType(config.getSourceTableName(), schema.getFields()));
+                this.readers[i] = ParquetReader.builder(grs, new Path(path + fileNames.get(i))).build();
             }
         } catch (Exception e) {
             LOG.error("Create ParquetFilesReader Error :", e);
@@ -62,55 +66,33 @@ public class ParquetFilesReader extends IWorker {
                         this.fileIndex++;
                         break;
                     }
-                    item = new Object[this.config.getSourceTypesArray().size()];
-                    for (int i = 0; i < this.config.getSourceTypesArray().size(); i++) {
+                    item = new Object[this.schema.getFieldCount()];
+                    for (int i = 0; i < this.schema.getFieldCount(); i++) {
                         if (this.record.getFieldRepetitionCount(i) == 0) {
                             item[i] = null;
                             continue;
                         }
-                        switch (this.config.getSourceTypesArray().get(i)) {
-                            case Types.TINYINT:
+                        switch (this.schema.getFields().get(i).asPrimitiveType().getPrimitiveTypeName()) {
+                            case INT32:
                                 item[i] = this.record.getInteger(i, 0);
                                 break;
-                            case Types.SMALLINT:
-                                item[i] = this.record.getInteger(i, 0);
-                                break;
-                            case Types.INTEGER:
-                                item[i] = this.record.getInteger(i, 0);
-                                break;
-                            case Types.BIGINT:
+                            case INT64:
                                 item[i] = this.record.getLong(i, 0);
                                 break;
-                            case Types.BOOLEAN:
+                            case BOOLEAN:
                                 item[i] = this.record.getBoolean(i, 0);
                                 break;
-                            case Types.REAL:
+                            case BINARY:
+                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
+                                break;
+                            case FLOAT:
                                 item[i] = this.record.getFloat(i, 0);
                                 break;
-                            case Types.FLOAT:
-                                item[i] = this.record.getFloat(i, 0);
-                                break;
-                            case Types.DOUBLE:
+                            case DOUBLE:
                                 item[i] = this.record.getDouble(i, 0);
                                 break;
-                            case Types.TIMESTAMP:
-                                item[i] = this.record.getLong(i, 0);
-                                break;
-                            case Types.DATE:
-                                item[i] = this.record.getLong(i, 0);
-                                break;
-                            case Types.CHAR:
-                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
-                                break;
-                            case Types.VARCHAR:
-                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
-                                System.out.println(item[i]);
-                                break;
-                            case Types.LONGVARCHAR:
-                                item[i] = this.record.getBinary(i, 0).toStringUsingUTF8();
-                                break;
                             default:
-                                throw new ParquetEncodingException("Unsupported column type: " + this.config.getSourceTypesArray().get(i));
+                                throw new ParquetEncodingException("Unsupported column type: " + this.schema.getFields().get(i));
                         }
                     }
                     buffer.add(item);

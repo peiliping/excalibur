@@ -1,4 +1,4 @@
-package meepo.tools;
+package meepo.writer.parquet;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

@@ -3,7 +3,6 @@ package meepo.writer.parquet;
 import meepo.Config;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
-import meepo.tools.TypesMapping;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.schema.MessageType;
 import org.apache.parquet.schema.Type;

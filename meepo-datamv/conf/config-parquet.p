@@ -1,6 +1,6 @@
 sourceMode=PARQUETREADER
 sourceTableName=app_entity
-primaryKeyName=application_id
+#primaryKeyName=id
 #sourceColumnsNames=[AUTO] | id,col1,col2,col3
 #sourceExtraSQL=
 #readerStepSize=100

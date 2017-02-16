@@ -24,6 +24,7 @@ public class TypesMapping {
         MAPPING.put(Types.INTEGER, PrimitiveType.PrimitiveTypeName.INT32);
         MAPPING.put(Types.BIGINT, PrimitiveType.PrimitiveTypeName.INT64);
 
+        MAPPING.put(Types.BIT, PrimitiveType.PrimitiveTypeName.BOOLEAN);
         MAPPING.put(Types.BOOLEAN, PrimitiveType.PrimitiveTypeName.BOOLEAN);
 
         MAPPING.put(Types.REAL, PrimitiveType.PrimitiveTypeName.FLOAT);
@@ -42,7 +43,7 @@ public class TypesMapping {
         List<Type> types = Lists.newArrayList();
         for (String name : colsArray) {
             Integer type = colsType.get(name);
-            Validate.notNull(MAPPING.get(type));
+            Validate.notNull(MAPPING.get(type), name);
             if (MAPPING.get(type) == PrimitiveType.PrimitiveTypeName.BINARY) {
                 types.add(new PrimitiveType(Type.Repetition.OPTIONAL, PrimitiveType.PrimitiveTypeName.BINARY, name, OriginalType.UTF8));
             } else {

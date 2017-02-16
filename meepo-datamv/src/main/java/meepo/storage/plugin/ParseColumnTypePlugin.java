@@ -15,7 +15,10 @@ public class ParseColumnTypePlugin extends IPlugin<Object[]> {
 
     @Override public Object[] convert(Object[] e) {
         for (int i = 0; i < e.length; i++)
-            LOG.info("Column " + i + " : " + e[i].getClass().getSimpleName());
+            if (e[i] != null)
+                LOG.info("Column " + i + " : " + e[i].getClass().getSimpleName());
+            else
+                LOG.info("Column " + i + " : " + " NULL ");
         return e;
     }
 

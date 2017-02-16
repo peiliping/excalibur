@@ -14,7 +14,7 @@ Java工具集合
 
 5) phantomlancer 扫描JavaBean，生成Avsc描述文件
 
-6) icesword-agent jstat增强工具
+6) jvm-monitor jvm perfdata增强工具
 
 7) parquet-tool 解析Parquet文件
 

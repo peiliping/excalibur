@@ -16,7 +16,7 @@ public class Startup {
 
     private static final Logger LOG = LoggerFactory.getLogger(Startup.class);
 
-    private static final long SLEEP = 30 * 1000;
+    private static final long SLEEP = 15 * 1000;
 
     private static Options OPTIONS =
             (new Options()).addOption("s", "sourceDataConfig", true, "Source DS Config Path").addOption("t", "targetDataConfig", true, "Target DS Config Path")

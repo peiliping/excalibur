@@ -20,3 +20,5 @@ targetTableName=app_entity
 
 parquetInputPath=/home/peiliping/dev/log/
 parquetOutputPath=/home/peiliping/dev/logs/
+
+hdfsConfPath=/home/peiliping/dev/clsp/

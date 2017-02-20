@@ -27,7 +27,11 @@ public class ParquetFilesWriter extends IWorker {
         try {
             List<Type> types = TypesMapping.getTypes(config.getTargetColumnsArray(), config.getTargetColumnsType());
             outPutFilePath = config.getParquetOutputPath() + config.getTargetTableName() + "-" + index + "-" + System.currentTimeMillis() / 1000 + ".parquet";
-            this.writerHelper = new ParquetWriterHelper(new Path(outPutFilePath), new MessageType(config.getTargetTableName(), types));
+            if (config.getHdfsConfPath() == null) {
+                this.writerHelper = new ParquetWriterHelper(new Path(outPutFilePath), new MessageType(config.getTargetTableName(), types));
+            } else {
+                this.writerHelper = new ParquetWriterHelper(new Path(outPutFilePath), new MessageType(config.getTargetTableName(), types), config.getHdfsConfPath());
+            }
         } catch (IllegalArgumentException | IOException e) {
             LOG.error("Init Writer Helper", e);
         }

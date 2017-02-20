@@ -53,6 +53,7 @@ import meepo.tools.Mode;
 
     private String parquetInputPath;
     private String parquetOutputPath;
+    private String hdfsConfPath;
 
     // ----------------------------------------------------------------------
 
@@ -83,6 +84,8 @@ import meepo.tools.Mode;
 
         this.parquetInputPath = ps.getProperty("parquetInputPath");
         this.parquetOutputPath = ps.getProperty("parquetOutputPath");
+
+        this.hdfsConfPath = ps.getProperty("hdfsConfPath");
 
         this.bufferSize = Integer.valueOf(ps.getProperty("bufferSize", "8192"));
         this.start = ps.getProperty("start") == null ? null : Long.valueOf(ps.getProperty("start"));

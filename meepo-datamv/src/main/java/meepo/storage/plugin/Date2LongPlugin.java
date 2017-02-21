@@ -1,17 +1,14 @@
 package meepo.storage.plugin;
 
-import com.google.common.collect.Lists;
-import meepo.Config;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Types;
 import java.util.Date;
 import java.util.List;
 
-public class Date2LongPlugin extends IPlugin<Object[]> {
+import meepo.Config;
 
-    private static final Logger LOG = LoggerFactory.getLogger(Date2LongPlugin.class);
+import com.google.common.collect.Lists;
+
+public class Date2LongPlugin extends IPlugin<Object[]> {
 
     private Integer[] pos;
 

@@ -1,9 +1,11 @@
 package meepo.reader.parquet;
 
 import com.google.common.collect.Lists;
+
 import meepo.Config;
 import meepo.storage.IStorage;
 import meepo.tools.IWorker;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -27,6 +29,7 @@ public class ParquetFilesReader extends IWorker {
 
     private MessageType schema;
 
+    @SuppressWarnings({"unchecked", "deprecation"})
     public ParquetFilesReader(IStorage<Object[]> buffer, Config config, int index) {
         super(buffer, config, index);
         String path = config.getParquetInputPath();

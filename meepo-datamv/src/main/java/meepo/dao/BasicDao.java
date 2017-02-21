@@ -23,6 +23,16 @@ public class BasicDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(BasicDao.class);
 
+    public static String autoGetPrimaryKeyName(DataSource ds, String tableName) {
+        String sql = "SELECT COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where table_name='" + tableName + "' AND COLUMN_KEY='PRI'";
+        return excuteQuery(ds, sql, new ResultSetICallable<String>() {
+            @Override public String handleResultSet(ResultSet r) throws Exception {
+                Validate.isTrue(r.next());
+                return r.getString(1);
+            }
+        });
+    }
+
     public static Pair<Long, Long> autoGetStartEndPoint(DataSource ds, String tableName, String primaryKeyName) {
         String sql = "SELECT " + "MIN(" + primaryKeyName + ") , MAX(" + primaryKeyName + ") FROM " + tableName;
         return excuteQuery(ds, sql, new ResultSetICallable<Pair<Long, Long>>() {

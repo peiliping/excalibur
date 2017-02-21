@@ -1,6 +1,6 @@
 #sourceMode=SIMPLEREADER,SYNCREADER
 sourceTableName=test_1
-#primaryKeyName=id
+#primaryKeyName=[AUTO]
 #sourceColumnsNames=[AUTO] | id,col1,col2,col3
 #sourceExtraSQL=
 #readerStepSize=100

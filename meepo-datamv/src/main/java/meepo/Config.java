@@ -74,7 +74,7 @@ import meepo.tools.Mode;
         this.targetColumnsNames = ps.getProperty("targetColumnsNames", "*");
         // =========================================================
         this.sourceMode = Mode.valueOf(ps.getProperty("sourceMode", Mode.SIMPLEREADER.name()));
-        this.primaryKeyName = ps.getProperty("primaryKeyName", "id");
+        this.primaryKeyName = ps.getProperty("primaryKeyName");
         this.readerStepSize = Integer.valueOf(ps.getProperty("readerStepSize", "100"));
         this.readersNum = Integer.valueOf(ps.getProperty("readersNum", "1"));
         this.sourceExtraSQL = ps.getProperty("sourceExtraSQL", "");
@@ -101,6 +101,11 @@ import meepo.tools.Mode;
     }
 
     public Config init() {
+        // handle PrimaryKeyName
+        if (this.primaryKeyName == null) {
+            this.primaryKeyName = BasicDao.autoGetPrimaryKeyName(this.sourceDataSource, this.sourceTableName);
+        }
+
         // handle Start & End
         if (this.start == null || this.end == null) {
             Pair<Long, Long> ps = BasicDao.autoGetStartEndPoint(this.sourceDataSource, this.sourceTableName, this.primaryKeyName);

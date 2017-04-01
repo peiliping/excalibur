@@ -48,7 +48,7 @@ public class Startup {
         int multiple = Integer.valueOf(commandLine.getOptionValue("t", "10"));
 
         Set<Integer> targetPids = Util.parse2IntSet(commandLine.getOptionValue("p", ""));
-        Set<String> excludeKeyWords = Util.parse2StringSet(commandLine.getOptionValue("x", ""));
+        Set<String> excludeKeyWords = Util.parse2StringSet(commandLine.getOptionValue("e", ""));
 
         Set<String> modules = Util.parse2StringSet(commandLine.getOptionValue("m", ""));
 

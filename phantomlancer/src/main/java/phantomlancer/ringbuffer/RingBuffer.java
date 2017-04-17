@@ -1,4 +1,4 @@
-package meepo.storage;
+package phantomlancer.ringbuffer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 
 public class RingBuffer<E> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RingBuffer.class);
-    private Object[] RING;
-    private int      size;
-    private int      mask;
-    private long     blocktime;
+    private static final Logger      LOG = LoggerFactory.getLogger(RingBuffer.class);
+    private Object[]                 RING;
+    private int                      size;
+    private int                      mask;
+    private long                     blocktime;
 
     private AtomicReference<Integer> WP;
     private AtomicReference<Integer> RP;
@@ -46,7 +46,7 @@ public class RingBuffer<E> {
     }
 
     public void add(E e, int mode) {
-        for (; ; ) {
+        for (;;) {
             Integer cur = WP.get();
             if (checkFull(cur)) {
                 if (mode == Mode.MODE_SKIP) {
@@ -67,8 +67,9 @@ public class RingBuffer<E> {
         }
     }
 
-    @SuppressWarnings("unchecked") public E get(int mode) {
-        for (; ; ) {
+    @SuppressWarnings("unchecked")
+    public E get(int mode) {
+        for (;;) {
             Integer cur = RP.get();
             if (checkEmpty(cur)) {
                 if (mode == Mode.MODE_SKIP) {

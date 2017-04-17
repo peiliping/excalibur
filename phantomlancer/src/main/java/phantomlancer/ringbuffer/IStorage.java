@@ -1,8 +1,8 @@
-package meepo.storage;
+package phantomlancer.ringbuffer;
 
 import java.util.List;
 
-import meepo.storage.plugin.IPlugin;
+import phantomlancer.ringbuffer.plugin.IPlugin;
 
 public interface IStorage<E> {
 
@@ -16,3 +16,4 @@ public interface IStorage<E> {
 
     public void addPlugin(IPlugin<E> p);
 }
+

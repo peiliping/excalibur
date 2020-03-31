@@ -1,0 +1,11 @@
+hello mobile ${yesterday}
+
+#for x in 00,01,02 then 
+  this is ${yesterday} ${x},
+#end
+
+
+
+#for xf in [ 10 - 40 ] then
+  this is ${yesterday} ${xf} ${x},
+#end

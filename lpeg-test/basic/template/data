@@ -1,0 +1,8 @@
+select app.language as lang, count(1) as total from apm_ai.app_entity app 
+join 
+(select application_id from apm_ai.metric_data_entity_pqt 
+where day=${yesterday} 
+group by application_id) datas 
+on app.system_id = datas.application_id where app.day=${yesterday} 
+group by app.language 
+order by total desc ;
